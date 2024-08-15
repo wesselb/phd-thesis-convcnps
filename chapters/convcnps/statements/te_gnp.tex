@@ -1,0 +1,20 @@
+\newcommand{\statementtype}{proposition}
+\newcommand{\statementoption}{}
+\newcommand{\statementlabel}{prop:TE_iff_m_TE_k_DTE}
+\newcommand{\statementcontent}{
+    If a prediction map $\pi$ is translation equivariant,
+    then the mean map $m_\pi$ is translation equivariant and the kernel map $k_\pi$ is diagonally translation equivariant.
+    Conversely, suppose that $\pi$ is a Gaussian neural process in the sense of \cref{\xrprefix{def:gnp}}.
+    If $m_\pi$ is TE and $k_\pi$ is DTE, then $\pi$ is translation equivariant.
+    In formulas,
+    \begin{equation}
+        \text{\normalshape $\pi$ is TE}
+        \qquad
+        \begin{gathered}
+            \implies  \\
+            \overset{\text{\normalshape $\pi$ is a GNP}}{\impliedby}
+        \end{gathered}
+        \qquad
+        \text{\normalshape $m_\pi$ is TE and $k_\pi$ is DTE}.
+    \end{equation}
+}

@@ -1,0 +1,433 @@
+\documentclass[12pt, twoside]{report}
+\input{../../preamble/preamble}
+\addbibresource{../../bibliography.bib}
+
+\usepackage{xr}
+\externaldocument[xr-]{../../main}
+\newcommand{\xrprefix}[1]{xr-#1}
+
+
+\begin{document}
+
+\chapter
+    [A Software Framework for Composing Neural Processes]
+    {A Software Framework for \tnl Composing Neural Processes}
+\label{chap:software}
+
+\paragraph{Abstract}
+This chapter presents a software abstraction called \emph{coders}
+that enables the design of 
+cohesive and loosely coupled building blocks for neural processes.
+Coders form the basis of a Python package \code{neuralprocesses} available at
+\url{https://github.com/wesselb/neuralprocesses}.
+\code{neuralprocesses} implements all models in this thesis.
+
+\paragraph{Outline}
+\looseness=-1
+\Cref{sec:software:introduction} argues why a software abstraction is necessary.
+In \cref{sec:software:model_design},
+we explain how models are constructed in \code{neuralprocesses};
+and in \cref{sec:software:functions}, we explain a key principle of \code{neuralprocesses}.
+Afterwards, in \cref{sec:software:coders}, we introduce the proposed abstraction \emph{coders}.
+Finally, in \cref{sec:software:examples}, we illustrate how coders enable the design of neural processes by putting together more elementary building blocks in different ways.
+
+\paragraph{Attributions and relationship to prior work}
+\looseness=-1
+The abstraction presented in this chapter was conceived in collaboration with Jonathan Gordon in \code{NeuralProcesses.jl} \fullparencite{Bruinsma:NeuralProcesses_jl}.
+\code{neuralprocesses} \fullparencite{Bruinsma:NeuralProcesses} is primarily developed by the author, but features contributions from Tom Andersson, Stratis Markou, and James Requeima.
+All work was supervised by Richard E.\ Turner.
+
+\section{Introduction}
+\label{sec:software:introduction}
+
+In the previous chapter, we put a wide variety of neural process models to the test.
+Of course, all these models had to be implemented.
+When implementing a large number models, it is undesirable to reimplement every model from scratch, completely starting over every time again.
+Without any code reuse, a code base becomes hard to maintain and improve. 
+For example, if a detail of deep sets would need to change, then this change would need to be effected in every model that uses deep sets, an error-prone and tedious undertaking.
+Intead, one would prefer to make this change in only one place.
+This can be achieved by carefully crafting modular, composable building blocks, and constructing neural process models by putting together these building blocks in different ways.
+Then, when a building block is improved, that improvement immediately benefits every model built from that block.
+
+%The abstraction is simple.
+%It almost certainly can already be found in existing codebases, though perhaps not in the explicit form of our proposal.
+%Nevertheless, the abstraction is effective and formed the foundation for a concise and modular implementation of all models in the previous chapter.
+Two desirable qualities of a software design are \emph{low coupling} and \emph{high cohesion} \parencite{Stevens:1974:Structured_Design}.
+Low coupling means that modules communicate via simple and transparant interfaces
+and that connections between modules are minimised;
+and high cohesion means that elements within a module belong together.
+Succesfully designing a modular implementation of neural processes is difficult, because there are many desirable features which all interact in particular ways: latent variables, attentive mechanisms, functional encodings, multidimensional outputs, \textit{et cetera}.
+Carelessly isolating these features runs the risk of high coupling.
+This chapter proposes a simple software abstraction called \emph{coders}
+that enables the design of 
+cohesive and loosely coupled building blocks for neural processes.
+
+The software abstraction proposed in this chapter forms the basis of a Python \parencite{van_Rossum:1995:Python} package called \code{neuralprocesses} \parencite{Bruinsma:NeuralProcesses}, which is 
+ available at \url{https://github.com/wesselb/neuralprocesses}.
+\code{neuralprocesses} implements all models presented in this thesis (and more) and was also used to perform all experiments.
+This chapter, however, will not be a user manual nor a technical description of \code{neuralprocesses};
+for that, we refer the reader to \url{https://github.com/wesselb/neuralprocesses}.
+We will solely focus on the underlying abstraction.
+Before presenting this software abstraction in \cref{sec:software:coders},
+we first discuss how models are constructed in \code{neuralprocesses} (\cref{sec:software:model_design})
+and introduce a key principle of the package (\cref{sec:software:functions}).
+
+\section{Model Design}
+\label{sec:software:model_design}
+
+Recall that a neural processes parametrises a prediction map $\pi_\theta\colon \D \to \Qc$ where $\Qc$ is some variational family (\cref{\xrprefix{sec:nps:neural_processes}}).
+To parametrise a prediction map, we argued that encoder--decoder architectures are a convenient way to break up the model (\cref{\xrprefix{sec:nps:anatomy}}).\index{encoder}\index{decoder}\index{encoder--decoder architecture}
+This choice is embodied in \code{neuralprocesses}, where models are compositions of encoders and decoders:
+\begin{pythoncode}{\small}{}
+import neuralprocesses.torch as nps
+
+encoder = |$\ldots$|
+decoder = |$\ldots$|
+
+model = nps.Model(encoder, decoder)  # Composition of `encoder` and `decoder`
+\end{pythoncode}
+The above code uses PyTorch \parencite{Paszke:2019:PyTorch_An_Imperative_Style_High-Performance} as the backend.
+Other backends can be used by changing the import.
+For example, to use TensorFlow \parencite{Abadi:2016:TensorFlow_A_System_for_Large-Scale}, change the import to \code{import neuralprocesses.tensorflow as nps}.
+In fact, the implementation of \code{neuralprocesses} is backend agnostic and can easily be extended to other frameworks, like JAX \parencite{Bradbury:2018:JAX}.
+This backend-agnostic implementation is facilitated by the Python package LAB \parencite{Bruinsma:LAB}.
+
+Once a model is defined, it can be run forward to make a prediction for some context set $D$.
+If \code{$D = {}$(xc, yc)} and \code{$\vx = {}$xt}, then
+\begin{pythoncode}{\small}{}
+pred = model(xc, yc, xt)
+\end{pythoncode}
+\looseness=-1
+represents the distribution $P_\vx \pi_\theta(D)$.
+For any model constructed with \code{nps.Model}, the package provides functionality to automatically compute log-likelihoods, autoregressive log-likelihoods (\cref{\xrprefix{sec:convcnps:ar}}), the ELBO objective for latent-variable neural processes \parencite[LNPs;][]{Garnelo:2018:Neural_Processes}, the ML objective for LNPs \parencite{Foong:2020:Meta-Learning_Stationary_Stochastic_Process_Prediction}, all whilst appropriately dealing with multidimensional inputs and outputs, \textit{et cetera}.
+In this chapter, we will focus on how \code{encoder} and \code{decoder} can be constructed in a modular way.
+
+\section{Functions as Intermediate Representations}
+\label{sec:software:functions}
+
+Our approach will be to implement \code{encoder} and \code{decoder} as \emph{compositions of transformations}.
+%we will shortly make this more precise.
+To flexibly compose transformations, what comes out of one transformation should be a compatible input for another.
+We will achieve this by letting all transformations adhere to an agreed-upon interface.
+Letting all transformations adhere to one interface is challenging, because
+neural processes deal with a variety of objects:
+data sets, vector encodings, functional encodings, attentive mechanisms, latent variables, predictions,
+\textit{et cetera}.
+
+\index{functional encoding}
+To deal with the challenging variety of objects,
+we homogenise what is passed between transformations.
+In particular, we propose to let all intermediate representations be \emph{functions}.
+Some examples are as follows:
+\begin{itemize}
+    \item 
+        A \emph{context set} $(\vx\us{(c)}, \vy\us{(c)}) \in D$ is represented as the function mapping from the inputs to the outputs:
+        \begin{equation}
+            f\colon\set{x\us{(c)}_1, \ldots, x\us{(c)}_N} \to \set{y\us{(c)}_1, \ldots, y\us{(c)}_N},
+            \quad f(x\us{(c)}_i) = y\us{(c)}_i.
+        \end{equation}
+        Note that this function is a map between \emph{finite sets}.
+    \item 
+        A \emph{vector encoding} $\vx \in \R^K$ is represented as a function mapping from the empty set to the vector:
+        \begin{equation}
+            f\colon \es \to \set{\vx},
+            \quad
+            f() = \vx.
+        \end{equation}
+    \item 
+        A \emph{functional encoding} $\vz(\vardot) \in Z^\X$ is already a function:
+        \begin{equation}
+            f\colon \X \to Z,
+            \quad
+            f(x) = \vz(x).
+        \end{equation}
+    \item 
+        An \emph{attentive mechanism} assigns a vector $\vz_n\us{(t)}$ to every target input $x\us{(t)}$, which is represented as function just like context sets:
+        \begin{equation}
+            f\colon\set{x\us{(t)}_1, \ldots, x\us{(t)}_N} \to \set{\vz\us{(t)}_1, \ldots, \vz\us{(t)}_N},
+            \quad f(x\us{(t)}_i) = \vz\us{(t)}_i.
+        \end{equation}
+    \item   
+        A \emph{prediction} at target inputs $\vx\us{(t)} \in \X^N$ assigns some parameters $\vtheta\us{(t)}_i$ to every target input $x\us{(t)}_i$, \eg~a marginal mean, a noise variance, and a covariance embedding (\cref{\xrprefix{sec:experimental_details:models}}).
+        The prediction is represented as a function just like context sets:
+        \begin{equation}
+            f\colon\set{x\us{(t)}_1, \ldots, x\us{(t)}_N} \to \set{\vtheta\us{(t)}_1, \ldots, \vtheta\us{(t)}_N},
+            \quad f(x\us{(t)}_i) = \vtheta\us{(t)}_i.
+        \end{equation}
+\end{itemize}
+The above list is non-exhaustive, but it should give a sense of how objects can be represented as functions.
+
+Representing everything with functions is convenient for two reasons:
+\begin{enumerate}
+    \item 
+        Functions are flexible enough to naturally represent most objects of interest.
+    \item 
+        Functions are the right intermediate representation to express symmetries.
+        For example, maps on functions can be translation equivariant (\cref{\xrprefix{def:translation_equivariance}}).
+\end{enumerate}
+
+Functional representations can be infinite dimensional.
+In \code{neuralprocesses}, however, functions are always maps between finite sets.
+For example, the functional encoding (\cref{\xrprefix{def:functional_encoding}}) in convolutional neural processes (ConvNPs; \cref{\xrprefix{sec:convcnps:convcnps}}) is approximated with a discretisation (\cref{\xrprefix{proc:discretisation}}), which turns the infinite-dimensional functional encoding into a mapping between finite sets.
+
+\looseness=-1
+In \code{neuralprocesses}, functions between finite sets are represented as tuples \code{(xz, z)}.
+A tuple \code{(xz, z)} corresponds to the function \code{xz[i] $\mapsto$ z[i]} where \code{i} is a potentially multidimensional index.
+We write \code{(xz, z)} rather than \code{(x, y)} to emphasise that \code{(xz, z)} is an intermediate representation and is not necessarily connected to the context or target set.
+
+In summary, in \code{neuralprocesses}, everything is represented with a function.
+These functions are always maps between finite sets and are represented by tuples \code{(xz, z)} where \code{xz} is the domain of the function and \code{z} the codomain.
+
+\section{Coders}
+\label{sec:software:coders}
+
+By representing everything with functions, \code{encoder} and \code{decoder} become \emph{transformations of functions}.
+In \code{neuralprocesses}, there is no fundamental distinction between \code{encoder} and \code{decoder}:
+both are implemented with the same building blocks.
+The central abstraction that we propose is called \emph{coders}, which refers to a unification of \code{encoder} and \code{decoder}.
+
+On a high level, coders are transformations of functions.
+Crucially, coders can be composed to make new coders.
+Coders form the fundamental building blocks which we will use to construct neural processes.
+In particular, \code{encoder} and \code{decoder} are coders and both are a composition of more elementary coders.
+We now give the definition of a coder.
+
+\index{coder}
+\begin{definition}[Coder]
+    \label{def:coder}
+    A \emph{coder} is a transformation which
+    transforms an \emph{input function} $\X\ss{i} \to Z\ss{i}$
+    and a \emph{target domain} $\X\ss{t}$
+    into an \emph{output function} $\X\ss{o} \to Z\ss{o}$.
+\end{definition}
+
+% \index{coder!complete}
+% \index{coder!partial}
+% \begin{definition}[Complete coder, partial coder]
+%     \label{def:complete_coder}
+%     If always $\X\ss{t} = \X\ss{o}$, then the coder is called \emph{complete}.
+%     Otherwise, the coder is called \emph{partial}.
+% \end{definition}
+
+The most important example of a coder is the map from a data set $D$ and some target inputs $\vx$ to the prediction $P_\vx \pi_\theta(D)$ for the corresponding target outputs.
+For this coder,
+the \emph{input function} is the data set $D$,
+the \emph{target domain} is the set of target inputs $\vx$, and
+the \emph{output function} is the prediction $P_\vx \pi_\theta(D)$ for the target outputs.
+%Since this prediction is always a prediction at the target inputs---any other inputs would not make sense---this coder is \emph{complete}.
+% For example, suppose that the prediction $P_\vx \pi_\theta(D)$ consists of marginal means and variances.
+% Then, by representing the data set $D$ as a function $\X \to \Y$,
+% \begin{equation}
+%     (D, \vx) \mapsto P_\vx \pi_\theta(D) 
+%     \colon \underbracket[1pt]{\Y^\X\vphantom{[}}_{Z_1^{\X_1}}{} \times \underbracket[1pt]{\vphantom{[}\X}_{\vphantom{Z_1^{\X_1}}2^\X} \to \underbracket[1pt]{(\R \times [0, \infty))^\X}_{Z_2^{\X_2}}.
+% \end{equation}
+
+\index{coder!composition}
+In practice, a coder is a function \code{coder(xz, z, x)} where \code{(xz, z)} is the input function and \code{x} is the target domain.
+Moreover, the output of the coder \code{xz2, z2 = coder(xz, z, x)} is the output function:
+\begin{equation}
+    \underbracket[1pt]{\code{xz2, z2\vphantom{)}}}_{\mathclap{\text{output function}}}
+        \hspace{-2pt}
+        \code{= coder(}
+        \hspace{-2pt}
+        \underbracket[1pt]{\code{xz, z\vphantom{)}}}_{\mathclap{\text{input function}}}
+        \hspace{-2pt}
+        \code{\vphantom{)},}
+        \hspace{-2pt}
+        \overbracket[1pt]{\code{\vphantom{(}x}}^{\mathclap{\text{target domain}}}
+        \hspace{-2pt}
+    \code{)}
+\end{equation}
+% This coder is complete if always \code{xz2 == x};
+% otherwise, the coder is partial
+% (\Cref{def:complete_coder}). 
+% Intuitively, complete coders allow you to control the domain of the output function with the target domain.
+
+% In \code{neuralprocesses}, the components \code{encoder} and \code{decoder} of a model are complete coders.
+% The building blocks of \code{encoder} and \code{decoder}, however, are more elementary coders, and these elementary coders might be partial.
+
+An important property of coders is that they can be composed.
+This property is what enables a compositional construction of neural processes.
+Let \code{coder1} and \code{coder2} be two coders.
+Then the composition is defined as follows:
+\begin{pythoncode}{\small}{}
+def compostion(xz, z, x):
+    xz, z = coder1(xz, z, x)
+    xz, z = coder2(xz, z, x)
+    return xz, z
+\end{pythoncode}
+Note that, in the composition, when \code{coder2} is applied, \code{xz, z} are modified by \code{coder1}, but the target domain \code{x} is unaffected.
+In \code{neuralprocesses}, the composition of \code{coder1} and \code{coder2} can be constructed with \code{nps.Chain(coder1, coder2)}.
+
+To succintly summarise, all building blocks are coders, and coders can be composed.
+
+\section{Building Existing and New Models}
+\label{sec:software:examples}
+
+\index{encoder--decoder architecture}
+Having introduced coders, we now illustrate how this abstraction enables the design of neural processes by putting together building blocks in different ways.
+In \code{neuralprocesses},
+the blueprint of a model is the following pattern:
+\begin{pythoncode}{\small}{}
+encoder = nps.Chain(
+   coder1,
+   coder2,
+   |$\raisebox{-3pt}{\vdots}$|
+   nps.|$\cdots$|Likelihood(),
+)
+decoder = nps.Chain(
+   coder3,
+   coder4,
+   |$\raisebox{-3pt}{\vdots}$|
+   nps.|$\cdots$|Likelihood(),
+)
+model = nps.Model(encoder, decoder)
+\end{pythoncode}
+In this blueprint, the encoder and decoder are compositions of more elementary coders.
+Both compositions end in a so-called \emph{likelihood}.
+The likelihood is a necessary component of \code{encoder} and \code{decoder}
+and must always be last in the composition.
+The purpose of the likelihood is to turn the output of the coder into a probabilistic prediction;
+\code{nps.$\cdots$Likelihood()} determines the form of that prediction.
+For example, conditional neural processes \parencite[CNPs;][]{Garnelo:2018:Conditional_Neural_Processes} use a fixed, deterministic encoding.
+In that case, \code{encoder} uses \code{nps.DeterministicLikelihood()}.
+Latent-variable neural processes \parencite[LNPs;][]{Garnelo:2018:Neural_Processes},
+on the other hand, use a latent variable.
+This can be achieved by using, \eg, \code{nps.HeterogeneousGaussianLikelihood()}.
+We give two examples of models that illustrate the compositional approach that \code{neuralprocess} offers.
+
+Our first example is the Conditional Neural Process \parencite[CNP;][]{Garnelo:2018:Conditional_Neural_Processes}, which
+can be implemented as follows:\index{CNP!implementation}
+\begin{pythoncode}{\small}{}
+encoder = nps.Chain(
+    nps.DeepSet(nps.MLP(|$\,\cdots$|)),   # Deep set ($\text{\cref{\xrprefix{thm:deep_set}}}$) with $\phi_\theta$ given by an MLP
+    nps.DeterministicLikelihood(),
+)
+decoder = nps.Chain(
+    nps.MLP(|$\,\cdots$|),
+    nps.HeterogeneousGaussianLikelihood(),
+)
+cnp = nps.Model(encoder, decoder)
+\end{pythoncode}
+Note that we suppress configuration settings of neural network components.
+Also note that the multi-layer perceptron (MLP) also functions as a coder.
+We can transform the CNP into a Neural Process \parencite[NP;][]{Garnelo:2018:Neural_Processes} simply by replacing the deterministic likelihood with a stochastic one:
+\begin{pythoncode}{\small}{}
+encoder = nps.Chain(
+    nps.DeepSet(nps.MLP(|$\,\cdots$|)),
+    |\textcolor{redaccent}{nps.MLP($\,\cdots$),}|
+    |\textcolor{redaccent}{nps.HeterogeneousGaussianLikelihood(),}|
+)
+decoder = nps.Chain(
+    nps.MLP(|$\,\cdots$|),
+    nps.HeterogeneousGaussianLikelihood(),
+)
+np = nps.Model(encoder, decoder)
+\end{pythoncode}
+As \textcite{Garnelo:2018:Neural_Processes} mention, this design can be extended by, in parallel with the stochastic encoding, also including a deterministic encoding:
+%Also this is simple to implement:
+\begin{pythoncode}{\small}{}
+encoder = |\textcolor{redaccent}{nps.Parallel(}|
+    |\textcolor{redaccent}{nps.Chain(}|  # Deterministic encoder
+        |\textcolor{redaccent}{nps.DeepSet(nps.MLP($\,\cdots$)),}|
+        |\textcolor{redaccent}{nps.MLP($\,\cdots$),}|
+        |\textcolor{redaccent}{nps.DeterministicLikelihood(),}|
+    |\textcolor{redaccent}{),}|
+    nps.Chain(  # Stochastic encoder
+        nps.DeepSet(nps.MLP(|$\,\cdots$|)),
+        nps.MLP(|$\,\cdots$|),
+        nps.HeterogeneousGaussianLikelihood(),
+    ),
+|\textcolor{redaccent}{)}|
+decoder = nps.Chain(
+    |\textcolor{redaccent}{nps.Concatenate(),}|  # Turn the two encodings into one
+    nps.MLP(|$\,\cdots$|),
+    nps.HeterogeneousGaussianLikelihood(),
+)
+np = nps.Model(encoder, decoder)
+\end{pythoncode}
+In the deterministic encoder, we could replace \code{nps.DeepSet} with an attentive mechanism \code{nps.Attention}, which would create an Attentive Neural Process \parencite[ANP;][]{Kim:2019:Attentive_Neural_Processes}.
+Alternatively, rather than using two separate deep sets, perhaps one wants to use a single deep set in a two-headed architecture:
+\begin{pythoncode}{\small}{}
+encoder = nps.Chain(
+    nps.DeepSet(nps.MLP(|$\,\cdots$|)),
+    nps.MLP(|$\,\cdots$|),
+    nps.Splitter(|$\,\cdots$|,|$\,\cdots$|),
+    nps.Parallel(
+        nps.DeterministicLikelihood(),
+        nps.HeterogeneousGaussianLikelihood(),
+    ),
+)
+\end{pythoncode}
+We see that the ability to compose elementary coders allows us to quickly explore various model designs.
+
+Our second example is the Convolutional Conditional Neural Process (ConvCNP; \cref{\xrprefix{mod:convcnp}}), which can be implemented as follows:\index{ConvCNP!implementation}
+\begin{pythoncode}{\small}{}
+encoder = nps.FunctionalCoder(  
+    # The encoder produces a functional encoding ($\text{\cref{\xrprefix{def:functional_encoding}}}$), which is
+    # discretised ($\text{\cref{\xrprefix{proc:discretisation}}}$).
+    nps.Discretisation(|$\,\cdots$|),
+    nps.Chain(
+        nps.PrependDensityChannel(),
+        # `nps.SetConv` performs interpolation with a Gaussian kernel like in
+        # $\text{\cref{\xrprefix{proc:discretisation}}}$. The combination of coders in this `nps.Chain` implements
+        # the encoder $\enc_\theta$ of a convolutional deep set ($\text{\cref{\xrprefix{thm:conv_deep_set}}}$).
+        nps.SetConv(|$\,\cdots$|),  
+        nps.DivideByFirstChannel(),
+        nps.DeterministicLikelihood(),
+    ),
+)
+decoder = nps.Chain(
+    nps.UNet(|$\,\cdots$|),
+    nps.SetConv(|$\,\cdots$|),
+    nps.HeterogeneousGaussianLikelihood(),
+)
+convcnp = nps.Model(encoder, decoder)
+\end{pythoncode}
+To turn the ConvCNP into a Convolutional Gaussian Neural Process (ConvGNP; \cref{\xrprefix{mod:convgnp}}),
+we simply replace the likelihood of the decoder with \code{nps.LowRankGaussianLikelihood($\,\cdots$)}.
+And to turn the ConvCNP into a Convolutional Neural Process \parencite[ConvNP;][]{Foong:2020:Meta-Learning_Stationary_Stochastic_Process_Prediction},
+we simply replace \code{nps.DeterministicLikelihood()} in the encoder with another \code{nps.UNet($\,\cdots$)} and \code{nps.HeterogeneousGaussianLikelihood()}.
+In \cref{\xrprefix{sec:convcnps:conclusion}},
+we briefly philosophised that a ConvGNP could even be used as the encoder and/or decoder in a ConvNP.
+Also this model is now simply explored:
+\begin{pythoncode}{\small}{}
+encoder = nps.FunctionalCoder(  
+    nps.Discretisation(|$\,\cdots$|),
+    nps.Chain(
+        nps.PrependDensityChannel(),
+        nps.SetConv(|$\,\cdots$|),  
+        nps.DivideByFirstChannel(),
+        |\textcolor{redaccent}{nps.UNet($\,\cdots$),}|
+        |\textcolor{redaccent}{nps.LowRankGaussianLikelihood($\,\cdots$),}|
+    ),
+)
+decoder = nps.Chain(
+    nps.UNet(|$\,\cdots$|),
+    nps.SetConv(|$\,\cdots$|),
+    |\textcolor{redaccent}{nps.LowRankGaussianLikelihood($\,\cdots$),}|
+)
+novel_convnp = nps.Model(encoder, decoder)
+\end{pythoncode}
+Using a ConvGNP as the encoder and/or decoder in a ConvNP
+might improve predictive uncertainty when trained with the ELBO objective.
+This model has not yet been proposed in the literature. 
+
+\section{Conclusion}
+\label{sec:software:conclusion}
+In this chapter, we briefly explored a software abstraction called \emph{coders}.
+In the Python package \code{neuralproceses}, the abstraction of coders is used to define building blocks
+that can be put together in different ways to construct neural process models.
+The simplicity of this compositional approach enables the user to rapidly explore a large model space.
+
+By carefully defining a universal interface that all building blocks adhere to, the goal is to enable an implementation of the components of neural processes that are useful beyond this thesis.
+In an ideal world, there would only be a single, gold-standard implementation of every neural process component that is highly optimised and used by every project.
+Such an implementation needs to be flexible enough to suit every project's needs.
+This flexibility, however, needs to not come at the cost of simplicity of use.
+The abstraction of coders hopes to strike this balance right.
+
+
+\end{document}
+
+
+

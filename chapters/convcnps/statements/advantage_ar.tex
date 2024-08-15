@@ -1,0 +1,13 @@
+\newcommand{\statementtype}{proposition}
+\newcommand{\statementoption}{Advantage of AR CNPs}
+\newcommand{\statementlabel}{prop:advantage_of_ar_cnps}
+\newcommand{\statementcontent}{
+    Let $(\pi\ss{C}, \sigma\ss{C})$ be a CNPA
+    and let $(\pi\ss{G}, \sigma\ss{G})$ be the GNPA.
+    %Let $\operatorname{AR}_\vx^\sigma(\pi, D)$ be the distribution defined by the autoregressive sampling procedure \eqref{eq:ar-1} through \eqref{eq:ar-N}.
+    Then, for all $\vx \in I$ and $D \in \tD$ (see \cref{\xrprefix{sec:predmap:prelims}}),
+    \begin{equation}
+        \KL(P^{\sigma_f}_\vx \pi_f(D), \operatorname{AR}^{\sigma\ss{C}}_\vx(\pi\ss{C}, D))
+            \le \KL(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma\ss{G}}_\vx \pi\ss{G}(D)).
+    \end{equation}
+}

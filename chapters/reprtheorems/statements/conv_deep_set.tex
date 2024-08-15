@@ -1,0 +1,24 @@
+\newcommand{\statementtype}{theorem}
+\newcommand{\statementoption}{Convolutional deep set}
+\newcommand{\statementlabel}{thm:conv_deep_set}
+\newcommand{\statementcontent}{
+    Let $\Y \sub \R$ be compact.
+    Suppose that $[\D'] \sub [\D]$ is closed, is closed under translations, has multiplicity $K$, and has maximum data set size $N < \infty$.
+    Let $k \colon \X \to \R$ be a continuous strictly-positive-definite function such that
+    (1) $k(0) = \sigma^2 > 0$
+    (2) $k \ge 0$, and
+    (3) $k(\tau) \to 0$ as $\abs{\tau} \to \infty$.
+    Denote the reproducing kernel Hilbert space of $k$ by $\Hb$.
+    Let $Z$ be a translation space.
+    Then a function $\pi \colon [\D'] \to Z$ is continuous and translation equivariant if and only if it is of the form
+    \begin{equation} %\label{eq:conv_deep_set}
+        \pi = \dec \comp \enc
+        \quad\text{where}\quad
+        \enc(D) =
+            \sum_{\smash{(x, y) \in D}} \phi(y) k(\vardot - x)
+    \end{equation}
+    with $\enc \colon [\D'] \to \Hb'$ continuous and translation equivariant,
+    $\dec\colon \Hb' \to Z$ continuous and translation equivariant,
+    and $\phi(y) = (0, y^1, \ldots, y^{K})$.
+    Here $\Hb' = \enc([\D'])$ is a subspace of $\Hb^{K+1}$ which is closed and closed under translations.
+}

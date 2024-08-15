@@ -1,0 +1,18 @@
+\newcommand{\statementtype}{proposition}
+\newcommand{\statementoption}{}
+\newcommand{\statementlabel}{prop:TE_iff_m_TE_v_TE}
+\newcommand{\statementcontent}{
+    If a prediction map $\pi$ is translation equivariant, then the mean map $m_\pi$ and variance map $v_\pi$ are also translation equivariant.
+    Conversely, suppose that $\pi$ a conditional neural process in the sense of \cref{\xrprefix{def:cnp}}.
+    If $m_\pi$ is TE and $v_\pi$ is TE, then $\pi$ is translation equivariant.
+    \begin{equation}
+        \text{\normalshape $\pi$ is TE}
+        \qquad
+        \begin{gathered}
+            \implies  \\
+            \overset{\text{\normalshape $\pi$ is a CNP}}{\impliedby}
+        \end{gathered}
+        \qquad
+        \text{\normalshape $m_\pi$ is TE and $v_\pi$ is TE}.
+    \end{equation}
+}

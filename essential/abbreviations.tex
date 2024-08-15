@@ -1,0 +1,101 @@
+\documentclass[12pt]{report}
+\input{../preamble/preamble}
+\addbibresource{../bibliography.bib}
+
+\usepackage{xr}
+\externaldocument[xr-]{../main}
+\newcommand{\xrprefix}[1]{xr-#1}
+
+\begin{document}
+
+\chapter*{Abbreviations}
+\addcontentsline{toc}{chapter}{Abbreviations}  % Add an entry to the ToC.
+
+\newcommand{\entry}[2]{
+    \begin{center}
+        \begin{tabularx}{\linewidth}{@{}p{2.5cm}L@{}}
+            #1 & #2
+        \end{tabularx}
+    \end{center}
+}
+\newcommand{\eatspace}{\vspace{-\baselineskip}}
+
+\vspace{-5pt}  % Make align perfectly with other pages.
+% \entry
+%     {GP}
+%     {Gaussian process}
+% \entry
+%     {KL}
+%     {Kullback--Leibler}
+% \entry
+%     {MLP}
+%     {Multi-layer perceptron}
+% \entry
+%     {CNN}
+%     {Convolutional neural network}
+\entry
+    {TE}
+    {Translation equivariance (\cref{\xrprefix{def:translation_equivariance}})}
+\entry
+    {DTE}
+    {Diagonal translation equivariance (\cref{\xrprefix{def:diagonal_translation_equivariance},\xrprefix{def:diagonal_translation_equivariance_kernel_map}})}
+\entry
+    {CNPA}
+    {Conditional neural process approximation (\cref{\xrprefix{def:cnpa}})}
+\entry
+    {GNPA}
+    {Gaussian neural process approximation (\cref{\xrprefix{def:gnpa}})}
+\entry
+    {AR}
+    {Autoregressive}
+
+\section*{Classes of Neural Process Models}
+\entry
+    {CNPs}
+    {Conditional neural processes}
+\entry
+    {LNPs}
+    {Latent-variable neural processes}
+\entry
+    {GNPs}
+    {Gaussian neural processes (\cref{\xrprefix{sec:convcnps:gnp}})}
+\entry
+    {ConvNPs}
+    {Convolutional neural processes (\cref{\xrprefix{chap:convcnps}})}
+
+
+\section*{Neural Process Models}
+\entry
+    {CNP}
+    {Conditional Neural Process (\cref{\xrprefix{mod:cnp}})}
+\entry
+    {NP}
+    {Neural Process}
+\entry
+    {GNP}
+    {Gaussian Neural Process (\cref{\xrprefix{mod:gnp}})}
+\entry
+    {ACNP}
+    {Attentive Conditional Neural Process}
+\entry
+    {ANP}
+    {Attentive Neural Process}
+\entry
+    {AGNP}
+    {Attentive Gaussian Neural Process}
+\entry
+    {ConvCNP}
+    {Convolutional Conditional Neural Process (\cref{\xrprefix{mod:convcnp}})}
+\entry
+    {ConvNP}
+    {Convolutional Neural Process}
+\entry
+    {ConvGNP}
+    {Convolutional Gaussian Neural Process (\cref{\xrprefix{mod:convgnp}})}
+\entry
+    {FullConvGNP}
+    {Fully Convolutional Gaussian Neural Process (\cref{\xrprefix{mod:fullconvgnp}})}
+ 
+
+
+\end{document}

@@ -1,0 +1,776 @@
+\documentclass[12pt, twoside]{report}
+\input{../../preamble/preamble}
+\addbibresource{../../bibliography.bib}
+
+\usepackage{xr}
+\externaldocument[xr-]{../../main}
+\newcommand{\xrprefix}[1]{xr-#1}
+
+\begin{document}
+
+\chapter{Representation Theorems}
+\label{chap:repr_theorems}
+
+\paragraph{Abstract}
+In \cref{\xrprefix{sec:nps:anatomy}}, we saw that neural processes approach a meta-learning problem by parametrising a prediction map $\pi_\theta \colon \D \to \Qc$ using an \emph{encoder--decoder architecture}.
+%This means that $\pi_\theta = \enc_\theta \comp \dec_\theta$ is the composition of an \emph{encoder} and \emph{decoder}.
+In this chapter, we will see how encoder--decoder architectures can be motivated theoretically with \emph{representation theorems}.
+In the context of neural processes, representation theorems say that prediction maps may be decomposed as encoder--decoder architectures without losing representational power.
+
+\paragraph{Outline}
+In \cref{sec:repr_theorems:introduction}, we introduce representation theorems;
+and in \cref{sec:repr_theorems:functions}, we introduce functions on data sets.
+Then, in \cref{sec:repr_theorems:deep_sets}, we review a basic but important representation theorem called
+\emph{deep sets} \parencite{Zaheer:2017:Deep_Sets,Edwards:2017:Towards_a_Neural_Statistician,Wagstaff:2019:On_the_Limitations_of_Representing}.
+In \cref{sec:repr_theorems:conv_deep_sets}, we present an extension of deep sets called \emph{convolutional deep sets}.
+Convolutional deep sets incorporate \emph{translation equivariance}.
+Finally, in \cref{sec:repr_theorems:conv_deep_sets_dte}, we generalise translation equivariance to \emph{diagonal translation equivariance} and present a generalisation of convolutional deep sets to this symmetry.
+
+\paragraph{Attributions and relationship to prior work}
+\Cref{thm:conv_deep_set} was first presented as Theorem 1 by \fulltextcite{Gordon:2020:Convolutional_Conditional_Neural_Processes}.
+%although our presentation removes the limitation that $k$ be a non-negative function.
+The proof for Theorem 1 was originally developed by the author and Jonathan Gordon and later improved by Andrew Y.\ K.\ Foong.
+We furthermore acknowledge David Burt and Mark Rowland for reviewing the proof.
+\Cref{thm:conv_deep_set_dte} was first presented as Theorem E.1 by \fulltextcite{Bruinsma:2021:The_Gaussian_Neural_Process}.
+%although our presentation again removes the limitation that $k$ be a non-negative function.
+The proof of Theorem E.1 was originally developed by the author and James Requeima and later checked by Jonathan Gordon and Andrew Y.\ K.\ Foong.
+All work was supervised by Richard E.\ Turner.
+
+\section{Introduction}
+\label{sec:repr_theorems:introduction}
+
+As we discussed in \cref{\xrprefix{sec:nps:anatomy}}, designing a neural process involves parametrising a prediction map $\pi_\theta \colon \D \to \Pc$.
+In parametrising a prediction map, we argued that there are two main challenges.
+First, data sets vary in number of data points, which means that $\pi_\theta$ must process inputs of varying dimensionality.
+Second, data sets with different orderings of the data points are fundamentally the same, which means that $\pi_\theta(D)$ should not depend on an ordering of the elements in $D$.
+\index{encoder}\index{decoder}\index{encoding}\index{encoder--decoder architecture}
+We then argued that these challenges can be addressed by parametrising $\pi_\theta$ with an \emph{encoder--decoder architecture}.
+Encoder--decoder architectures
+decompose $\pi_\theta  = \dec_\theta \comp \enc_\theta$ into an \emph{encoder} and \emph{decoder}.
+The encoder does not depend on the order of the elements and produces an \emph{encoding} that always has the same format. 
+In \cref{sec:repr_theorems:deep_sets}, we will review deep sets, which is a \emph{representation theorem} proved by \textcite{Zaheer:2017:Deep_Sets} that motivates the encoder--decoder architecture on a theoretical level.
+
+\index{representation theorem}
+In the context of neural processes, the study of representation theorems more generally means the study of functions on data sets $\D \to Z$, where $Z$ is some codomain.
+The supposition of this study is that we would like to efficiently represent such functions on a computer.
+The main problem, as have seen, is that it is not at all clear how to do that, due to the structure of $\D$.
+Representation theorems provide general decompositions of functions $\D \to Z$ without losing representational power.
+Importantly, if the components of this decomposition can be implemented on a computer, then the theorems provide ways to generally implement functions $\D \to Z$ on a computer.
+In particular, by applying representation theorems to prediction maps, we find ways to concretely parametrise and implement prediction maps on a computer.
+The application of representation theorems to prediction maps will be what we focus on in the next chapter, \cref{\xrprefix{chap:convcnps}}.
+In this chapter, we take a step back from the neural process setup and more generally consider the study of functions on data sets.
+We will, however, remain to use the language of ``encoder'', ``encoding'' and ``decoder'' to smoothly transition back in the next chapter.
+
+\index{universal approximation theorem}
+In practice, the components of a representation theorem will be implemented with neural networks.
+For the neural network to be able to approximate these components,
+the components must be \emph{continuous} \parencite{Cybenko:1989:Approximation_by_Superpositions_of_a}.
+For this reason, representation theorems always guarantee that their components are continuous.
+Without the requirement of continuity, more powerful statements are possible, but these statements are of little practical utility \parencite[Section 3;][]{Wagstaff:2019:On_the_Limitations_of_Representing}.
+Before proceeding to our study of representation theorems, we first more carefully define functions on data sets.
+
+\section{Functions on Data Sets}
+\label{sec:repr_theorems:functions}
+For simplicity, like in the previous chapter, we will assume that the inputs and outputs are one-dimensional: $\X \sub \R$ and $\Y \sub \R$.
+All results, however, may readily be extended to multidimensional inputs and outputs.
+
+In our developments up to this point, a data set $D \in \D_N$ has been an element of $(\X \times \Y)^N$.
+In particular, $D$ is associated to an ordering of the input--output pairs.
+However, two data sets with different orderings of the data points are fundamentally the same.
+To this end, we will consider data sets equal if their input--output pairs are equal up to a permutation, which we now formalise.
+For a permutation $\sigma \in \Sb^N$ and vector $\vz \in \R^N$, denote
+$
+    \sigma \vz = (z_{\sigma(1)}, \ldots, z_{\sigma(N)})
+$.
+For a data set $D = (\vx, \vy) \in \D^N$, denote $\sigma D = (\sigma \vx, \sigma \vy)$.
+Then define the equivalence relation $\sim$ by $D_1 \sim D_2$ whenever there exists a permutation $\sigma \in \Sb^N$ such that $\sigma D_1 = D_2$.
+Denote the equivalence class of $D$ by $[D]$, and denote the collection of all equivalence classes of $\D_N$ by $[\D_N] = \D_N /\!\sim$.
+An element $[D] \in [\D_N]$ represents a data set that does not depend on the ordering of the data points.
+Like before, let $[\D] = \union_{N \ge 0} [\D_N]$ be the collection of all data sets of finite size, which includes the empty set $\es$.
+In this chapter, we additionally let $[\D_{\le N}] = \union_{n=0}^N [\D_{n}]$ be the collection of all data sets of size at most $N$, again including the empty set $\es$.
+More generally, for a subset $A \sub \D$, denote $[A] = \set{[D] : D \in A}$.
+We then have the following definition.
+
+\begin{definition}[Function on data sets]
+    A \emph{function on data sets} $f$ is a function $f\colon[\D] \to Z$, for some codomain $Z$.
+\end{definition}
+
+An example of a function on data sets is the function which computes the average observed value:
+\begin{equation}
+    f\colon [\D] \to \R, \quad
+    f([D]) = \sum_{n=1}^{\abs{\vx}} y_n.
+\end{equation}
+We will be concerned with \emph{continuity} of functions on data sets, which means that we must endow $[\D]$ with a topology.
+We previously endowed $\D$ with the metric
+\index{metric!data sets}
+\begin{equation}
+    d_\D(D_1, D_2) = \begin{cases}
+        \norm{\vx_1 - \vx_2}_2 + \norm{\vy_1 - \vy_2}_2 & \text{if $\abs{\vx_1} = \abs{\vx_2}$}, \\
+        \infty & \text{otherwise}.
+    \end{cases}
+\end{equation}
+For a data set $D$, let $\abs{D}$ denote the number of data points.
+Endow $[\D]$ with the following metric:
+\begin{equation} \label{eq:metric_data_sets_infimum}
+    d_{[\D]}([D_1], [D_2]) = \inf_{\sigma_2 \in \Sb^{\abs{D_2}}} d_\D(D_1, \sigma_2 D_2).
+\end{equation}
+We collect some basic results in the following proposition.
+Call a set $A \sub \D$ \emph{permutation invariant} if $D \in A$ implies that $\sigma D \in A$ for all permutations $\sigma \in \Sb^{\abs{D}}$.
+
+% \begin{proposition}~
+%     \begin{proplist}
+%         \item
+%             The function $d_{[\D]}$ is a metric on $[\D]$.
+%         \item
+%             The topology on $[\D]$ induced by $d_{[\D]}$ coincides with the quotient topology.
+%         \item
+%             \label{prop:properties_metric_data_sets:open_implies_open}
+%             If $A \sub \D$ is open, then $[A]$ is open.
+%         \item
+%             \label{prop:properties_metric_data_sets:closed_implies_closed}
+%             If $A \sub \D$ is closed, then $[A]$ is closed.
+%     \end{proplist}
+% \end{proposition}
+\statement{statements/properties.tex}
+\begin{proof}
+    See \cref{\xrprefix{sec:proofs_repr_theorems:functions}}.
+\end{proof}
+
+For \cref{prop:properties_metric_data_sets:open_implies_open,prop:properties_metric_data_sets:closed_implies_closed},
+since the topology on $[\D]$ induced by $d_{[\D]}$ coincides with the quotient topology, $[A]$ is also respectively open and closed in the quotient topology.
+
+Call a function $f\colon\D  \to Z$ permutation invariant if $f(\sigma D) = f(D)$ for all $\sigma \in \Sb^{\abs{D}}$.
+We then have the following result.
+
+% \begin{proposition}
+%     \label{prop:functions_on_data_sets_connection}
+%     Suppose that $f \colon \D \to Z$ is continuous and permutation invariant.
+%     Then $[f] \colon [\D] \to Z$ defined by $[f]([D]) = f(D')$ for any $D'$ such that $D' = [D]$ is well defined and continuous.
+%     Conversely, suppose that $f \colon [\D] \to Z$ is continuous.
+%     Then $f\colon \D \to Z$ defined by $f(D) = [f]([D])$ is continuous and permutation invariant.
+% \end{proposition}
+\index{permutation invariance}
+\statement{statements/equivalence.tex}
+\begin{proof}
+    See \cref{\xrprefix{sec:proofs_repr_theorems:functions}}.
+\end{proof}
+
+\Cref{prop:functions_on_data_sets_connection} says that it does not matter whether we study continuous functions on $\D$ which are permutation invariant or continuous functions on $[\D]$;
+they are essentially the same.
+Therefore, in this chapter, we will confine ourselves to continuous functions on $[\D]$ and will not be concerned with the notion of permutation invariance.
+
+\Textcite{Qi:2017:PointNet_Deep_Learning_on_Point} investigate functions on sets rather than on data sets.
+In this more general setting, \citeauthor{Qi:2017:PointNet_Deep_Learning_on_Point} use the Hausdorff distance to measure distance between sets.
+In our case, the collection of all data sets $[\D]$ has more structure, because it is a quotient by a group of isometries.
+This structure allows us to employ the infimum-based metric in \eqref{eq:metric_data_sets_infimum};
+in general, such a definition might violate the triangle inequality.
+In this light, \cref{prop:properties_metric_data_sets:same_topology} is a specialisation of Theorem 2.1.(ii) by \textcite{Cagliari:2015:The_Natural_Pseudo-Distance_as_A} to $[\D]$.
+
+\section{Deep Sets}
+\label{sec:repr_theorems:deep_sets}
+
+The starting point of our study of functions on data sets is the following theorem by \textcite{Zaheer:2017:Deep_Sets}, which characterises functions on $[\D_N]$.
+
+\index{deep set}
+\begin{theorem}[Deep set, preliminary; \theoremcite{Zaheer:2017:Deep_Sets}] \label{thm:deep_set_preliminary}
+    Assume that $\X \sub \R$ and $\Y \sub \R$ are compact.
+    A map $\pi \colon [\D_N] \to Z$ is continuous if and only if it is of the form
+    \begin{equation} \label{eq:deep_set_preliminary}
+        \pi = \dec \comp \enc \qquad \text{where} \qquad
+        \enc(D) = \sum_{\smash{(x, y) \in D}} \phi(x, y)
+    \end{equation}
+    with $\enc \colon [\D_N] \to \smash{\R^{2(N+1)}}$,
+    $\phi\colon \X \times \Y \to \smash{\R^{2(N+1)}}$, and
+    $\dec \colon \smash{\R^{2(N+1)}} \to Z$ continuous.
+    Moreover, the choice of $\enc$ and $\phi$ do not depend on $\pi$.
+\end{theorem}
+\begin{proof}
+    See the proof of Theorem 2 by \textcite{Zaheer:2017:Deep_Sets}.
+\end{proof}
+
+Thoughout this thesis, we will call functions of the form of \eqref{eq:deep_set_preliminary} \emph{deep sets}.
+In terms of encoders, note that deep sets encode on two levels.
+For every data point $(x, y) \in D$, first $\phi(x, y)$ produces an encoding of that data point.
+These data-point-specific encodings are then summed over all data points in the data set, finally producing an encoding of the whole data set $D$.
+Although \cref{thm:deep_set_preliminary} was originally presented by \textcite{Zaheer:2017:Deep_Sets}, in concurrent work \textcite{Edwards:2017:Towards_a_Neural_Statistician} employed a similar approach for a similar problem.
+\Cref{thm:deep_set_preliminary} is also comparable to Theorem 1 by \textcite{Qi:2017:PointNet_Deep_Learning_on_Point}.
+Theorem 1 by \textcite{Qi:2017:PointNet_Deep_Learning_on_Point} uses a maximum instead of a sum for $\enc$ and characterises function continuous with respect to a different topology.
+
+To prove \cref{thm:deep_set_preliminary}, \citeauthor{Zaheer:2017:Deep_Sets} proceed by defining
+\begin{equation} \label{eq:power_series}
+    \phi(x, y) =
+    (
+        x^0, x^1, \ldots, x^{N + 1},
+        y^0, y^1, \ldots, y^{N + 1}
+    ).
+\end{equation}
+Indeed, $\phi(x, y)$ is of dimensionality $2(N + 1)$.
+It is clear that $\enc$ is continuous.
+The key step is to show that $\enc\colon[\D_N] \to \R^{2(N+1)}$ is also \emph{injective}, which means that
+it always maps two different $[D_1] \in [\D_N]$ and $[D_2] \in [\D_N]$ to distinct encodings.
+\citeauthor{Zaheer:2017:Deep_Sets} show this in their Lemma 4.
+Having shown that $\phi$ is a continuous injection, it follows that it is a continuous bijection from onto its image $\enc([\D_N])$.
+The fact that we now use is that all continuous bijections $A \to B$ with $A$ compact and $B$ Hausdorff have a continuous inverse \parencite[Theorem 26.6;][]{Munkres:2000:Topology}. 
+Since $[\D_N]$ is compact, we may conclude that $\phi\colon [\D_N] \to \phi([\D_N])$ has a continuous inverse $\phi^{-1}$.
+\Cref{thm:deep_set_preliminary} then follows by setting $\dec = \pi \comp \phi^{-1}$.
+
+\Cref{thm:deep_set_preliminary} has an important limitation: 
+it only applies to data sets of a single fixed size $N$.
+\citeauthor{Wagstaff:2019:On_the_Limitations_of_Representing} later extended \cref{thm:deep_set_preliminary}, addressing this restriction:
+
+\index{deep set}
+\begin{theorem}[Deep set; \theoremcite{Zaheer:2017:Deep_Sets}; \theoremcite{Wagstaff:2019:On_the_Limitations_of_Representing}] \label{thm:deep_set}
+    Assume that $\X \sub \R$ and $\Y \sub \R$ are compact.
+    A map $\pi \colon [\D_{\le N}] \to Z$ is continuous if and only if it is of the form
+    \begin{equation} \label{eq:deep_set}
+        \pi = \dec \comp \enc \qquad \text{where} \qquad \enc(D) = \sum_{\smash{(x, y) \in D}} \phi(x, y)
+    \end{equation}
+    with $\enc \colon [\D_N] \to \smash{\R^{2N}}$,
+    $\phi\colon \X \times \Y \to \smash{\R^{2N}}$, and
+    $\dec \colon \smash{\R^{2(N+1)}} \to Z$ continuous.
+    Moreover, the choice of $\enc$ and $\phi$ do not depend on $\pi$.
+\end{theorem}
+\begin{proof}
+    See the proof of Theorem 4.4 by \textcite{Wagstaff:2019:On_the_Limitations_of_Representing}.
+\end{proof}
+
+Compared to \cref{thm:deep_set_preliminary}, there are two differences.
+First, in \cref{thm:deep_set}, $\phi$ maps into $\R^{2N}$ rather than $\R^{2(N+1)}$.
+\citeauthor{Wagstaff:2019:On_the_Limitations_of_Representing} make this improvement by noting that the elements $x^0$ and $y^0$ in \eqref{eq:power_series} are always one and can therefore be removed.
+Second, in \cref{thm:deep_set}, the theorem applies to any function on $[\D_{\le N}]$ rather than $[\D_{N}]$.
+This means that it applies to all data set of size at most $N$, addressing the aforementioned limitation of \cref{thm:deep_set_preliminary}.
+\citeauthor{Wagstaff:2019:On_the_Limitations_of_Representing} make this improvement by designating a special element in $\R \setminus \X$.
+Let us denote this special element by $\mathsf{missing} \in \R \setminus \X$.
+Using $\mathsf{missing}$, any data set $D \in \D_{N'}$ with $N' < N$ can be made a data set of $N$ data points by appending the appropriate number of $\mathsf{missing}$s.
+In this way, $\D_{\le N}$ can be embedded into the collection of data sets with $N$ data points with inputs in
+$\X \cup \set{\mathsf{missing}}$ and outputs in $\Y \cup \set{\mathsf{missing}}$.
+Since $\X \cup \set{\mathsf{missing}}$ and $\Y \cup \set{\mathsf{missing}}$ are still compact, \cref{thm:deep_set_preliminary} can be applied.
+
+\Cref{thm:deep_set} is an important result, because it provides a way to concretely parametrise a map $\pi\colon[\D_{\le N}] \to Z$ on a computer, supposing that $Z$ is some Euclidean space. 
+Namely, in \eqref{eq:deep_set}, the components $\phi$ and $\dec$ are just continuous functions between Euclidean spaces, which can therefore be approximated with multi-layer perceptrons \parencite{Cybenko:1989:Approximation_by_Superpositions_of_a}.\index{universal representation theorem}
+
+\section{Convolutional Deep Sets}
+\label{sec:repr_theorems:conv_deep_sets}
+
+Although \cref{thm:deep_set} provides a way to generally implement a map $\pi\colon[\D_{\le N}] \to Z$, this implementation requires two multi-layer perceptrons: one for $\phi$, and one for $\dec$.
+Although multi-layer perceptrons (MLPs) can approximate any continuous function \parencite{Cybenko:1989:Approximation_by_Superpositions_of_a},
+in some domains, MLPs are so parameter inefficient that they cannot feasibly be used.
+One such domain is images.
+Consider a $100\times100$ image, consisting of three colour channels. 
+Then a one-layer MLP mapping to an image of the same size would consist of nearly a billion parameters, which is on the order of the biggest models that can nowadays be trained \parencite{Brown:2020:Language_Models_Are_Few-Shot_Learners}.
+Specifically for the domain of images, convolutional neural networks (CNNs) were developed \parencite{Fukushima:1982:Neocognitron_A_Self-Organizing_Neural_Network}, which are MLPs with certain weights set to zero.
+In comparison, a one-layer CNN mapping a $100\times100$ image with three colour channels to an image of the same size may only consist of only 81 parameters.
+CNNs achieve this parameter efficiency by incorporating a symmetry called \emph{translation equivariance}.\index{translation equivariance}
+Recall that, in \cref{\xrprefix{def:translation},\xrprefix{def:translation_equivariance}} in \cref{\xrprefix{sec:nps:translation_equivariance}}, we defined translations and translation equivariance.
+We also explained the intuition behind translation equivariance.
+In this section, we present a translation-equivariant version of deep sets (\cref{thm:deep_set}) called \emph{convolutional deep sets} (\cref{thm:conv_deep_set}).
+As the name suggests, convolutional deep sets are to deep sets what CNNs are to MLPs.
+In particular, convolutional deep sets inherit the parameter efficiency of CNNs.
+
+In this section, for simplicity, we still assume one-dimensional inputs and outputs,
+and we emphasise again that all results readily generalise to higher-dimensional inputs and outputs.
+For the notion of translation equivariance to be well defined, we require that $\X = \R$ entirely.
+If $\X \subsetneq \R$, then $\T_\tau x$ could shift an input outside $\X$.
+As an example, if $\X = [0, 1]$, then $\T_{\frac12} 1 = \tfrac32 \notin \X$.
+
+Every CNN is a translation-equivariant MLP.
+It turns out that every MLP which is translation equivariant is also a CNN \parencite{Kondor:2018:On_the_Generalization_of_Equivariance}.
+This means that, amongst all MLPs, translation equivariance \emph{characterises} CNNs.
+In a similar spirit, the main result of this section is a characterisation of functions on data sets which are translation equivariant.
+Let us for a moment contemplate such a result.
+Suppose that 
+\begin{equation}
+    \pi = \enc \comp \dec \qquad \text{where} \qquad \enc(D) = \sum_{(x, y) \in D} \phi(x, y)
+\end{equation}
+were translation equivariant: $\pi \comp \T_\tau = \T_\tau \comp \pi$ for all $\tau \in \X$.
+To establish translation equivariance of $\pi$, one reasonable construction would be to ensure that $\enc$ and $\dec$ are translation equivariant.
+If that were true, then, by associativity of function composition,%
+\begin{equation}
+    \dec \comp \enc \comp \T_\tau
+    \overset{\text{($\enc$ is TE)}}{=} \dec \comp \T_\tau \comp \enc
+    \overset{\text{($\dec$ is TE)}}{=} \T_\tau \comp \dec \comp \enc
+\end{equation}
+which would mean that $\pi$ is indeed translation equivariant.
+But there is a big problem with this construction:
+$\enc$ is a function mapping into $\R^{2N}$ (\cref{thm:deep_set}),
+and, crucially, vectors in $\R^{2N}$ cannot naturally be translated by translations in $\X = \R$!
+One way to translate a vector in $\R^{2N}$ is to shift along its elements, wrapping around the outermost elements:%
+\begin{equation}
+    \T_1 (z_1, z_2, \ldots, z_{2N-1}, z_{2N})
+    = (z_{2N}, z_1, \ldots, z_{2N-2}, z_{2N - 1}).
+\end{equation}
+This, however, only works for integer-valued translations.
+Another proposal might be to simply add the translation to all elements of the vector:
+\begin{equation}
+    \T_{\tau} (z_1, \ldots, z_{2N})
+    = (z_1 + \tau, \ldots, z_{2N} + \tau).
+\end{equation}
+But then what would you do for two-dimensional inputs?
+In general, there is no natural way to translate vectors in $\R^{2N}$ by $\X$-valued translations.
+We therefore see that the Euclidean space $\R^{2N}$ in which the encoding lives is an obstacle for deriving a translation-equivariant version of deep sets.
+Instead, we would like the encoding to live in a space on which translations can naturally act.
+And the most natural such space is a space of \emph{functions}, which motivates the following idea.
+
+\index{encoding!functional}
+\begin{definition}[Functional encoding]
+    \label{def:functional_encoding}
+    Call an encoding \emph{functional} if the output of $\enc$ and hence the input of $\dec$ is a function on $\X$:
+    \begin{equation}
+        \enc\colon [\D] \to Z^\X, \qquad
+        \dec\colon Z^\X \to C
+    \end{equation}
+    where $Z$ is the codomain of the functional encoding and $C$ the codomain of the decoder. 
+\end{definition}
+
+\looseness=-1
+If the encoding were functional, then translation equivariance is a perfectly well-defined notion for the output of $\enc$ and the input of $\dec$.
+Therefore, in that case, we could pursue the construction of building translation equivariance into $\pi$ by building it into $\enc$ and $\dec$.
+
+Before we state the main result, we need a few definitions.
+\index{translation space}\index{translation space!topological}
+Call a space $A$ a \emph{translation space} if elements in $A$ can be translated.
+Call a translation space $A$ \emph{topological} if $(\tau, a) \mapsto T_\tau a$ is continuous.
+Call a subset $A' \subset A$ of a translation space $A$ \emph{closed under translations} if $a \in A'$ implies that $\T_\tau a \in A'$ for all $\tau \in \X$.
+Call a function $k\colon \X \times \X \to \R$ \emph{(strictly) positive definite} if, for all $N \in \N$ and $\vx \in \X^N$, the matrix
+\begin{equation}
+    \begin{bmatrix}
+        k(x_1, x_1) & \cdots & k(x_1, x_n) \\
+        \vdots & \ddots & \vdots \\
+        k(x_n, x_1) & \cdots & k(x_n, x_n)
+    \end{bmatrix}
+\end{equation}
+is (strictly) positive definite.
+Call a function $k \colon \X \to \R$ (strictly) positive definite if $(x, y) \mapsto k(x - y)$ is (strictly) positive definite. 
+For a Hilbert space $(\Hb, \lra{\vardot,\vardot}_\Hb)$ of functions on $\X$, call a positive-definite function $k$ a \emph{reproducing kernel} if $k(\vardot, x) \in \Hb$ for all $x \in \X$ and $\lra{f, k(\vardot, x)}_\Hb = f(x)$ for all $f \in \Hb$ and $x \in \X$.
+For every positive-definite function $k$, there exists one and only one Hilbert space of functions on $\X$ for which $k$ is a reproducing kernel \parencite[Moore--Aronszajn theorem; Section 2;][]{Aronszajn:1950:Theory_of_Reproducing_Kernels}.
+We call this Hilbert space the \emph{reproducing kernel Hilbert space} (RKHS) of $k$.
+Finally, we define the \emph{multiplicity} of a data set $[D] \in [\D]$, which counts how many times an input is repeated exactly.
+
+\index{multiplicity}
+\begin{definition}[Multiplicity of data set]
+    For a data set $[D] \in [\D]$, let the \emph{multiplicity} of $[D]$ be the maximum number of times an input is repeated exactly.
+    Denote the multiplicity of $[D]$ by $\mult\,[D]$.
+    Then
+    \begin{equation}
+        \mult\,[D]
+        = \sup\, \set{\abs{\set{i \in [N]: x_i = x}} :  x \in \set{x_1, \ldots, x_{N}}}
+        \text{ where } D = (\vx, \vy).
+    \end{equation}
+    For a subset $[\D'] \sub [\D]$, define $\mult\,[\D'] = \sup_{[D] \in [\D']} \mult\,[D]$.
+\end{definition}
+
+% \begin{theorem}[Convolutional deep set]
+%     \label{thm:conv_deep_set}
+%     Let $\Y \sub \R$ be compact.
+%     Suppose that $[\D'] \sub [\D]$ is closed, is closed under translations, has multiplicity $K$, and has maximum data set size $N < \infty$.
+%     Let $k \colon \X \to \R$ be a continuous strictly-positive-definite function such that $k(0) = \sigma^2 > 0$ and $k(\tau) \to 0$ as $\abs{\tau} \to \infty$.
+%     Denote the reproducing kernel Hilbert space of $k$ by $\Hb$.
+%     Let $Z$ be a translation space.
+%     Then a function $\pi \colon [\D'] \to Z$ is continuous and translation equivariant if and only if it is of the form
+%     \begin{equation} \label{eq:conv_deep_set}
+%         \pi = \dec \comp \enc
+%         \quad\text{where}\quad
+%         \enc(D) =
+%             \sum_{\smash{(x, y) \in D}} \phi(y) k(\vardot - x)
+%     \end{equation}
+%     with $\enc \colon [\D'] \to \Hb'$ continuous and translation equivariant,
+%     $\dec\colon \Hb' \to Z$ continuous and translation equivariant,
+%     and $\phi(y) = (0, y^1, \ldots, y^{K})$.
+%     Here $\Hb' = \enc([\D'])$ is a subspace of $\Hb^{K+1}$ which is closed and closed under translations.
+% \end{theorem}
+\index{convolutional deep set}
+\statement{statements/conv_deep_set.tex}
+\begin{proof}
+    The proof proceeds like the proof for \cref{thm:deep_set}.
+    We show that $\enc$ is injective, therefore bijective onto its image.
+    In this case, however, the image of $\enc$ is not compact. 
+    Instead, we use the structure of the RKHS $\Hb$ to prove continuity of the inverse of $\enc$.
+    See \cref{\xrprefix{sec:proofs_repr_theorems:conv_deep_sets}}.
+\end{proof}
+
+\Cref{thm:conv_deep_set} is a characterisation of functions $\pi \colon [\D'] \to Z$ on data sets which are translation equivariant.
+In the following paragraphs, we will carefully analyse various aspects of the theorem.
+
+A restrictive assumption of \cref{thm:conv_deep_set} is that the domain $[\D']$ must be simultaneously closed and have multiplicity $K$.
+For example, suppose that we choose $[\D']$ to be the data sets in $[\D_2]$ with distinct inputs.
+Then $\mult\,[\D']=1$.
+However, $[\D']$ is not closed: $[((1/n, 0), (0, 0))] \in [\D']$ for all $n \ge 1$, but
+\begin{equation}
+    \lim_{n \to \infty}[((1/n, 0), (0, 0))] = [((0, 0), (0, 0))],
+\end{equation}
+and $[((0, 0), (0, 0))]$ has multiplicity two, so it is not in $[\D']$.
+%Here we slightly abuse notation by denoting sets with duplicate elements;
+%it would be more correct to use \emph{multisets}, a generalisation of sets which allow duplicate elements.
+A reasonable way to construct subsets of $[\D']$ which are simultaneously closed and have multiplicity $K$ is to fix some $\e > 0$, and to consider the data sets in $[\D']$ with at most $K$ inputs exactly repeated and all other inputs $\e$ or more apart.
+
+Like \cref{thm:deep_set}, \cref{thm:conv_deep_set} also lets $\phi$ be a power expansion (see \eqref{eq:power_series}).
+However, the highest power of $\phi$ in \cref{thm:deep_set} is dictated by the maximum data set size, whereas the highest power of $\phi$ in \cref{thm:conv_deep_set} is set by the multiplicity of $[\D']$.
+In particular, if the multiplicity is low, then the highest power of $\phi$ in \cref{thm:conv_deep_set} is low, regardless of the maximum data sets size.
+
+\looseness=-1
+As we alluded to before, \cref{thm:conv_deep_set} constructs a translation-equivariant encoder and decoder by employing a functional encoding (\cref{def:functional_encoding}).
+The particular function space that the encoding lives is the $(K+1)$-fold product of the reproducing kernel Hilbert space $\Hb$ of a continuous positive-definite kernel $k$.
+We are free to choose $k$.
+In \cref{\xrprefix{chap:convcnps}}, we will choose $k$ to be a simple Gaussian kernel: \index{kernel}
+$k(\tau) = \exp(-\frac{1}{2\ell^2}\tau^2)$ for some length scale $\ell > 0$.
+
+The decoder is defined only on a subspace $\Hb' \sub \Hb^{K+1}$ which is closed and closed under translations.
+It would be desirable to continuously extend the decoder to all of $\Hb^{K+1}$ whilst preserving translation equivariance.
+Continuously extending functions from a closed subspace to the entire space is classically done with the Tietze extension theorem \parencite[Theorem 35.1;][]{Munkres:2000:Topology}.
+The Tietze extension theorem, however, assumes that $Z$ is a finite-dimensional Euclidean space and does not preserve translation equivariance.
+In \citeyear{Gleason:1950:Spaces_With_a_Compact_Lie}, \citeauthor{Gleason:1950:Spaces_With_a_Compact_Lie} extended Tietze's theorem to preserve symmetries with respect to compact groups by averaging over the Haar measure.
+The group of translations, unfortunately, is not compact, though it is locally compact.
+In \citeyear{Dugundji:1951:An_Extension_of_Tietzes_Theorem},
+\citeauthor{Dugundji:1951:An_Extension_of_Tietzes_Theorem} extended Tietze's theorem to any $Z$ which is a locally convex vector space.
+Later \textcite{Jaworowski:1981:An_Equivariant_Extension_Theorem_and} and more recently \textcite{Feragen:2006:Characterization_of_Equivariant_ANEs} proposed extensions of Tietze's theorem which generalise in both directions.
+We leave it to future work to determine whether an equivariant extension theorem can be applied to extend the decoder from $\Hb'$ to all of $\Hb^{K+1}$.
+
+Finally, we compare the form of convolution deep sets (\cref{thm:conv_deep_set}) to the form deep sets (\cref{thm:deep_set}).
+There are two important differences.
+First, for deep sets, the encoder is implemented with an MLP, and the decoder is also implemented with an MLP.
+For convolutional deep sets, the encoder only depends on a choice for $k$, like the Gaussian kernel.
+It can therefore trivially be implemented and, in particular, it \emph{does not depend on any neural network}.
+Additionally, the decoder is now a translation-equivariant map between translation spaces.
+Crucially, such maps are exactly what CNNs approximate \parencite[Theorem 3.1;][]{Yarotsky:2022:Universal_Approximations_of_Invariant_Maps}!
+Therefore, for convolutional deep sets, the decoder can be implemented with a CNN.
+The second difference pertains to the choice of maximum data set size $N$.
+For deep sets, the dimensionality of the encoding depends on $N$.
+For convolutional deep sets, on the other hand, the encoding always lives in $\Hb^{K+1}$, regardless of the maximum data set size.
+We could therefore imagine applying \cref{thm:conv_deep_set} to a sequence of $N$s going to infinity to obtain a version of convolution deep sets that holds for data sets of all sizes.
+We leave such a construction for future work.
+
+After introducing \cref{thm:conv_deep_set} \parencite{Gordon:2020:Convolutional_Conditional_Neural_Processes}, \textcite{Xu:2020:MetaFun_Meta-Learning_With_Iterative_Functional} also introduced functional representations in the context of meta-learning for the purpose of improving representational capacity.
+Whereas \cref{thm:conv_deep_set} uses a functional encoding, \citeauthor{Xu:2020:MetaFun_Meta-Learning_With_Iterative_Functional} argue that the encoder in \cref{thm:conv_deep_set} is limited.
+We, however, emphasise that the simplicity of the encoder is without loss of generality, because \cref{thm:conv_deep_set} applies to \emph{any} continuous function $[\D'] \to Z$ which is translation equivariant.
+The simplicity of the encoder can therefore be seen as a feature rather than a downside.
+
+\section{Diagonal Translation Equivariance}
+\label{sec:repr_theorems:conv_deep_sets_dte}
+
+\looseness=-1
+Convolutional deep sets (\cref{thm:conv_deep_set}) characterise translation-equivariant functions on data sets.
+In this section, we investigate a slightly more general class:
+functions on data sets which are \emph{equivariant with respect to diagonal translations}.
+Before stating the definition of \emph{diagonal translation equivariance} (DTE), we first explain where DTE comes from.
+
+In \cref{\xrprefix{sec:predmap:np_approximations}}, 
+we defined
+\emph{mean maps} (\cref{\xrprefix{def:mean_map}}),
+functions of the form $m \colon [\D] \to \Y^\X$,
+and  \emph{kernel maps} (\cref{\xrprefix{def:kernel_map}}), functions of the form $k \colon [\D] \to \R^{\X \times \X}$.
+In \cref{\xrprefix{sec:convcnps:gnp}}, we will encounter mean maps $m$ which are translation equivariant:
+\index{translation equivariance!mean map}
+\begin{equation} \label{eq:mean_map_TE}
+    m \comp \T_\tau = \T_\tau \comp m \qquad \text{for all $\tau \in \X$}.
+\end{equation}
+\Cref{thm:conv_deep_set} can be used to characterise such mean maps $m$.
+We will also encounter kernel maps $k$ which are translation equivariant.
+Kernel maps, however, turn out to be translation equivariant in a slightly different sense:%
+\index{translation equivariance!kernel map}
+\begin{equation} \label{eq:kernel_map_TE}
+    k \comp \T_{\tau} = \T_{(\tau, \tau)} \comp k \qquad \text{for all $\tau \in \X$}.
+\end{equation}
+Compared to \eqref{eq:mean_map_TE}, \eqref{eq:kernel_map_TE} has $\T_{(\tau, \tau)}$ on the right-hand side instead of $\T_\tau$, where $\T_{(\tau, \tau)}$ is a translation on $\X \times \X$.
+Recall that
+the codomain of $k$ consists of functions on $\X \times \X$, not on $\X$.
+Because \eqref{eq:kernel_map_TE} has different symbols on both sides, we cannot directly apply \cref{thm:conv_deep_set}.
+We will see that the symmetry in \eqref{eq:kernel_map_TE} is closely related to the notion of \emph{diagonal translation equivariance} (\cref{def:diagonal_translation_equivariance}), which we later define.
+The main result of this section is a characterisation of functions which are \emph{diagonally translation equivariant} in the sense of \eqref{eq:kernel_map_TE}.
+
+\index{convolutional deep set}
+\begingroup
+    \newcommand{\maybeprefix}[1]{#1}
+    \statement{statements/conv_deep_set_dte.tex}
+\endgroup
+
+\index{kernel}
+If $C$ is the space of functions $\X \times \X \to \R$ and $\X = \R$, then a simple and appropriate choice for $c$ is the Gaussian $c(\vx) = \exp(-\tfrac1{2\ell^2}\lra{\vx,\ve_\perp}^2)$ for some length scale $\ell > 0$.
+Intuitively, this choice for $c$ measures the distance to the diagonal and decays based on that distance.
+
+\begin{proof}
+
+
+To prove \cref{thm:conv_deep_set_dte}, our approach will be to first rewrite \eqref{eq:conv_deep_set_dte_equivariance} to have $\T_{(\tau, \tau)}$ on both sides.
+Once \eqref{eq:conv_deep_set_dte_equivariance} is in this form, we will apply \cref{thm:conv_deep_set} with $\X\times\X$ as the space of inputs.
+Recall that \cref{thm:conv_deep_set} generalises to higher-dimensional inputs.
+
+\newcommand{\dup}{\operatorname{dup}{}\!}%
+\newcommand{\dedup}{\operatorname{dup}^{-1}\!{}}%
+To rewrite \eqref{eq:kernel_map_TE}, we use a simple trick: \emph{duplicating the inputs}.
+%Like $\D$ is the collection of all data sets with inputs in $\X$ and outputs in $\Y$, 
+Let $\D\ss{dbl}$ be the collection of data sets with inputs in $\X\ss{dbl} \coloneqq \X \times \X$ and outputs in $\Y$.
+The ``dbl'' in the subscript of $\D\ss{dbl}$ stands for ``\underline{d}ou\underline{bl}e'' and serves to remind the reader that there are double the number of inputs.
+Let $\operatorname{dup}\colon \D \to \D\ss{dbl}$ be the function that maps a data set into $\D\ss{dbl}$ by duplicating the inputs.
+More precisely, for $D = (\vx,\vy) \in \D_N$,%
+\begin{equation} \label{eq:dup}
+    \operatorname{dup}(D) = (
+        ((x_1, x_1), y_1),
+        \ldots
+        ((x_N, x_N), y_N)
+    ).
+\end{equation}
+In \eqref{eq:dup}, every input on the right-hand side has duplicated elements,
+so we say that such data sets have duplicated inputs.
+Let $\D\ss{dup} \subsetneq \D\ss{dbl}$ be the subset of $\D\ss{dbl}$ with duplicated inputs.
+Note that $\D\ss{dbl}$ contains data sets with and without duplicated inputs.
+Let $\operatorname{dup}^{-1}\colon \D\ss{dup} \to \D$ be right inverse of $\operatorname{dup}$:
+$\operatorname{dup}^{-1}$ takes in a data set with duplicated inputs and recovers the original by \emph{deduplicating the inputs}.
+
+With these definitions, we can relate $\T_\tau\colon \D \to \D$ to $\T_{(\tau, \tau)}\colon \D\ss{dbl} \to \D\ss{dbl}$:
+\begin{equation} \label{eq:duplicate_T_tau}
+    \T_\tau = \dedup \comp \T_{(\tau, \tau)} \comp \dup.
+\end{equation}
+Define $\pi\ss{dup} \coloneqq \pi \comp \dedup$,
+and note that $\pi\ss{dup}\colon \D\ss{dup} \to Z$ operates on data sets with duplicated inputs.
+Then, by substituting \eqref{eq:duplicate_T_tau} in \eqref{eq:conv_deep_set_dte_equivariance}, we find that\footnote{\setstretch{0.7}\setlength{\jot}{0pt}
+To carefully argue this, note that
+\begin{align}
+    \T_{(\tau, \tau)} \comp \pi
+    &= \pi \comp \T_{\tau}
+        &&\text{(apply \eqref{eq:conv_deep_set_dte_equivariance})} \\
+    &= \pi \comp (\dedup \comp \T_{(\tau, \tau)} \comp \dup)
+        &&\text{(definitions of $\dup$ and $\dedup$)}\\
+        &= (\pi \comp \dedup) \comp \T_{(\tau, \tau)} \comp \dup, \label{eq:dup_manipulation} \\[.5em]
+    \T_{(\tau, \tau)} \comp \pi\ss{dup}
+    &= \T_{(\tau, \tau)} \comp (\pi \comp \dedup)
+        &&\text{(definition of $\pi\ss{dup}$)} \\
+    &= (\T_{(\tau, \tau)} \comp \pi) \comp \dedup \\
+    &= ((\pi \comp \dedup) \comp \T_{(\tau, \tau)} \comp \dup) \comp \dedup
+        &&\text{(apply \eqref{eq:dup_manipulation})} \\
+    &= (\pi\ss{dup} \comp \T_{(\tau, \tau)} \comp \dup) \comp \dedup
+        &&\text{(definition of $\pi\ss{dup}$)} \\
+    &= \pi\ss{dup} \comp \T_{(\tau, \tau)} \comp (\dup \comp \dedup) \\
+    &= \pi\ss{dup} \comp \T_{(\tau, \tau)}.
+        &&\text{($\dedup$ is right inverse of $\dup$)}
+\end{align}
+}
+\begin{equation} \label{eq:pi_TE_lifted}
+    \pi\ss{dup} \comp \T_{(\tau, \tau)} = \T_{(\tau, \tau)} \comp \pi\ss{dup}
+    \qquad \text{for all $\tau \in \X$.}
+\end{equation}
+Crucially, \eqref{eq:pi_TE_lifted} has $\T_{(\tau,\tau)}$ on both sides, so we may try to characterise $\pi\ss{dup}$ by applying \cref{thm:conv_deep_set} with $\X \times \X$ as the space of inputs!
+Having characterised $\pi\ss{dup}$, we also find a characterisation of $\pi = \pi\ss{dup} \comp \dup$, which is what we are ultimately after.
+To apply \cref{thm:conv_deep_set} with $\X \times \X$ as the space of inputs, however, we require $\pi\ss{dup}$ to be $(\X \times \X)$-translation equivariant, that is, equivariant with respect to \emph{all} translations on $\X \times \X$:%
+\begin{equation} \label{eq:translation_equivariance_lifted}
+    \smash{
+        \pi\ss{dup} \comp \T_{(\tau_1, \tau_2)} \overset{\text{?}}{=} \T_{(\tau_1, \tau_2)} \comp \pi\ss{dup}
+    }
+    \qquad \text{for all $\tau_1, \tau_2 \in \X$}.
+\end{equation}
+Unfortunately, \eqref{eq:pi_TE_lifted} says that $\pi\ss{dup}$ is only equivariant with respect to translations along the \emph{diagonal} of the space $\X \times \X$: translations of the form $\T_{(\tau_1, \tau_2)}$ where $\tau_1 = \tau_2$.
+This motivates the general definition of \emph{diagonal translation equivariance}.
+
+\index{translation equivariance!diagonal}
+\begin{definition}[Diagonal translation equivariance; DTE]
+    \label{def:diagonal_translation_equivariance}
+    Consider a map $\pi \colon A \to B$ where $A$ and $B$ are $(\X \times \X)$-translation spaces.
+    Then $\pi$ is \emph{equivariant with respect to diagonal translations} or \emph{diagonally translation equivariant} (DTE) if 
+    \begin{equation}
+        \pi \comp \T_{(\tau, \tau)} = \T_{(\tau, \tau)} \comp \pi
+        \quad
+        \text{for all $\tau \in \X$}.
+    \end{equation}
+\end{definition}
+
+If a map $\pi$ is $(\X \times \X$)-translation equivariant, then it is also diagonally translation equivariant.
+The class of DTE functions is therefore larger than the class of $(\X \times \X)$-TE functions.
+Whereas the previous section characterised functions on data sets which are TE, this section characterises functions on data sets which are DTE.
+
+Diagonal translation equivariance is intimately related to $(\X \times \X)$-translation equivariance.
+In technical terms, the group of diagonal translations is a \emph{subgroup} of the group of $(\X \times \X)$-translations.
+We will use this relationship to derive a characterisation of DTE functions from \cref{thm:conv_deep_set}.
+The key idea is as follows.
+Consider a DTE map $\pi \colon A \to B$ between $(\X \times \X)$-translation spaces $A$ and $B$.
+If $\pi$ were also $(\X \times \X)$-TE, then we could apply \cref{thm:conv_deep_set}, and we would be done.
+However, $\pi$ is not $(\X \times \X)$-TE; it is just DTE.
+The idea is to \emph{make $\pi$ $(\X \times \X)$-TE} by \emph{defining} what happens for non-diagonal translations:
+\begin{equation} \label{eq:redefinition_pi}
+    \pi(\T_{(\tau_1, \tau_2)} a) \coloneqq \T_{(\tau_1, \tau_2)} \pi(a)
+    \quad
+    \text{for all $\tau_1, \tau_2 \in \X$, $\tau_1 \neq \tau_2$}.
+\end{equation}
+This \emph{almost} works.
+The problem is that \eqref{eq:redefinition_pi} might clash with the original definition of $\pi$:
+for some $a \in A$ and $\tau_1, \tau_2 \in \X$, $\T_{(\tau_1, \tau_2)} a$ might equal another $a' \in A$, and it might be that $\T_{(\tau_1, \tau_2)} \pi(a) \neq \pi(a')$.
+Fortunately, this problem can be circumvented, as we will now explain.
+
+Let $C$ be another $(\X \times \X)$-translation space, this time topological.
+Let $\ve_\perp = (1, -1)$.
+Consider $c \in C$ such that, for all sequences $(\vtau_i)_{i \ge 1} \sub \X\ss{dbl}$,
+the sequence $(\lra{\vtau_i, \ve_\perp})_{i \ge 1}$ is convergent whenever  $(\T_{\vtau_i} c)_{i \ge 1}$ is convergent. 
+In particular, then
+$\T_{\vtau\ss{I}} c = \T_{\vtau\ss{II}} c$ for $\vtau\ss{I}, \vtau\ss{II} \in \X$ implies that
+$\lra{\vtau\ss{I}, \ve_\perp} = \lra{\vtau\ss{II}, \ve_\perp}$.\footnote{
+    Consider the sequence $(\vtau_i)_{i \ge 1} \sub \X$ defined by $\vtau_i = \vtau\ss{I}$ for $i$ odd and $\vtau_{i} = \vtau\ss{II}$ for $i$ even.
+}
+In words, by observing $c$, you can identify the \emph{anti-diagonal} component of a translation.
+We call such $c$ \emph{anti-diagonal discriminating}.\index{anti-diagonal discriminating}
+Moreover, assume that $c$ is \emph{diagonally translation invariant} (DTI), by which we mean that $\T_{(\tau,\tau)} c = c$ for all $\tau \in \X$.\index{translation invariance!diagonal}
+Then define the map
+\begin{equation}
+    \overline{\pi}\colon A \times \set{c} \to B,
+    \quad \overline{\pi}(a, c) = \pi(a).
+\end{equation}
+By DTE of $\pi$ and DTI of $c$, this map is still DTE:
+for all $\tau \in \X$:
+\begin{align}
+    \overline{\pi}(\T_{(\tau, \tau)} a, \T_{(\tau, \tau)} c)
+    &= \overline{\pi}(\T_{(\tau, \tau)} a, c) &&\text{($c$ is DTI)} \\
+    &= \pi(\T_{(\tau, \tau)} a) &&\text{(definition of $\overline{\pi}$)} \\
+    &= \T_{(\tau, \tau)} \pi(a) &&\text{($\pi$ is DTE)} \\
+    &= T_{(\tau, \tau)}\overline{\pi}(a, c). &&\text{(definition of $\overline{\pi}$)}
+\end{align}
+However, crucially, $c \neq \T_{(\tau_1, \tau_2)} c$ for any $\tau_1, \tau_2 \in \X$ such that $\tau_1 \neq \tau_2$, because $c$ is anti-diagonal discriminating.
+Therefore, $\overline{\pi}$ is undefined for any non-diagonal translation!
+This means that \eqref{eq:redefinition_pi} now goes through, and we can finally apply \cref{thm:conv_deep_set}.
+
+There is one final technical detail to verify, which is that the extension $\overline{\pi}$ needs to be continuous.
+\Cref{\xrprefix{sec:proofs_repr_theorems:conv_deep_sets_dte}} verifies this detail.
+\end{proof}
+
+% Hitherto, to motivate the key idea, we considered an input space of the form $\X = \tX \times \tX$.
+% We now make a shift in perspective: we will consider $\tX$ to really be the space that inputs of data sets live in.
+% Conforming to this shift in perspective, we will relabel $\tX$ to $\X$, meaning that our discussing thus far pertained to diagonal translation equivariance as follows:
+% \begin{equation}
+%     \label{eq:diagonal_translation_equivariance_relabelled}
+%     \pi \comp \T_{(\tau, \tau)} = \T_{(\tau, \tau)} \comp \pi
+%     \quad
+%     \text{for all $\tau \in \X$}.
+% \end{equation}
+% Let $[\tD] = \union_{N = 0}^\infty [(\tX \times \Y)^N]$ be the collection of all data sets of finite size with inputs in $\tX$.
+% In comparison, data sets in $[\D]$ have inputs in $\X$.
+% The main result of this section is a characterisation of functions $\pi\colon [\D] \to Z$ which are diagonally translation equivariant in the following sense:
+% \begin{equation}
+%     \label{eq:conv_deep_set_dte_sense}
+%     \pi \comp \T_{\tau} = \T_{(\tau, \tau)} \comp \pi
+%     \quad
+%     \text{for all $\tau \in \X$}.
+% \end{equation}
+% By following the construction for translation-equivariant kernel maps $k$ from the beginning of this section, duplicating the inputs of data sets,
+% \eqref{eq:conv_deep_set_dte_sense} becomes diagonal translation equivariance in the sense of \cref{def:diagonal_translation_equivariance}.
+% We have thus proved the following theorem.
+
+% \begin{theorem}[Convolutional deep set for DTE]
+%     \label{thm:conv_deep_set_dte}
+%     Let $\Y \sub \R$ be compact.
+%     Suppose that $[\D'] \sub [\D] $ is
+%     closed, is closed under translations, has multiplicity $K$, and has maximum data set size $N < \infty$.
+%     Let $k \colon \X \times \X \to \R$ be a continuous strictly-positive-definite function such that $k(\vnull) = \sigma^2 > 0$ and $k(\vtau) \to 0$ as $\norm{\vtau}_2 \to \infty$.
+%     Denote the reproducing kernel Hilbert space associated to $k$ by $\Hb$.
+%     Let $Z$ be a $(\X\times\X)$-translation space.
+%     Let $C$ be another $(\X \times \X)$-translation space, let $c \in C$ be diagonally translation invariant and anti-diagonal discriminating, and denote $C' = \set{\T_\vtau c : \vtau \in \X}$.
+%     Then a function $\pi \colon [\D'] \to C$ is continuous and diagonally translation equivariant in the sense of \eqref{eq:conv_deep_set_dte_sense} if and only if it is of the form
+%     \begin{equation}
+%         \pi = \dec \comp \enc
+%         \quad\text{where}\quad
+%         \enc(D) =
+%             \begin{bmatrix}
+%                \sum_{(x, y) \in C} \phi(y) k(\vardot - (x, x)) \\
+%                c
+%            \end{bmatrix}
+%     \end{equation}
+%     with $\enc \colon [\D'] \to \Hb' \times C'$ continuous and translation equivariant,
+%     $\dec\colon \Hb^{K + 1} \to Z$ continuous and translation equivariant,
+%     and $\phi(y) = (0, y^1, \ldots, y^{K})$.
+%     Here $\Hb' = \enc([\D'])$ is a subspace of $\Hb^{K+1}$ which is closed and closed under translations.
+% \end{theorem}
+
+
+% \section{Approximate Translation Equivariance}
+% \label{sec:repr_theorems:nonstationary}
+
+% \note{[Often stationarity not true, but is ``roughly'' stationary, so, to achieve parameter efficiency, want to have parametrisation similar to representations for stationary processes.]}
+%
+% For a closed subspace $V \sub \Hb$, let $P_V$ be the orthogonal projection onto $V$.
+% Define
+% \begin{equation}
+%     \pi_V = \pi(P_V)
+% \end{equation}
+% Call $\pi\colon \Hb \to \Hb$ \emph{finitely approximable} if, for all $K > 0$,
+% \begin{equation}
+%     \lim_{n \to \infty} \,\inf_{V \sub \H\, \text{linear},\, \dim(V) \le n} \,\sup_{h \in \Hb,\, \norm{h}_\Hb \le K} \,\norm{\pi(h) - P_V\pi(P_Vh)}_{\Hb} = 0.
+% \end{equation}
+% \note{[Better name? Kinda like nuclear operators, but for nonlinear maps.]}
+% For example, if $\pi$ is linear and compact, then true.
+%
+% Let $G$ be a separable, metrisable, compact group with Haar measure $\mu$ acting on $\X$.
+% Fix some $\vx_0 \in \X$.
+% Consider
+% \begin{align}
+%     \Hb &= \set*{f \in C(\X) : \int f^2(g \vx_0) \isd \mu(g) < 0} /\!\sim, \\
+%     \lra{f, h}_\Hb &= \int f(g \vx_0) h(g \vx_0) \isd \mu(g),
+% \end{align}
+% where $\sim$ denotes the equivalence relation given by almost sure equality.
+% Then it follows that $(\Hb, \lra{\vardot, \vardot}_\Hb)$ is a separable Hilbert space.
+% \note{Brezis Theorem 4.13 says separable metric space means $L^2$ is separable.}
+%
+% \begin{theorem}
+%     Consider a continuous map $\pi \colon \Hb \to \Hb$ which is finitely approximable.
+%     Let $\e > 0$.
+%     Then there exists an $n \in \N$, a $G$-equivariant map $T\colon \Hb^{n + 1} \to \Hb$, and orthonormal vectors $(e_i)_{i=1}^n \sub \Hb$ such that $\sup_{h \in \Hb}\,\norm{\pi(h) - T(h, e_1, \ldots, e_n)}_\Hb \le \e$.
+% \end{theorem}
+
+\section{Conclusion}
+\label{sec:repr_theorems:conclusion}
+
+\begin{table}[t]
+    \centering
+    \caption{
+        Comparison of deep sets and convolutional deep sets
+        \index{deep set!comparison}
+        \index{convolutional deep set!comparison}
+    }
+    \label{tab:comparison_deep_sets}
+    \small
+    \begin{tabular}{lll}
+        \toprule
+        ~
+            & Deep sets (Thms \ref{thm:deep_set_preliminary} and \ref{thm:deep_set})
+            & Convolutional deep sets (Thms \ref{thm:conv_deep_set} and \ref{thm:conv_deep_set_dte}) \\ \midrule
+        Model for
+            & Functions $[\D] \to Z$
+            & Functions $[\D] \to Z$ which are TE \\
+        Encoder
+            & Multi-layer perceptron
+            & Given; no neural network \\
+        Encoding
+            & Vector in $\R^{2N}$
+            & Function in RKHS (\cref{def:functional_encoding}) \\
+        Decoder
+            & Multi-layer perceptron
+            & Convolutional neural network \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+In this chapter, we studied theorems which characterise functions on data sets.
+In the context of neural processes, we call such theorems \emph{representation theorems}.
+The starting point was a theorem by \textcite{Zaheer:2017:Deep_Sets,Wagstaff:2019:On_the_Limitations_of_Representing} called deep sets (\cref{thm:deep_set_preliminary,thm:deep_set}).
+Deep sets generally characterise functions on data sets.
+In a deep set, the encoder and decoder can be implemented with MLPs.
+
+The main contribution of this chapter is an extension of deep sets called \emph{convolutional deep sets} (\cref{thm:conv_deep_set,thm:conv_deep_set_dte}).
+Convolutional deep sets generally characterise functions on data sets which are \emph{translation equivariant}.
+In a convolutional deep set, the encoder is trivially implemented and only depends on a choice of a positive-definite function.
+In particular, it does not depend on a neural network.
+Additionally, the decoder is implemented with a convolutional neural network.
+\Cref{tab:comparison_deep_sets} summarises the key differences between deep sets and convolutional deep sets.
+
+Convolutional deep sets have two important limitations.
+First, the approximation of the encoder relies on a convolutional neural network with convolutions of dimensionality equal to the dimensionality of $\X$ in the case of \cref{thm:conv_deep_set} and twice the dimensionality of $\X$ in the case of \cref{thm:conv_deep_set_dte}.
+One, two, or three-dimensional convolutions have reasonable computational expense.
+Convolutions of dimension four or higher, however, may be prohibitively expensive to run.
+This is particularly a problem for \cref{thm:conv_deep_set_dte}, where the convolutions have dimensionality twice the dimensionality of $\X$.
+\Cref{thm:conv_deep_set} can therefore only reasonably be applied to data sets with one, two, or three-dimensional inputs
+and \cref{thm:conv_deep_set_dte} to data sets only with one-dimensional inputs.
+Second, whereas \cref{thm:conv_deep_set,thm:conv_deep_set_dte} characterise functions which are translation equivariant, what we might really need is a characterisation of functions which are \emph{approximately translation equivariant}.
+Ideally, such a result would ``interpolate'' between deep sets and convolutional deep sets, depending on how translation equivariant the function to represent would be.
+\Textcite{Wilk:2018:Learning_Invariances_Using_the_Marginal} discuss approximate invariance in the setting of Gaussian processes.
+
+Finally, whereas we introduced functional encodings (\cref{def:functional_encoding}) to derive a translation-equivariant version of deep sets, this construction can also be used to provide an alternative proof of deep sets.
+Theorem 2.4 by \textcite{Gordon:2020:Advanced_in_Probabilistic_Meta-Learning} pursues this approach, which was developed by Jonathan Gordon in collaboration with Andrew Y.\ K.\ Foong.
+
+\end{document}
+
+
+

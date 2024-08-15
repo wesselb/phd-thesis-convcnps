@@ -1,0 +1,14 @@
+\newcommand{\statementtype}{proposition}
+\newcommand{\statementoption}{Regularity of GNPA}
+\newcommand{\statementlabel}{prop:gnpa_regularity}
+\newcommand{\statementcontent}{
+    Let $(\pi, \sigma) \in \Qc\ss{G}$ be a Gaussian neural process approximation.
+    Then, for all data sets $D \in \tD$, 
+    \begin{equation}
+        \norm{f(x) - f(y)}_{L^2(\pi(D))} \le c_D \abs{x - y}^\beta
+        \quad\text{whenever}\quad
+        \abs{x - y} < r,
+    \end{equation}
+    where $c_D > 0$ is the constant from \cref{\possibleprefix{prop:posterior_prediction_map_Holder}}
+    and the H\"older exponent $\beta \in (\frac1p, 1]$ and radius $r > 0$ are from \cref{\possibleprefix{assum:f_regularity}}.
+}

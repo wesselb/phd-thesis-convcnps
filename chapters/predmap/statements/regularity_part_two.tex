@@ -1,0 +1,33 @@
+\newcommand{\statementtype}{proposition}
+\newcommand{\statementoption}{Regularity of posterior prediction map, part two}
+\newcommand{\statementlabel}{prop:posterior_prediction_map_regularity:part_two}
+\newcommand{\statementcontent}{
+    ~\begin{proplist}
+        \item 
+            \label{prop:posterior_prediction_map_is_uniformly_continuous_in_data}
+            There exist universal constants $c_m > 0$ and $c_k > 0$ such that, for any two $D_1, D_2 \in \tD$, whenever $d_\D(D_1, D_2) < 1$, then
+            \begin{align}
+                \sup_{x \in \X} \,\abs{\E_{\pi_f(D_1)}[f(x)] - \E_{\pi_f(D_2)}[f(x)]}
+                &\le c_m\,d_\D(D_1, D_2)^{\frac{2 + 2\gamma}{3 + 2\gamma}(\beta - \frac1p)}, \\
+                \sup_{x, y \in \X} \,\abs{\E_{\pi_f(D_1)}[f(x)f(y)] - \E_{\pi_f(D_2)}[f(x)f(y)]}
+                &\le c_k\,d_\D(D_1, D_2)^{\frac{\gamma}{1+\gamma}(\beta - \frac1p)}.
+            \end{align}
+        \item
+            \label{prop:posterior_prediction_map_is_uniformly_continuous}
+            Consequently, for any $D_1, D_2 \in \tD$ and $x,y \in \X$, whenever $d_\D(D_1, D_2) < 1$, $\abs{x_1 - x_2} < r$, and $\abs{y_1 - y_2} < r$, then
+            \begin{equation}
+                \abs{\E_{\pi_f(D_1)}[f(x_1)] - \E_{\pi_f(D_2)}[f(x_2)]}
+                \le c_m\,d_\D(D_1, D_2)^{\frac{2 + 2\gamma}{3 + 2\gamma}(\beta - \frac1p)} + \frac{c}{c_\ell} \abs{x_1 - x_2}^\beta
+            \end{equation}
+            and
+            \vspace{-0.5\baselineskip}
+            \begin{align}
+                &\abs{\E_{\pi_f(D_1)}[f(x_1)f(y_1)] - \E_{\pi_f(D_2)}[f(x_2)f(y_2)]} \nonumber \\
+                &\qquad \le
+                    c_k\,d_\D(D_1, D_2)^{\frac{\gamma}{1+\gamma}(\beta - \frac1p)}
+                    + B_f \frac{c}{c^2_\ell} \abs{x_1 - x_2}^\beta
+                    + B_f \frac{c}{c^2_\ell} \abs{y_1 - y_2}^\beta,
+            \end{align}
+            where $c_\ell > 0$ is a universal constant from \cref{\xrprefix{lem:bounds_Z}}.
+    \end{proplist}
+}

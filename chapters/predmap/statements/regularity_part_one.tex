@@ -1,0 +1,20 @@
+\newcommand{\statementtype}{proposition}
+\newcommand{\statementoption}{Regularity of posterior prediction map, part one}
+\newcommand{\statementlabel}{prop:posterior_prediction_map_regularity:part_one}
+\newcommand{\statementcontent}{
+    ~\begin{proplist}[topsep=-5pt]
+        \item
+            \label{prop:posterior_prediction_map_Holder}
+            For all data sets $D \in \D$, there exists a constant $c_D > 0$ such that
+            \begin{equation}
+                \norm{f(x) - f(y)}_{L^p(\pi_f(D))} \le c_D \abs{x - y}^\beta
+                \quad\text{whenever}\quad
+                \abs{x - y} < r.
+            \end{equation}
+            In addition, $\norm{f(x)}_{L^p(\pi_f(D))} < \infty$ for all $x \in \X$.
+        \item 
+            \label{prop:posterior_prediction_map_is_continuous}
+            $\pi_f$ is continuous.
+    \end{proplist}
+}
+

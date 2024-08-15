@@ -1,0 +1,28 @@
+chapters/experiments/climate_baseline_numbers
+
+# Output:
+*.pdf
+
+# Temporary files:
+_minted-*
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.listing
+*.loe
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Vim:
+*.swp

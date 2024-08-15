@@ -1,0 +1,117 @@
+\documentclass[12pt]{report}
+%\documentclass[12pt, twoside, openright]{report}
+\usepackage{import}
+\input{preamble/preamble}
+\addbibresource{bibliography.bib}
+
+% For printing, print everything in black.
+% \hypersetup{hidelinks}
+
+\title{Convolutional Conditional \texorpdfstring{\\[0.5em]}{} Neural Processes}
+\author{Wessel Pieter Bruinsma}
+
+\begin{document}
+\hypersetup{pageanchor=false}
+
+\begin{titlepage}
+    \makeatletter
+    \centering
+
+    \null
+    {\bfseries\Huge \@title}
+
+    \vfill
+    \vspace{1cm}
+    \includegraphics[width=0.25\textwidth]{resources/cambridge_crest.pdf}
+
+    \vfill
+    {\Large\bfseries \@author \par}
+    {\large Department of Engineering\par}
+    {\large University of Cambridge}
+
+    \vfill
+    {\large This dissertation is submitted for the degree of\par}
+    {\large\itshape Doctor of Philosophy}
+
+    \vfill
+    {\large Christ's College \hfill 15 July 2022}
+
+    \makeatother
+\end{titlepage}
+
+\null
+\thispagestyle{empty}
+% Only insert white page here for printing to get the alignment right.
+%\newpage
+
+\pagenumbering{roman}
+\import{essential/}{declaration}
+\import{essential/}{abstract}
+\import{essential/}{acknowledgements}
+
+\chapter*{Contents}
+\vspace{-16pt}  % Make start of contents align perfectly with other pages.
+\addcontentsline{toc}{chapter}{Contents}
+\makeatletter\@starttoc{toc}\makeatother
+
+\chapter*{List of Figures}
+\addcontentsline{toc}{chapter}{List of Figures}
+\makeatletter\@starttoc{lof}\makeatother
+
+\chapter*{List of Tables}
+\addcontentsline{toc}{chapter}{List of Tables}
+\makeatletter\@starttoc{lot}\makeatother
+
+% For some inexplicable reason, there is an alignment issue, which we
+% solve with a negative `\vspace`. This only happens for the printed version.
+%\chapter*{\texorpdfstring{\vspace*{-2.5pt}}{}List of Mathematical Statements}
+\chapter*{List of Mathematical Statements}
+\addcontentsline{toc}{chapter}{List of Mathematical Statements}
+\renewcommand{\listtheoremname}{}
+\oldlistoftheorems[ignoreall, show={%
+    theorem,%
+    corollary,%
+    proposition,%
+    lemma,%
+    fact,%
+    assumption,%
+    definition,%
+    procedure,
+}]
+
+\chapter*{List of Models}
+\addcontentsline{toc}{chapter}{List of Models}
+\listofmodels
+
+% Some documents use `\xrprefix` to prefix references imported from this document.
+\newcommand{\xrprefix}[1]{#1}
+
+\import{essential/}{notation}
+\import{essential/}{abbreviations}
+
+\hypersetup{pageanchor=true}
+\newpage
+\pagenumbering{arabic}
+\newcommand{\gp}[1]{figures/#1}
+\import{chapters/}{chapters}
+
+\newpage\phantomsection\addcontentsline{toc}{chapter}{Bibliography}
+\emergencystretch=1em
+% Page breaks can behave weirdly. This solved it. See
+%   https://tex.stackexchange.com/a/326234
+\setlength\bibitemsep{1.7\bibitemsep plus 1pt minus 1pt}
+% We made the unfortunate choice of overwriting `\ss`.
+\let\ssnew\ss
+\let\ss\ssorig
+\printbibliography[nottype=proceedings]
+\let\ss\ssnew
+
+\appendix
+\newpage
+\import{appendices/}{appendices}
+
+\newpage\phantomsection\addcontentsline{toc}{chapter}{Index}
+\RaggedRight
+\printindex
+
+\end{document}

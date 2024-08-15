@@ -1,0 +1,436 @@
+\usepackage{libertine}
+
+% General packages:
+\usepackage[utf8]{inputenc}    % Input encoding
+\usepackage[T1]{fontenc}       % Font encoding
+\usepackage[british]{babel}    % Naming of figures and such
+\usepackage[british]{isodate}  % Formatting of dates
+\cleanlookdateon               % Show dates cleanly.
+%\usepackage{xurl}              % Allow line breaks anywhere in URLs.
+\usepackage{minted}            % Needs to be loaded before `csquotes`.
+\usepackage[
+    citestyle    = authoryear,
+    bibstyle     = authoryear,
+    giveninits   = true,
+    uniquename   = init,
+    uniquelist   = false,
+    sortlocale   = en_GB,
+    backend      = biber,
+    backref      = true,
+    maxbibnames  = 100,
+    maxcitenames = 1,
+    dashed       = false,
+    % Needed to get sorting right for tussenvoegsels.
+    %sortcites    = true,       
+    ]{biblatex}                % Bibliography
+\usepackage[
+    style=american
+    ]{csquotes}                % Required for BiBLaTeX
+\usepackage{import}            % Importing subdocuments
+\usepackage{standalone}        % Compilable subdocuments
+% `setspace` needs to be loaded before `hyperref`.
+\usepackage{setspace}          % Set line spacing
+\usepackage{hyperref}          % Clickable references
+\usepackage{microtype}         % Nice typography
+\usepackage{makeidx}           % Make an index
+\usepackage{silence}           % Silence warnings and errors
+\WarningFilter{remreset}{The remreset package}
+\WarningFilter*[parskip]{latex}{Command}
+
+% Set line spacing.
+\setstretch{1.25}
+
+% Page layout:
+\usepackage{tocloft}         % Control ToC
+\usepackage[
+    a4paper,
+    bottom     = 1.1in,
+    top        = 1.1in,
+    left       = 1.1in,
+    right      = 1.1in,
+    headheight = 15pt,
+    footskip   = 1.5\baselineskip
+    ]{geometry}              % Margins
+\usepackage{fancyhdr}        % Header
+\usepackage{lastpage}        % Page numbers in footer
+\usepackage{setspace}        % Line spacing
+\usepackage{ragged2e}        % Better line endings
+\ActivateWarningFilters[parskip]
+\usepackage[
+    parfill
+    ]{parskip}               % Newlines instead of indentation
+\DeactivateWarningFilters[parskip]
+\usepackage{titlesec}        % Size of sections
+\usepackage{titlecaps}       % Automatic capitalisation of titles
+\usepackage[
+    hang,
+    bottom
+    ]{footmisc}              % Configure footnotes
+\usepackage{afterpage}       % Include stuff after the current page
+\usepackage{placeins}        % Things like `\FloatBarrier`
+\usepackage{pdflscape}       % Turn pages sideways
+\usepackage{emptypage}       % Remove pagenumbers on empty pages
+
+% Utility:
+\usepackage[table]{xcolor}   % Colours
+\usepackage[
+    separate-uncertainty=true,
+    per-mode=symbol
+    ]{siunitx}               % Display units
+\usepackage{enumitem}        % Better enumeration
+\usepackage{xifthen}         % If statements
+\usepackage{xpatch}          % Patch things
+\usepackage{lipsum}          % Dummy text
+\usepackage{listings}        % Listings
+\usepackage{xparse}          % Better arguments for \newcommand
+\usepackage{xfrac}           % Better fractions
+\usepackage{etoolbox}        % Patch stuff
+\usepackage[
+    notquote
+    ]{hanging}               % Hanging paragraphs
+\usepackage{scalerel}        % Scale objects
+\usepackage{soul}            % Highlighting
+
+% Figures:
+\usepackage{pgfplots}        % Plots
+\pgfplotsset{compat=newest}
+\usepackage{tikz}            % TikZ figures
+\usepackage{float}           % Control floating of figures
+\usepackage{multirow}        % Cells spanning multiple rows
+\usepackage{graphicx}        % Graphics
+\usepackage{caption}         % Subfigures and captions
+\usepackage{subcaption}      % Subfigures and captions
+\usepackage{booktabs}        % Nice looking tables
+\usepackage{tabularx}        % Extended functionality for tables
+
+% Math:
+\usepackage{amsmath}         % Math
+\usepackage{amssymb}         % Math symbols
+\usepackage{mathtools}       % Math tools
+\usepackage{amsthm}          % Theorems
+\usepackage{thmtools}        % More math theorems
+\usepackage{bm}              % Bold math symbols
+\usepackage{bbm}             % More bold math symbols
+\usepackage{cancel}          % Cancel equations
+\usepackage{upgreek}         % Upright greek symbols
+\usepackage[
+    artemisia
+    ]{textgreek}             % Greek symbols in text
+
+% This package should be loaded last.
+\usepackage[
+    noabbrev,
+    capitalize,
+    nameinlink]{cleveref}    % Automatic referencing
+
+% Add a comma in the cite style.
+\renewcommand*{\nameyeardelim}{\addcomma\space}
+
+% Make sure that every `\citeyear` also prints the disambiguating `extradate`.
+\DeclareCiteCommand{\citeyearlabel}
+    {\usebibmacro{prenote}}
+    {\printfield{year}\printfield{extradate}}
+    {\multicitedelim}
+    {\usebibmacro{postnote}}
+\let\citeyearold\citeyear
+\let\citeyear\citeyearlabel
+\let\citeyearnolabel\citeyearold
+
+% Define a standard for citing within theorem statements.
+\newcommand{\theoremcite}[1]{\citeauthor{#1}, \citeyear{#1}}
+
+\newcommand{\fulltextcite}[1]{%
+    \AtNextCite{\AtEachCitekey{\defcounter{maxnames}{999}}}%
+    \textcite{#1}%
+}
+\newcommand{\fullparencite}[1]{%
+    \AtNextCite{\AtEachCitekey{\defcounter{maxnames}{999}}}%
+    \parencite{#1}%
+}
+
+% Remove the colon after "In" in the bibliograhpy.
+\renewbibmacro*{in:}{\bibstring{in} }
+
+% Tune the electronic print field.
+\DeclareFieldFormat{eprint}{%
+  \iffieldundef{eprinttype}
+    {Electronic print}
+    {\thefield{eprinttype}}%
+  \addcolon\space
+  \ifhyperref
+    {\url{#1}}
+    {\nolinkurl{#1}}%
+  \iffieldundef{eprintclass}
+    {}
+    {\addspace\mkbibparens{\thefield{eprintclass}}}\printtext{.}}
+
+% Tune URL.
+\DeclareFieldFormat{url}{\mkbibacro{URL}\addcolon\space\url{#1}\printtext{.}}
+
+% Tune DOI.
+\DeclareFieldFormat{doi}{%
+  \mkbibacro{DOI}\addcolon\space
+  \ifhyperref
+    {\href{https://doi.org/#1}{\nolinkurl{#1}}}
+    {\nolinkurl{#1}}\printtext{.}}
+
+% In the below, we will redefine `\finentry` to not print a period if
+%` pageref` exists. The period is then added back by `pageref`, but before the
+% parentheses. Problems occur when `urldate` is also defined. In that case, 
+% the extra period by `pageref` will add a period after `urldate`s
+% parentheses, which we do not want. We use the toggle `printperiod` to detect
+% this case.
+
+% Tune "visited on".
+\DeclareFieldFormat{urldate}{\mkbibparens{\bibstring{urlseen}\space#1\printtext{.}}}
+\newtoggle{printperiod}
+\toggletrue{printperiod}
+\AtBeginBibliography{\renewbibmacro*{urldate}{\printurldate\togglefalse{printperiod}}}
+
+% Tune "cited on".
+\renewbibmacro*{finentry}{\iflistundef{pageref}{}{\renewcommand{\finentrypunct}{}}\finentry}
+\renewbibmacro*{pageref}{%
+  \iflistundef{pageref}
+    {}
+    {\iftoggle{printperiod}{\setunit{\adddot\addspace}}{}\toggletrue{printperiod}\printtext[parens]{%
+       \ifnumgreater{\value{pageref}}{1}
+         {\bibstring{backrefpages}\ppspace}
+         {\bibstring{backrefpage}\ppspace}%
+          \printlist[pageref][-\value{listtotal}]{pageref}.}}}
+
+% Add Oxford comma.
+\DefineBibliographyExtras{british}{\def\finalandcomma{\addcomma}}
+
+% Don't abbreviate the backreferences.
+\DefineBibliographyStrings{english}{%
+    backrefpage = {Cited on page},
+    backrefpages = {Cited on pages}
+}
+
+% Get tussenvoegsels right. This is not a perfect solution, because the
+% in-text citations will be sorted as if the tussenvoegsel is part of the
+% last name.
+\makeatletter
+\AtBeginDocument{\toggletrue{blx@useprefix}}
+\AtBeginBibliography{\togglefalse{blx@useprefix}}
+\makeatother
+
+% Make an index.
+\makeindex
+
+% Show the page number in the bottom center.
+\fancypagestyle{plain}{
+    \fancyhf{}                          % Clear all header and footers.
+    \renewcommand{\headrulewidth}{0pt}  % Remove the header rule.
+    \cfoot{\thepage}                    % Show page number in the center.
+}
+\pagestyle{plain}
+
+% Chapter styling from https://texblog.org/2012/07/03/fancy-latex-chapter-styles/
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}[hang]
+    {\Huge\bfseries}
+    {\thechapter\hsp\textcolor{gray75}{|}\hsp}
+    {0pt}
+    {\Huge\bfseries}
+\titleformat{\section}
+    {\normalfont\Large\bfseries\raggedright}
+    {\thesection}
+    {1em}
+    {}
+\titleformat{\subsection}
+    {\normalfont\large\bfseries\raggedright}
+    {\thesubsection}
+    {1em}
+    {}
+
+% Set spacing after chapter equal to spacing right before section. Then
+% things look nicely aligned.
+\titlespacing{\chapter}{0pt}{3.5ex}{3.5ex}
+
+% Define the styling of paragraphs.
+\renewcommand{\paragraph}[1]{\textbf{#1.}}
+
+% Redefine abstract environment.
+\renewenvironment{abstract}
+    {\begingroup
+    \setstretch{1.25}
+    \begin{center}
+        \textbf{Abstract}
+    \end{center}}
+    {\par
+    \endgroup}
+
+% Kill any use of the \cite command.
+\renewcommand{\cite}[1]{\PackageError{thesis}{use either parencite or authorcite}{}}
+
+% Configure captions.
+\WarningFilter{caption}{Unused \captionsetup}
+\captionsetup[table]{font=small}
+\captionsetup[figure]{font=small}
+
+\input{/Users/wessel/Dropbox/Projects/Documents/Library/common}
+\input{/Users/wessel/Dropbox/Projects/Documents/Library/document}
+\input{/Users/wessel/Dropbox/Projects/Documents/Library/math}
+\newcommand{\notheorems}{}  % We'll configure our own numbering below.
+\input{/Users/wessel/Dropbox/Projects/Documents/Library/mathenvs}
+
+% We actually will use coloured links.
+\definecolor{aquamarine}{HTML}{218274}
+\hypersetup{
+    colorlinks,
+    citecolor = aquamarine,
+    filecolor = aquamarine,
+    linkcolor = aquamarine,
+    urlcolor  = aquamarine,
+}
+
+% Use italic font in bodies for clarity.
+\newtheoremstyle{theoremstyle}
+    {\thmtopsep}{\thmbotsep}
+    {\itshape}   % Body font
+    {}           % Indent amount
+    {\bfseries}  % Theorem head font
+    {.}          % Punctuation after theorem head
+    {.5em}       % Space after theorem head
+    {}           % Theorem head spec
+\theoremstyle{theoremstyle}
+
+% Set numbering of theorems right.
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{procedure}[theorem]{Procedure}
+
+\newtheorem{question}[theorem]{Question}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{model}[theorem]{Model}
+\newtheorem{remark}[theorem]{Remark}
+
+% Hack `\listoftheorem` to remove the title.
+\makeatletter
+\renewcommand\listoftheorems[1][]{%
+    \begingroup
+    \setlisttheoremstyle{#1}%
+    \let\listfigurename\listtheoremname
+    \def\contentsline##1{%
+        \csname thmt@contentsline@##1\endcsname{##1}%
+    }%
+    \@for\thmt@envname:=\thmt@allenvs\do{%
+        \thmtlo@newentry
+    }%
+    \let\thref@starttoc\@starttoc
+    \def\@starttoc##1{\thref@starttoc{loe}}%
+    \@fileswfalse
+    \AtEndDocument{%
+        \if@filesw
+        \@ifundefined{tf@loe}{%
+            \expandafter\newwrite\csname tf@loe\endcsname
+            \immediate\openout \csname tf@loe\endcsname \jobname.loe\relax
+        }{}%
+        \fi
+    }%
+    \@starttoc{lof}
+    \endgroup
+}
+\makeatother
+
+% Fix spacing around proofs.
+\xpatchcmd{\proof}{\topsep6\p@\@plus6\p@\relax}{}{}{}
+\BeforeBeginEnvironment{proof}{\vspace{-0.5em}}
+\AfterEndEnvironment{proof}{\vspace{-0.5em}}
+
+% Commands specific for thesis:
+\newcommand{\AR}{\operatorname{AR}}
+\newcommand{\enc}{\mathsf{enc}}
+\newcommand{\dec}{\mathsf{dec}}
+\newcommand{\mult}{\operatorname{mult}}
+
+\newcommand{\missingcite}{\note{(CITATION MISSING)}}
+
+% Listings:
+\usepackage{tcolorbox}
+\tcbuselibrary{minted,skins,breakable}
+
+\definecolor{solarized-light-bg}{HTML}{fdf6e3}
+\definecolor{solarized-light-fg}{HTML}{586e75}
+\newtcblisting{pythoncode}[2]{
+    listing engine = minted,
+    listing only,
+    minted style = solarized-light,
+    minted language = python,
+    minted options = {
+        fontsize = #1,
+        escapeinside = ||,
+        mathescape = true,
+        highlightlines = #2,
+        highlightcolor = red,
+    },
+    colback = solarized-light-bg,
+    colframe = solarized-light-bg,
+    toprule = 0pt,
+    left = 5pt,
+    left = 5pt,
+    leftrule = 0pt,
+    rightrule = 0pt,
+    bottomrule = 0pt,
+    arc = 0pt,
+    frame hidden,
+    breakable,
+}
+% Disable italics.
+\AtBeginEnvironment{pythoncode}{\let\itshape\relax}
+
+% Override the textwriter font.
+%\usepackage[scaled=0.8]{beramono}
+\usepackage[scaled=0.95]{inconsolata}
+\renewcommand{\code}[1]{\colorbox{solarized-light-bg}{\small\color{solarized-light-fg}\texttt{#1}}}
+
+% We never want footnotes to break across pages.
+\interfootnotelinepenalty=10000
+
+% Allow restatable environments.
+\newenvironment{manual}[3][]{%
+    \def\savedarg{#2}%
+    \expandafter\renewcommand\csname the#2\endcsname{#3}%
+    \ifempty{#1}{\csname #2\endcsname}{\csname #2\endcsname[#1]}%
+}{%
+    \csname end\savedarg\endcsname%
+    \addtocounter{\savedarg}{-1}%
+}
+\newcommand{\statement}[1]{
+    \begingroup
+        \subimport{}{#1}
+        \ifempty{\statementoption}{
+            \csname\statementtype\endcsname
+        }{
+            \expandafter\csname\statementtype\endcsname[\statementoption]%
+        }
+        \label{\statementlabel}
+        \statementcontent
+        \csname end\statementtype\endcsname
+    \endgroup
+}
+\newcommand{\restatement}[1]{
+    \begingroup
+        \subimport{}{#1}
+        \ifempty{\statementoption}{
+            \manual{\statementtype}{\ref{\xrprefix{\statementlabel}}}
+        }{
+            \manual[\statementoption]{\statementtype}{\ref{\xrprefix{\statementlabel}}}
+        }
+        \newcommand{\insiderestatement}{}
+        \renewcommand{\label}[1]{}
+        \statementcontent
+        \endmanual
+    \endgroup
+}
+
+%\newcommand{\ballnumber}[1]{\tikz[baseline=(myanchor.base)] \node[circle,fill=.,inner sep=1pt] (myanchor) {\color{-.}\normalshape\bfseries\footnotesize #1};}
+
+\newcommand{\highlight}{\textcolor{}{}}

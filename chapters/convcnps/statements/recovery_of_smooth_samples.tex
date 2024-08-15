@@ -1,0 +1,15 @@
+\newcommand\statementtype{proposition}
+\newcommand\statementoption{Recovery of smooth samples}
+\newcommand\statementlabel{prop:recovery_of_smooth_samples}
+\newcommand\statementcontent{
+    Let $\X \sub \R$ be compact,
+    and let $f$ be a stochastic process with surely continuous sample paths and $\sup_{x \in \X} \norm{f(x)}_{L^2} < \infty$.
+    Let $(\e_n)_{n \ge 0}$ be i.i.d.\ random variables such that $\E[\e_0] = 0$ and $\var(\e_0) < \infty$.
+    Consider any sequence $(x_n)_{n\ge1} \sub \X$, and let $x^* \in \X$ be a limit point of $(x_n)_{n\ge 1}$, assuming that a limit point exists.
+    If $y(x^*) = f(x^*) + \e_0$ and $y_n = f(x_n) + \e_n$ are noisy observations of $f$, then
+    \begin{equation}
+        \lim_{n \to \infty}
+        \E[y(x^*) \cond y_1, \ldots, y_n] = f(x^*)
+        \quad\text{almost surely}.
+    \end{equation}
+}

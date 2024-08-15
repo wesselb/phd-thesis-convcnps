@@ -1,0 +1,16 @@
+\newcommand{\statementtype}{theorem}
+\newcommand{\statementoption}{}
+\newcommand{\statementlabel}{thm:generalisation_of_gnp}
+\newcommand{\statementcontent}{
+    Let $\pi_1, \pi_2 \colon \D \to \Pc$ be translation-equivariant prediction maps with receptive field $R > 0$.
+    Assume that, for all $D \in \D$, $\pi_1(D)$ and $\pi_2(D)$ also have receptive field $R > 0$.
+    Let $\e > 0$ and fix $N \in \N$.
+    Assume that, for all $\vx \in \union_{n=1}^N [0, 2R]^n$ and $D \in \D \cap \union_{n=0}^\infty ([0, 2R]\times \R)^n$,%
+    \begin{equation}
+        \KL(P_\vx \pi_1(D), P_\vx \pi_2(D)) \le \e.
+    \end{equation}
+    Then, for all $M > 0$, $\vx \in \union_{n=1}^N [0, M]^n$, and $D \in \D \cap \union_{n=0}^\infty ([0, M]\times \R)^n$,
+    \begin{equation}
+        \KL(P_\vx \pi_1(D), P_\vx \pi_2(D)) \le \ceil{2 M / R} \e.
+    \end{equation}
+}
