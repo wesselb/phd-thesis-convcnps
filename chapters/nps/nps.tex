@@ -22,9 +22,8 @@ In \cref{sec:nps:introduction}, we coin the concept of \emph{prediction maps}
 and introduce meta-learning from this prespective.
 Then, in \cref{sec:nps:neural_processes}, we introduce neural processes;
 and in \cref{sec:nps:consistency}, we investigate consistency requirements for neural processes.
-%We then transition to neural processes, which are introduced in \cref{sec:nps:neural_processes}. % as \emph{families of prediction maps}.
 In \cref{sec:nps:anatomy}, we open up a neural process, explaining the general anatomy of neural process architectures.
-Finally, in \cref{sec:nps:translation_equivariance}, we introduce the notion of a translation-equivariant neural process. % which forms the foundation for all neural process models introduced in this thesis.
+Finally, in \cref{sec:nps:translation_equivariance}, we introduce the notion of a translation-equivariant neural process.
 
 \paragraph{Attributions and relationship to prior work}
 Prediction maps and translation equivariance of prediction maps were first considered by \fulltextcite{Foong:2020:Meta-Learning_Stationary_Stochastic_Process_Prediction} and later further analysed by \fulltextcite{Bruinsma:2021:The_Gaussian_Neural_Process}.
@@ -47,8 +46,6 @@ We call elements of $\D$ \emph{data sets}.\footnote{
     A data set should not depend on the order of the data points.
     It would therefore be apt to identify data sets whose input--output pairs agree up to a permutation.
     We will return to this issue in \cref{\xrprefix{chap:repr_theorems}}.
-    % In this chapter, to not overcomplicate the analysis, we define the collection of data sets size $N$ as a subset of $\R^{2N}$.
-    % Therefore, in this chapter, data sets are also associated to an order of the data points.
 }
 For a data set $D \in \D^N$,
 denote $D = (\vx, \vy)$ where $\vx \in \X^N$ is the concatenation of the inputs and $\vy \in \Y^N$ the concatenation of the outputs.
@@ -65,13 +62,6 @@ $\vx\us{(t)}_m$ the \emph{target inputs}, and
 $\vy\us{(t)}_m$ the \emph{target outputs}.
 The goal of meta-learning is to devise an algorithm which takes in a context set $D_m\us{(c)}$ and which produces the best possible prediction for the corresponding target set $D_m\us{(t)}$, by which we mean a prediction for the target outputs $\vy\us{(t)}_m$ given the target inputs $\vx\us{(t)}_m$.\index{meta-learning algorithm}
 This means that what goes into meta-learning algorithm is a context set $D_m\us{(c)}$ and some target inputs $\vx\us{(t)}_m$ and that what comes out is a prediction for $\vy\us{(t)}_m$.
-% \begin{equation}
-%     \text{meta-learning algorithm:}
-%     \qquad
-%     (D_m\us{(c)}, \vx\us{(t)}_m)
-%     \qquad\mapsto\qquad
-%     \text{prediction for $\vy\us{(t)}_m$}.
-% \end{equation}
 If the inputs $\vx$ are images, the outputs $\vy$ are categories, and the number of context data is small, then this setting is called \emph{few-shot image classification} \parencite{Fei-Fei:2006:One-Shot_Learning_of_Object_Categories,Lake:2015:Human-Level_Concept_Learning_Through_Probabilistic}.\index{few-shot classification}
 We, however, shall be concerned with low-dimensional inputs and real-valued outputs.
 
@@ -148,22 +138,13 @@ We capture this idea in the following definition.
 \end{definition}
 
 In summary, a probabilistic meta-learning algorithm is a map from context sets $D$ and target inputs $\vx$ to probability distributions for the target outputs $\vy$.
-%A problem with probabilistic meta-learning algorithms is that they can produce the same prediction in multiple ways, and, in general, these predictions are not guaranteed to be equal.
-%To deal with this,
 We call a probabilistic meta-learning algorithm \emph{consistent} if predictions do not depend on the way they are produced.
 Consistency is a desirable property
-%are guaranteed to be equal.
-%Fortunately,
 and turns out to be naturally satisfied:
 every consistent probabilistic meta-learning algorithm is in correspondence with a \emph{prediction map}.
 
 In this section, we have seen what a desirable probabilistic meta-learning algorithm \emph{is}, namely, a prediction map. 
-%However, it is not clear how the concept of a prediction map can be used to solve a meta-learning problem.
-%However, it is not clear what this prediction map should actually approximate, nor is it clear how a prediction map can be learned.
 In the next section, we will introduce neural processes as an approach that is fundamentally based on prediction maps.
-%But before getting there, we should say a few more words on the issue of consistency.
-%that use prediction maps in a direct way.
-
 
 \section{Neural Processes}
 \label{sec:nps:neural_processes}
@@ -173,7 +154,6 @@ Neural processes \parencite{Garnelo:2018:Conditional_Neural_Processes,Garnelo:20
 approach a meta-learning problem by directly parametrising a prediction map using neural networks \parencite{McCulloch:1943:A_Logical_Calculus_of_Ideas,Rosenblatt:1958:The_Perceptron_A_Probabilistic_Model,Ivakhnenko:1965:Cybernetic_Predicting_Devices,Fukushima:1982:Neocognitron_A_Self-Organizing_Neural_Network,Werbos:1982:Applications_of_Advances_in_Nonlinear,LeCun:1989:Backpropagation_Applied_to_Handwritten_Zip}.
 We shall not yet be concerned with how this parametrisation works.
 What is important is that the parametrisation is direct and simple.
-%Therefore, if our goal is to learn a consistent meta-learning algorithm, \ie~a prediction map, then this is a natural approach.
 
 Although we will not yet discuss precisely how neural processes parametrise prediction maps, to appreciate the elegance of the approach, it is helpful to keep the following example in mind:
 \begin{equation} \label{eq:np_example}
@@ -228,7 +208,6 @@ The class of neural processes proposed originally by \textcite{Garnelo:2018:Cond
 CNPs choose $\Qc$ to be the collection of all Gaussian processes which \emph{do not model dependencies between target outputs}.
 This means that the prediction of a CNP is independent at any two different target inputs.
 %
-% Denote the collection of all Gaussian processes by $\Pc\ss{G}$, so $\Qc = \Pc\ss{G}$ for this class.
 For CNPs, the density $q_\theta(\vardot \cond \vx\us{(t)}_m, D\us{(c)}_m)$ is Gaussian, so the neural process objective can be evaluated exactly.
 Examples of CNPs are the original Conditional Neural Process \parencite[CNP;][]{Garnelo:2018:Conditional_Neural_Processes}, the Attentive Conditional Neural Process \parencite[ACNP;][]{Kim:2019:Attentive_Neural_Processes}, the Convolutional Conditional Neural Process \parencite[ConvCNP; \cref{\xrprefix{sec:convcnps:convcnps}};][]{Gordon:2020:Convolutional_Conditional_Neural_Processes}, the Group-Equivariant Conditional Neural Process \parencite[EquivCNP;][]{Kawano:2021:Group_Equivariant_Conditional_Neural_processes}, and the Steerable Convolutional Conditional Neural Processes \parencite[SteerCNP;][]{Holderrieth:2021:Equivariant_Learning_of_Stochastic_Fields}.
 The ConvCNP is introduced in this thesis in \cref{\xrprefix{sec:convcnps:convcnps}},
@@ -347,7 +326,6 @@ Posteriors of stochastic processes are generally computationally intractable, es
 We have therefore uncovered an interesting perspective on the computational benefits of neural processes:
 by giving up consistency with respect to the context set, neural processes are able to circumvent the 
  computational challenges that come with computing Bayes' rule.
-
 
 \pagebreak
 \section{The Anatomy of a Neural Process}
@@ -530,7 +508,6 @@ and the Fully Convolutional Gaussian Neural Process \parencite[FullConvGNP; \cre
     }
     \label{fig:TE_versus_non-TE}
 \end{figure}
-
 
 \Cref{fig:TE_versus_non-TE}
 compares a trained CNP, a non-convolutional neural process,

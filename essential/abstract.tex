@@ -21,16 +21,14 @@ This thesis advances neural processes in three ways.
 
 First, we propose \emph{convolutional neural processes} (ConvNPs).
 ConvNPs improve data efficiency of neural processes by building in a symmetry called \emph{translation equivariance}.
-% Translation equivariance is an important inductive bias for many learning problems. including time series, spatial data, and images.
-ConvNPs rely on convolutional neural networks rather than multi-layer perceptrons. % which makes convolutional neural processes more data efficient than their non-convolutional predecessors.
+ConvNPs rely on convolutional neural networks rather than multi-layer perceptrons.
 
 Second, we propose \emph{Gaussian neural processes} (GNPs).
 GNPs directly parametrise dependencies in the predictions of a neural process.
 Current approaches to modelling dependencies in the predictions depend on a latent variable, which consequently requires approximate inference, undermining the simplicity of the approach.
-% Directly parametrising these dependencies poses simple and computationally cheap alternative approach.
 
 Third, we propose \emph{autoregressive conditional neural processes} (AR CNPs).
-AR CNPs train a neural process without any modifications to the model or training procedure and, at test time, roll out the model in an autoregressive fashion. % to produce improved predictions.
+AR CNPs train a neural process without any modifications to the model or training procedure and, at test time, roll out the model in an autoregressive fashion.
 AR CNPs equip the neural process framework with a new knob where modelling complexity and computational expense at training time can be traded for computational expense at test time.
 
 In addition to methodological advancements, this thesis also proposes a software abstraction that enables a compositional approach to implementing neural processes.

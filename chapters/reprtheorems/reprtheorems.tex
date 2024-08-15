@@ -13,7 +13,6 @@
 
 \paragraph{Abstract}
 In \cref{\xrprefix{sec:nps:anatomy}}, we saw that neural processes approach a meta-learning problem by parametrising a prediction map $\pi_\theta \colon \D \to \Qc$ using an \emph{encoder--decoder architecture}.
-%This means that $\pi_\theta = \enc_\theta \comp \dec_\theta$ is the composition of an \emph{encoder} and \emph{decoder}.
 In this chapter, we will see how encoder--decoder architectures can be motivated theoretically with \emph{representation theorems}.
 In the context of neural processes, representation theorems say that prediction maps may be decomposed as encoder--decoder architectures without losing representational power.
 
@@ -28,11 +27,9 @@ Finally, in \cref{sec:repr_theorems:conv_deep_sets_dte}, we generalise translati
 
 \paragraph{Attributions and relationship to prior work}
 \Cref{thm:conv_deep_set} was first presented as Theorem 1 by \fulltextcite{Gordon:2020:Convolutional_Conditional_Neural_Processes}.
-%although our presentation removes the limitation that $k$ be a non-negative function.
 The proof for Theorem 1 was originally developed by the author and Jonathan Gordon and later improved by Andrew Y.\ K.\ Foong.
 We furthermore acknowledge David Burt and Mark Rowland for reviewing the proof.
 \Cref{thm:conv_deep_set_dte} was first presented as Theorem E.1 by \fulltextcite{Bruinsma:2021:The_Gaussian_Neural_Process}.
-%although our presentation again removes the limitation that $k$ be a non-negative function.
 The proof of Theorem E.1 was originally developed by the author and James Requeima and later checked by Jonathan Gordon and Andrew Y.\ K.\ Foong.
 All work was supervised by Richard E.\ Turner.
 
@@ -117,20 +114,6 @@ Endow $[\D]$ with the following metric:
 We collect some basic results in the following proposition.
 Call a set $A \sub \D$ \emph{permutation invariant} if $D \in A$ implies that $\sigma D \in A$ for all permutations $\sigma \in \Sb^{\abs{D}}$.
 
-% \begin{proposition}~
-%     \begin{proplist}
-%         \item
-%             The function $d_{[\D]}$ is a metric on $[\D]$.
-%         \item
-%             The topology on $[\D]$ induced by $d_{[\D]}$ coincides with the quotient topology.
-%         \item
-%             \label{prop:properties_metric_data_sets:open_implies_open}
-%             If $A \sub \D$ is open, then $[A]$ is open.
-%         \item
-%             \label{prop:properties_metric_data_sets:closed_implies_closed}
-%             If $A \sub \D$ is closed, then $[A]$ is closed.
-%     \end{proplist}
-% \end{proposition}
 \statement{statements/properties.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_repr_theorems:functions}}.
@@ -142,13 +125,6 @@ since the topology on $[\D]$ induced by $d_{[\D]}$ coincides with the quotient t
 Call a function $f\colon\D  \to Z$ permutation invariant if $f(\sigma D) = f(D)$ for all $\sigma \in \Sb^{\abs{D}}$.
 We then have the following result.
 
-% \begin{proposition}
-%     \label{prop:functions_on_data_sets_connection}
-%     Suppose that $f \colon \D \to Z$ is continuous and permutation invariant.
-%     Then $[f] \colon [\D] \to Z$ defined by $[f]([D]) = f(D')$ for any $D'$ such that $D' = [D]$ is well defined and continuous.
-%     Conversely, suppose that $f \colon [\D] \to Z$ is continuous.
-%     Then $f\colon \D \to Z$ defined by $f(D) = [f]([D])$ is continuous and permutation invariant.
-% \end{proposition}
 \index{permutation invariance}
 \statement{statements/equivalence.tex}
 \begin{proof}
@@ -359,25 +335,6 @@ Finally, we define the \emph{multiplicity} of a data set $[D] \in [\D]$, which c
     For a subset $[\D'] \sub [\D]$, define $\mult\,[\D'] = \sup_{[D] \in [\D']} \mult\,[D]$.
 \end{definition}
 
-% \begin{theorem}[Convolutional deep set]
-%     \label{thm:conv_deep_set}
-%     Let $\Y \sub \R$ be compact.
-%     Suppose that $[\D'] \sub [\D]$ is closed, is closed under translations, has multiplicity $K$, and has maximum data set size $N < \infty$.
-%     Let $k \colon \X \to \R$ be a continuous strictly-positive-definite function such that $k(0) = \sigma^2 > 0$ and $k(\tau) \to 0$ as $\abs{\tau} \to \infty$.
-%     Denote the reproducing kernel Hilbert space of $k$ by $\Hb$.
-%     Let $Z$ be a translation space.
-%     Then a function $\pi \colon [\D'] \to Z$ is continuous and translation equivariant if and only if it is of the form
-%     \begin{equation} \label{eq:conv_deep_set}
-%         \pi = \dec \comp \enc
-%         \quad\text{where}\quad
-%         \enc(D) =
-%             \sum_{\smash{(x, y) \in D}} \phi(y) k(\vardot - x)
-%     \end{equation}
-%     with $\enc \colon [\D'] \to \Hb'$ continuous and translation equivariant,
-%     $\dec\colon \Hb' \to Z$ continuous and translation equivariant,
-%     and $\phi(y) = (0, y^1, \ldots, y^{K})$.
-%     Here $\Hb' = \enc([\D'])$ is a subspace of $\Hb^{K+1}$ which is closed and closed under translations.
-% \end{theorem}
 \index{convolutional deep set}
 \statement{statements/conv_deep_set.tex}
 \begin{proof}
@@ -399,8 +356,6 @@ However, $[\D']$ is not closed: $[((1/n, 0), (0, 0))] \in [\D']$ for all $n \ge 
     \lim_{n \to \infty}[((1/n, 0), (0, 0))] = [((0, 0), (0, 0))],
 \end{equation}
 and $[((0, 0), (0, 0))]$ has multiplicity two, so it is not in $[\D']$.
-%Here we slightly abuse notation by denoting sets with duplicate elements;
-%it would be more correct to use \emph{multisets}, a generalisation of sets which allow duplicate elements.
 A reasonable way to construct subsets of $[\D']$ which are simultaneously closed and have multiplicity $K$ is to fix some $\e > 0$, and to consider the data sets in $[\D']$ with at most $K$ inputs exactly repeated and all other inputs $\e$ or more apart.
 
 Like \cref{thm:deep_set}, \cref{thm:conv_deep_set} also lets $\phi$ be a power expansion (see \eqref{eq:power_series}).
@@ -489,7 +444,6 @@ Intuitively, this choice for $c$ measures the distance to the diagonal and decay
 
 \begin{proof}
 
-
 To prove \cref{thm:conv_deep_set_dte}, our approach will be to first rewrite \eqref{eq:conv_deep_set_dte_equivariance} to have $\T_{(\tau, \tau)}$ on both sides.
 Once \eqref{eq:conv_deep_set_dte_equivariance} is in this form, we will apply \cref{thm:conv_deep_set} with $\X\times\X$ as the space of inputs.
 Recall that \cref{thm:conv_deep_set} generalises to higher-dimensional inputs.
@@ -497,7 +451,6 @@ Recall that \cref{thm:conv_deep_set} generalises to higher-dimensional inputs.
 \newcommand{\dup}{\operatorname{dup}{}\!}%
 \newcommand{\dedup}{\operatorname{dup}^{-1}\!{}}%
 To rewrite \eqref{eq:kernel_map_TE}, we use a simple trick: \emph{duplicating the inputs}.
-%Like $\D$ is the collection of all data sets with inputs in $\X$ and outputs in $\Y$, 
 Let $\D\ss{dbl}$ be the collection of data sets with inputs in $\X\ss{dbl} \coloneqq \X \times \X$ and outputs in $\Y$.
 The ``dbl'' in the subscript of $\D\ss{dbl}$ stands for ``\underline{d}ou\underline{bl}e'' and serves to remind the reader that there are double the number of inputs.
 Let $\operatorname{dup}\colon \D \to \D\ss{dbl}$ be the function that maps a data set into $\D\ss{dbl}$ by duplicating the inputs.
@@ -628,88 +581,6 @@ There is one final technical detail to verify, which is that the extension $\ove
 \Cref{\xrprefix{sec:proofs_repr_theorems:conv_deep_sets_dte}} verifies this detail.
 \end{proof}
 
-% Hitherto, to motivate the key idea, we considered an input space of the form $\X = \tX \times \tX$.
-% We now make a shift in perspective: we will consider $\tX$ to really be the space that inputs of data sets live in.
-% Conforming to this shift in perspective, we will relabel $\tX$ to $\X$, meaning that our discussing thus far pertained to diagonal translation equivariance as follows:
-% \begin{equation}
-%     \label{eq:diagonal_translation_equivariance_relabelled}
-%     \pi \comp \T_{(\tau, \tau)} = \T_{(\tau, \tau)} \comp \pi
-%     \quad
-%     \text{for all $\tau \in \X$}.
-% \end{equation}
-% Let $[\tD] = \union_{N = 0}^\infty [(\tX \times \Y)^N]$ be the collection of all data sets of finite size with inputs in $\tX$.
-% In comparison, data sets in $[\D]$ have inputs in $\X$.
-% The main result of this section is a characterisation of functions $\pi\colon [\D] \to Z$ which are diagonally translation equivariant in the following sense:
-% \begin{equation}
-%     \label{eq:conv_deep_set_dte_sense}
-%     \pi \comp \T_{\tau} = \T_{(\tau, \tau)} \comp \pi
-%     \quad
-%     \text{for all $\tau \in \X$}.
-% \end{equation}
-% By following the construction for translation-equivariant kernel maps $k$ from the beginning of this section, duplicating the inputs of data sets,
-% \eqref{eq:conv_deep_set_dte_sense} becomes diagonal translation equivariance in the sense of \cref{def:diagonal_translation_equivariance}.
-% We have thus proved the following theorem.
-
-% \begin{theorem}[Convolutional deep set for DTE]
-%     \label{thm:conv_deep_set_dte}
-%     Let $\Y \sub \R$ be compact.
-%     Suppose that $[\D'] \sub [\D] $ is
-%     closed, is closed under translations, has multiplicity $K$, and has maximum data set size $N < \infty$.
-%     Let $k \colon \X \times \X \to \R$ be a continuous strictly-positive-definite function such that $k(\vnull) = \sigma^2 > 0$ and $k(\vtau) \to 0$ as $\norm{\vtau}_2 \to \infty$.
-%     Denote the reproducing kernel Hilbert space associated to $k$ by $\Hb$.
-%     Let $Z$ be a $(\X\times\X)$-translation space.
-%     Let $C$ be another $(\X \times \X)$-translation space, let $c \in C$ be diagonally translation invariant and anti-diagonal discriminating, and denote $C' = \set{\T_\vtau c : \vtau \in \X}$.
-%     Then a function $\pi \colon [\D'] \to C$ is continuous and diagonally translation equivariant in the sense of \eqref{eq:conv_deep_set_dte_sense} if and only if it is of the form
-%     \begin{equation}
-%         \pi = \dec \comp \enc
-%         \quad\text{where}\quad
-%         \enc(D) =
-%             \begin{bmatrix}
-%                \sum_{(x, y) \in C} \phi(y) k(\vardot - (x, x)) \\
-%                c
-%            \end{bmatrix}
-%     \end{equation}
-%     with $\enc \colon [\D'] \to \Hb' \times C'$ continuous and translation equivariant,
-%     $\dec\colon \Hb^{K + 1} \to Z$ continuous and translation equivariant,
-%     and $\phi(y) = (0, y^1, \ldots, y^{K})$.
-%     Here $\Hb' = \enc([\D'])$ is a subspace of $\Hb^{K+1}$ which is closed and closed under translations.
-% \end{theorem}
-
-
-% \section{Approximate Translation Equivariance}
-% \label{sec:repr_theorems:nonstationary}
-
-% \note{[Often stationarity not true, but is ``roughly'' stationary, so, to achieve parameter efficiency, want to have parametrisation similar to representations for stationary processes.]}
-%
-% For a closed subspace $V \sub \Hb$, let $P_V$ be the orthogonal projection onto $V$.
-% Define
-% \begin{equation}
-%     \pi_V = \pi(P_V)
-% \end{equation}
-% Call $\pi\colon \Hb \to \Hb$ \emph{finitely approximable} if, for all $K > 0$,
-% \begin{equation}
-%     \lim_{n \to \infty} \,\inf_{V \sub \H\, \text{linear},\, \dim(V) \le n} \,\sup_{h \in \Hb,\, \norm{h}_\Hb \le K} \,\norm{\pi(h) - P_V\pi(P_Vh)}_{\Hb} = 0.
-% \end{equation}
-% \note{[Better name? Kinda like nuclear operators, but for nonlinear maps.]}
-% For example, if $\pi$ is linear and compact, then true.
-%
-% Let $G$ be a separable, metrisable, compact group with Haar measure $\mu$ acting on $\X$.
-% Fix some $\vx_0 \in \X$.
-% Consider
-% \begin{align}
-%     \Hb &= \set*{f \in C(\X) : \int f^2(g \vx_0) \isd \mu(g) < 0} /\!\sim, \\
-%     \lra{f, h}_\Hb &= \int f(g \vx_0) h(g \vx_0) \isd \mu(g),
-% \end{align}
-% where $\sim$ denotes the equivalence relation given by almost sure equality.
-% Then it follows that $(\Hb, \lra{\vardot, \vardot}_\Hb)$ is a separable Hilbert space.
-% \note{Brezis Theorem 4.13 says separable metric space means $L^2$ is separable.}
-%
-% \begin{theorem}
-%     Consider a continuous map $\pi \colon \Hb \to \Hb$ which is finitely approximable.
-%     Let $\e > 0$.
-%     Then there exists an $n \in \N$, a $G$-equivariant map $T\colon \Hb^{n + 1} \to \Hb$, and orthonormal vectors $(e_i)_{i=1}^n \sub \Hb$ such that $\sup_{h \in \Hb}\,\norm{\pi(h) - T(h, e_1, \ldots, e_n)}_\Hb \le \e$.
-% \end{theorem}
-
 \section{Conclusion}
 \label{sec:repr_theorems:conclusion}
 
@@ -771,6 +642,3 @@ Finally, whereas we introduced functional encodings (\cref{def:functional_encodi
 Theorem 2.4 by \textcite{Gordon:2020:Advanced_in_Probabilistic_Meta-Learning} pursues this approach, which was developed by Jonathan Gordon in collaboration with Andrew Y.\ K.\ Foong.
 
 \end{document}
-
-
-

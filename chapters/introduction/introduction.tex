@@ -57,10 +57,8 @@ so it must first learn what a bird even is before it can start to learn what tel
 and that simply requires a lot of data.
 But this is very wasteful, because it is certainly not the first time that we encounter a bird!
 Perhaps, as a very young kid, having only seen a few birds in our life, we would have trouble recognising further occurrences of unusual new birds.
-%\note{Improve clarity of next sentence?}
 However, as we grow older, we learn the general anatomy of a bird and what generally distinguishes different species.
 We learn to be able to quickly tell the general features of a species, even if we have never seen it before.
-%Over time, we improve our ability to recognise new birds improves.
 
 A key feature is that this learning process does not consist of just one attempt to recognise just one new species, but, throughout life, consists of many repeated attempts to recognise many new species.
 Hence, the life-long learning process can be seen as a stream of many small recognition problems which are all related. % but not perhaps directly related.
@@ -75,8 +73,6 @@ Think of it as \emph{fast learning} and \emph{slow learning}.
 This idea of \emph{learning to learn} lies at the heart of the meta-learning paradigm in machine learning \parencite{Schmidhuber:1987:Evolutionary_Principles_in_Self-Referential_Learning,Thrun:1998:Learning_to_Learn}.
 The meta-learning paradigm attempts to build algorithms that have the ability to improve their learning mechanism.
 Indeed, it has been argued that this ability is necessary to build algorithms which learn like people \parencite{Lake:2015:Human-Level_Concept_Learning_Through_Probabilistic,Lake:2017:Building_Machines_That_Learn_and}.
-%We call algorithms with the ability to learn a learning mechanism \emph{meta-learning algorithms}.
-%To motivate the meta-learning setup, we further the analogy with how a human learns to recognise new species.
 This two-tiered learning structure can sometimes explicitly be recognised in modern meta-learning algorithms as an \emph{inner loop} and \emph{outer loop} \parencite{Andrychowicz:2016:Learning_to_Learn_by_Gradient,Finn:2017:Model-Agnostic_Meta-Learning_for_Fast_Adaptation,Grant:2018:Recasting_Gradient-Based_Meta-Learning_as_Hierarchical}.
 However, it need not stop at two tiers \parencite{Schmidhuber:1987:Evolutionary_Principles_in_Self-Referential_Learning}.
 
@@ -107,20 +103,11 @@ and learning to downscale the output of a climate simulator.
 The variety of these examples attests to the flexibility of the meta-learning paradigm.
 It almost looks like we can just learn-to-learn anything!
 In the next section, we explore in more detail how an algorithm can learn to learn.
-% Having said that, especially in the latter two examples, the lines between supervised learning and meta-learning might appear blurred.
-% We explore in the next section.
 
 \section{Learning to Learn}
 \label{sec:introducion:learning_to_learn}
-% To develop algorithms for meta-learning problems, a fundamental observation is that meta-learning problems can be cast as supervised learning problems.
-% By casting a meta-learning problem as a supervised learning problem, ideas traditionally developed for the supervised setting carry over to the meta-learning setting and give rise to meta-learning algorithms.
-% We will now elucidate this connection between meta-learning and supervised learning.
-% For this, we will need to establish slightly more formal notation.
 Before explaining how a meta-learning algorithm can improve its own learning mechanism,
 we take a step back to supervised learning and establish slightly more precise notation.
-% To develop a meta-learning algorithm, like in the previous section, our starting point is again supervised learning.
-% Unlike the previous section, 
-% We now develop more precise notation 
 In a supervised learning\index{supervised learning} problem, we are given observed data, and the goal is to make a prediction for a new input.
 Denote the observed data by
 \begin{equation} \label{eq:introduction:supervised_observed_data}
@@ -137,7 +124,6 @@ To predict the species $y_*$ for the new photo of a bird $x_*$, supervised learn
     .
 \end{equation}
 This function $f_\theta$ depends on some parameters $\theta$, which are learned from the observed data $D$.
-%\note{[Intro for readings not familiar with the idea of parameters?]}
 A typical way to learn these parameters $\theta$ from the observed data $D$ is by minimising some loss function $\ell$ which measures how well a prediction matches the data:
 \begin{equation} \label{eq:supervised_learning_minimisation}
     \hat\theta \in \argmin_{\theta} \frac1N \sum_{n=1}^N \ell(f_\theta(x_n), y_n).
@@ -162,8 +148,6 @@ The goal is to predict the output $\displaystyle y^{(*)}_*$ corresponding to $\d
 To clarify, in supervised learning, there is only one new thing: a new input $x_*$.
 In meta-learning, there are two new things: a new data set $D^{(*)}$ with a new input $\displaystyle x^{(*)}_*$.
 \Cref{tab:supervised_vs_meta-learning} compares the settings of meta-learning and supervised learning.
-% A meta-learning algorithm observes all tasks $D\ss{related}$ and is given 
-% For $D^{(*)}$, the meta-learning algorithm attempts 
 
 Whereas supervised learning requires sufficiently many data points,
 in meta-learning, the number of data points in any one data set can be small.
@@ -225,39 +209,8 @@ and again adjust itself based on how well it did (\emph{learning to learn}).
 After the meta-algorithm has improved itself sufficiently many times, it is finally ready to predict $\displaystyle y^{(*)}_*$ for $\displaystyle x_*^{(*)}$ by learning from $\displaystyle D^{(*)}$.
 To explain how a meta-learning algorithm achieves this self-improving behaviour, we first consider what a supervised learning algorithm would do.
 
-% Observing the outcome in a collection of related data sets is like
-% knowing which species we observed in past encounters of new bird species;
-% observing the missing electrode in EEGs from other patients; or 
-% observing fine-grained representations of the climate on past days.
-% Without observing any outcome, there would be no feedback of the algorithm to improve its learning mechanism.
-% \note{[Is this clear?]}
-%
-% Denote the tasks for which we observed the outcome by
-% \begin{equation} \label{eq:introduction:related_data}
-%     D\ss{related} = \set{
-%         \underbracket[1pt]{(D^{(1)}, x_{*}^{(1)}, y_{*}^{(1)})}_{\text{observed task $1$}},
-%         \ldots,
-%         \underbracket[1pt]{(D^{(M)},x_*^{(M)}, y_{*}^{(M)})}_{\text{observed task $M$}}
-%     },
-% \end{equation}
-% and let $\displaystyle (D^{(*)}, x^{(*)}_{*})$ be the last task, the task at hand, for which we would like to predict the unobserved output $\displaystyle y^{(*)}_*$.
-% For example,
-% $\displaystyle x^{(*)}_{*}$ could be a photo of some \emph{agapornis} and $D^{(*)}$ the five photographs of the new species that we managed to take.
-% For the observed tasks,
-% $\displaystyle x^{(*)}_1$ could be a photo of some \emph{diomedea} (a genus of albatrosses) and $D^{(1)}$ the few occurrences of \emph{diomedea} that you've seen in the past;
-% $\displaystyle x^{(*)}_2$ could be a photo of some \emph{chrysocolaptes} (a genus of woodpeckers) and $D^{(2)}$ the few occurrences of \emph{chrysocolaptes} that you've seen in the past;
-% \textit{et cetera}.
-% Note that the observed tasks are related---all recognising species of genea of birds---but perhaps not directly relevant.
-% Meta-learning algorithms attempt to leverage both $D\ss{related}$ and $D^{(*)}$ to estimate the output corresponding to $\displaystyle x^{(*)}_*$.
-% This is not always straightforward, because the observed tasks may vary in how much they inform the task at hand.
-
 For task $m$, to predict $\displaystyle y_*^{(m)}$ for $\displaystyle x_*^{(m)}$ by learning from $D^{(m)}$, a supervised learning algorithm might parametrise a function $f_\theta$ and learn its parameters from the data $D^{(m)}$:
 \begin{equation} \label{eq:supervised_pipeline}
-    % f_{\hat\theta}(x^{(m)}_*)
-    % \text{~~predicts~~}
-    % y^{(m)}_* 
-    % \quad\text{with}
-    % \quad\hat\theta \in \argmin_{\theta} \frac1N \sum_{n=1}^N \ell(f_\theta(x^{(m)}_n), y^{(m)}_n).
     \raisebox{3pt}{\begin{tikzpicture}[
             baseline,
             every line/.style={
@@ -278,7 +231,6 @@ For task $m$, to predict $\displaystyle y_*^{(m)}$ for $\displaystyle x_*^{(m)}$
         \draw [line] (data) -- (min);
         \draw [line] (min) -- (pred);
         \draw [line] (input) -- (pred);
-        %\node () at ([yshift=-10pt]pred.south) {\footnotesize(prediction for $y^{(m)}_*$)};
     \end{tikzpicture}}
 \end{equation}
 where we recall that $\displaystyle f_{\hat\theta}(x^{(m)}_*)$ is the prediction for $\displaystyle y^{(m)}_*$.
@@ -286,15 +238,9 @@ where we recall that $\displaystyle f_{\hat\theta}(x^{(m)}_*)$ is the prediction
 This pipeline takes in
 $D^{(m)}$ and $\displaystyle x^{(m)}_*$ and produces a prediction for $\displaystyle y_*^{(m)}$.
 The goal of a meta-learning algorithm is to automatically improve this learning pipeline, to \emph{learn to learn}.
-%The pipeline in \eqref{eq:supervised_pipeline}, however, involves an optimisation, which can be difficult to tune.
 To enable this, meta-learning algorithms propose something radical.
 They propose to \emph{replace the optimisation procedure in \eqref{eq:supervised_pipeline} with a learnable function} $\pi_\psi$ depending on some new parameters $\psi$:
 \begin{equation}
-    % f_{\hat\theta}(x^{(m)}_*)
-    % \text{~~predicts~~}
-    % y^{(m)}_* 
-    % \quad\text{with}
-    % \quad\hat\theta \in \argmin_{\theta} \frac1N \sum_{n=1}^N \ell(f_\theta(x^{(m)}_n), y^{(m)}_n).
     \raisebox{3pt}{\begin{tikzpicture}[
             baseline,
             every line/.style={
@@ -306,46 +252,26 @@ They propose to \emph{replace the optimisation procedure in \eqref{eq:supervised
             }
         ]
         \node [rectangle, draw, thick, minimum height=1cm, inner sep=5pt] (data) at (0, 0) {$D^{(m)}$};
-        % \node [rectangle, draw, thick, minimum height=1cm, inner sep=5pt, right=1cm of data] (min) {
-                % $\;\;\hat\theta \in \argmin_{\theta} \frac1N \sum_{n=1}^N \ell(f_\theta(x^{(m)}_n), y^{(m)}_n)\;\;$};
         \node [rectangle, draw, thick, minimum height=1cm, inner sep=5pt, minimum width=1cm, align=center, right=1cm of data] (pred) {
             $\displaystyle \pi_\psi(x^{(m)}_*, D^{(m)})$
         };
         \node [rectangle, draw, thick, minimum height=1cm, inner sep=5pt, minimum width=1cm, align=center, above=0.5cm of pred] (input) {$\displaystyle x_*^{(m)}$};
         \draw [line] (data) -- (pred);
         \draw [line] (input) -- (pred);
-        %\node () at ([yshift=-10pt]pred.south) {\footnotesize(prediction for $\displaystyle y^{(m)}_*$)};
     \end{tikzpicture}}
 \end{equation}
-% \begin{equation}
-%     \pi_\psi(x^{(m)}_*, D^{(m)}) \quad\text{predicts}\quad y^{(m)}.
-%     % \qquad
-%     % \text{replaces}
-%     % \qquad
-%     % \begin{gathered}
-%     %     f_{\hat\theta}(x^{(m)}_*)
-%     %     \text{~~predicts~~}
-%     %     y^{(m)}_*,  \\
-%     %     \text{$\hat\theta$ optimised on $D^{(m)}$}.
-%     % \end{gathered}
-% \end{equation}
-% That is, $\pi_\psi$ replaces the optimisation procedure in \eqref{eq:supervised_pipeline} by directly parametrising the learning pipeline with new parameters $\psi$.
 \parbox{\linewidth}{  % Some hacking is required here to fix a strange underfull/overfull `\hbox`. 
 where $\displaystyle \pi_{\psi}(x^{(m)}_*, D^{(m)})$ now directly predicts $\displaystyle y^{(m)}_*$.
 We call $\pi_\psi$ the meta-learning algorithm.
 }\hspace{-30pt}
 
 \looseness=-1
-%The supervised approach parametrises a mapping $f_\theta$ from $\displaystyle x^{(*)}_*$ to the prediction for $\displaystyle y^{(*)}_*$.
-As an example, the supervised learning function $f_\theta$ could be a neural network %\parencite{Fukushima:1982:Neocognitron_A_Self-Organizing_Neural_Network,LeCun:1989:Backpropagation_Applied_to_Handwritten_Zip}
+As an example, the supervised learning function $f_\theta$ could be a neural network
 which takes in an image $\displaystyle x^{(m)}_*$ and which produces a probability for every class that $\displaystyle x^{(m)}_*$ could belong to.
-%(Convolutional neural networks are neural networks particularly suited for images.)
 The weights of the neural network, $\theta$, are learned by comparing the predictions of the neural network for examples in $D^{(m)}$ to the true classes.
-%Importantly, the supervised approach completely ignores $D\ss{related}$! 
 In comparison, a meta-learning approach would parametrise a neural network $\pi_\psi$ which takes in $\displaystyle x^{(m)}_*$ \emph{and the observed examples $D^{(m)}$}.
 That is, $D^{(m)}$ is \emph{not} used to learn the weights of the neural network;
 rather, just like the image $\displaystyle x^{(m)}_*$, the observed examples $D^{(m)}$ \emph{are fed directly to the network as an input}.
-%The weights of this more complicated pipline, $\theta$, are now learned by comparing the prediction of $F_\theta$ \emph{for every observed task in $D\ss{related}$};
 
 To learn the parameters of $\psi$ of the meta-learning algorithm $\pi_\psi$, 
 we optimise its performance on the observed tasks in $D\ss{related}$:
@@ -368,12 +294,6 @@ In summary, a meta-learning algorithm directly parametrises the learning pipelin
 This function $\pi_\psi$ takes in the new input $\displaystyle x_*^{(m)}$ \emph{and} the observed data $D^{(m)}$ and gives back a prediction for $\displaystyle y_*^{(m)}$.
 This is unlike in supervised learning, where only $\displaystyle x_*^{(m)}$ is an input to $f_\theta$.
 By adjusting the parameters $\psi$, the meta-algorithm can improve its own learning mechanism.
-%
-% by casting a meta-learning problem as a supervised learning problem,
-% we have setup a general framework for developing meta-learning techniques:
-% parametrise a function $F_\theta$ which, for any task $m$, takes in the new input $\displaystyle x_*^{(m)}$ \emph{and} the observed data $D^{(m)}$, and which gives back a prediction for $\displaystyle y_*^{(m)}$.
-% The function depends on some parameters $\theta$, which are learned from the observed tasks $D\ss{related}$.
-%This framing of meta-learning will be developed in more detail in \Cref{\xrprefix{chap:predmap}}.
 
 \section{Main Contribution}
 \label{sec:introduction:main_contribution}
@@ -385,7 +305,6 @@ how do we parametrise a neural network that can take a data set $D$ as an input?
 Namely, the number of data points in a data set is variable, so the neural network needs to accept an input of variable dimensionality.
 Moreover, the order in which we observe data points should not matter, so the neural network needs to not depend on the ordering of $D$.
 Neural processes use an existing tool from the literature to address these issues \parencite{Zaheer:2017:Deep_Sets,Edwards:2017:Towards_a_Neural_Statistician}.
-
 
 The bigger challenge, however, that neural processes face is that learning the mapping from a data set $D$ and a new input $x_*$ to a prediction for $y_*$ can be very data intensive, simply because there are \emph{so many} possible phenomena to predict.
 To appreciate this, consider the meta-learning problem where we learn to predict the trajectory of a thrown ball.
@@ -406,9 +325,7 @@ For what if the laws of the universe had changed between 10:00 and 11:00?
 As a consequence, the neural process will need to establish the laws of physics over and over again, for every point in time.
 Clearly, this is not very data efficient.
 
-
 This thesis attempts, in a limited way, to build fundamental laws of physics, like conservation of energy and conservation of momentum, into the neural process.
-%As we will eventually see in experiments in \cref{\xrprefix{chap:experiments}},
 Building in these laws will greatly improve data efficiency and consequently improve predictions.
 To build in conservation laws, we will use a deep result called Noether's theorem \parencite{Noether:1918:Invariante_Variationsprobleme}.\index{Noether's theorem}
 Noether's theorem says that conservation of energy is a consequence of \emph{time-translation equivariance} and that conservation of moment is a consequence of \emph{space-translation equivariance}.\index{translation equivariance}
@@ -417,19 +334,15 @@ Phrased differently, if you delay the throw by an hour, then you delay the traje
 Similarly, space-translation equivariance says that if you move forward 10 meters, then the trajectory should be repositioned by 10 meters as well.
 In essence, these symmetries say that the laws of physics do not change with time or space.
 The main contribution of this thesis is to build a general notion of translation equivariance into a neural process.
-%In \cref{\xrprefix{chap:repr_theorems},\xrprefix{chap:convcnps}}, we will see how translation equivariance can be built into a neural process.
-
 
 \section{Historical Context and Positioning}
 \label{sec:introduction:context}
-
 
 In \citeyear{Schmidhuber:1987:Evolutionary_Principles_in_Self-Referential_Learning}, \citeauthor{Schmidhuber:1987:Evolutionary_Principles_in_Self-Referential_Learning} first put forward the idea of meta-learning by proposing algorithms which can improve their own learning strategy \parencite{Schmidhuber:1987:Evolutionary_Principles_in_Self-Referential_Learning,Schmidhuber:1992:Learning_to_Control_Fast-Weight_Memories,Schmidhuber:1993:A_Neural_Network_That_Embeds}.
 The idea of giving a system the ability to learn its learning mechanism then took hold and was further developed.
 \textcite{Bengio:1990:Learning_a_Synaptic_Learning_Rule,Bengio:1995:On_the_Search_for_New_Learning_Rules_in_ANNs} proposed the idea of directly parametrising a learning rule,
 and later \textcite{Hochreiter:2001:Learning_to_Learn_Using_Gradient,Younger:2001:Meta-Learning_With_Backpropagation} proposed the presently ubiquitous approach of performing meta-learning with gradient descent, with a reference to this idea dating back to \citeyear{Schmidhuber:1991:A_Possibility_for_Implementing_Curiosity} by \citeauthor{Schmidhuber:1991:A_Possibility_for_Implementing_Curiosity}.
 In \citeyear{Thrun:1998:Learning_to_Learn}, \citeauthor{Thrun:1998:Learning_to_Learn}'s treatise on \emph{learning to learn} put the field of meta-learning on solid grounding.
-
 
 \looseness=-1
 Meta-learning is a varied and diverse field, especially nowadays,
@@ -449,7 +362,6 @@ Whereas other existing meta-learning techniques could be adjusted to compete wit
 The most relevant coexisting line of work are gradient-based methods \parencite{Finn:2017:Model-Agnostic_Meta-Learning_for_Fast_Adaptation,Finn:2018:Probabilistic_Model-Agnostic_Meta-Learning}, which come with universality guarantees like neural processes do \parencite{Finn:2018:Meta-Learning_and_Universality_Deep_Representations}.
 See Section 7.2.1 by \textcite{Gordon:2020:Advanced_in_Probabilistic_Meta-Learning} for a more detailed comparison of neural processes and gradient-based meta-learning.
 
-
 \section{Outline of Thesis}
 \label{sec:introduction:overview}
 
@@ -467,8 +379,6 @@ Foong:2020:Meta-Learning_Stationary_Stochastic_Process_Prediction,
 Bruinsma:2021:The_Gaussian_Neural_Process,
 Markou:2022:Practical_Conditional_Neural_Processes_for_Tractable}.
 The results in the chapters are often in a changed and extended form and, compared to these publications, are not presented in the order that they originally appeared.
-
-
 
 In \cref{\xrprefix{chap:nps}}, 
 we will introduce meta-learning and neural processes on a more technical level.
@@ -490,7 +400,6 @@ In \cref{\xrprefix{chap:repr_theorems}}, we develop two new representation theor
 In the context of neural processes, representation theorems generally characterise functions on data sets.
 We extend deep sets \parencite[\cref{\xrprefix{thm:deep_set}};][]{Zaheer:2017:Deep_Sets,Edwards:2017:Towards_a_Neural_Statistician,Wagstaff:2019:On_the_Limitations_of_Representing}
 to \emph{convolutional deep sets}, \cref{\xrprefix{thm:conv_deep_set},\xrprefix{thm:conv_deep_set_dte}}.
-%Whereas deep sets generally characterise functions on data sets,
 \Cref{\xrprefix{thm:conv_deep_set}} characterises functions on data sets which are \emph{translation equivariant} (\cref{\xrprefix{def:translation_equivariance}}),
 and \cref{\xrprefix{thm:conv_deep_set_dte}} characterises functions on data sets which are \emph{diagonally translation equivariant} (\cref{\xrprefix{def:diagonal_translation_equivariance}}).
 \Cref{\xrprefix{thm:conv_deep_set}} was first presented by \textcite{Gordon:2020:Advanced_in_Probabilistic_Meta-Learning} and \cref{\xrprefix{thm:conv_deep_set_dte}} by \textcite{Bruinsma:2021:The_Gaussian_Neural_Process}.
@@ -527,42 +436,7 @@ This approach allows the user to rapidly explore neural processes models by putt
 The software abstraction forms the basis of a Python package \code{neuralprocesses} \parencite{Bruinsma:NeuralProcesses} available at \url{https://github.com/wesselb/neuralprocesses}.
 \code{neuralprocesses} was used to implement all models in this thesis and perform all experiments in \cref{\xrprefix{chap:experiments}}.
 The software abstraction was conceived in \code{NeuralProcesses.jl} in collaboration with Jonathan Gordon \parencite{Bruinsma:NeuralProcesses_jl}.
-%available at
-%\url{https://github.com/wesselb/NeuralProcesses.jl}.
 \code{neuralprocesses} is primarily developed by the author, but features contributions from Tom Andersson, Stratis Markou, and James Requeima.
-
-% After improving the data efficiency of neural processes by building in translation equivariance, we turn our attention to the usability of neural processes.
-% In many applications, it is important that the predictions of a neural process also accurately quantify the uncertainty associated with those predictions. 
-% For example, if we were to use a neural process to detect anomalies on an MRI, then it can be of great importance to know how certain the neural process is that some anomaly really is an anomaly.
-% We will investigate various ways to get expressive and well-calibrated uncertainties from a neural process.
-%
-% We will focus on the more pragmatic side:
-% implementing neural processes.
-% The challenge with implementing neural processes is that there isn't just one neural process, but many different ones.
-% For example,
-% \textcite{
-% Garnelo:2018:Conditional_Neural_Processes,
-% Garnelo:2018:Neural_Processes,
-% Kim:2019:Attentive_Neural_Processes,
-% Louizos:2019:The_Functional_Neural_Process,
-% Singh:2019:Sequential_Neural_Processes,
-% Gordon:2020:Convolutional_Conditional_Neural_Processes,
-% Foong:2020:Meta-Learning_Stationary_Stochastic_Process_Prediction,
-% Bruinsma:2021:The_Gaussian_Neural_Process,
-% Holderrieth:2021:Equivariant_Learning_of_Stochastic_Fields,
-% Kawano:2021:Group_Equivariant_Conditional_Neural_processes,
-% Vaughan:2022:Convolutional_Conditional_Neural_Processes_for,
-% Markou:2022:Practical_Conditional_Neural_Processes_for_Tractable}
-% all propose different neural process models.
-% We investigate a software abstraction that breaks down many of these neural processes into a number of shared building blocks.
-% These core building blocks can be put together in a variety of way to construct various neural processes.
-% In other words, this software abstraction enables the construction of neural processes through compositional modelling.
-% In addition, we can even put together the build blocks in novel ways, taking the best from various models or combining even different models, giving rise to new neural processes with different approximation properties.
-%
-% Finally,  we discuss the considerations that come into play when deploying a neural process to a novel problem.
-% We discuss the trade-offs of various approaches and how a neural process can be tailored to a particular application area.
-% We intend to present a non-neural-process-expert practitioner with a new, shiny tool, and hopes to enable them to correctly and effectively apply this tool to their particular problem domain.
-%
 
 \section{List of Publications and Software}
 \label{sec:introduction:publications}
@@ -612,101 +486,34 @@ The authors of software are the contributors of the repository ordered by additi
 
 \subsection*{Machine Learning Software}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma and Zeel B. Patel (1 June 2022).
-% ``\texttt{stheno}: Gaussian Process Probabilistic Programming in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/stheno}.
 \hangcite{Bruinsma:Stheno}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma and Zeel B. Patel (1 June 2022).
-% ``\texttt{neuralprocesses}: A Framework for Compositional Modelling of Neural Processes in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/neuralprocesses}.
 \hangcite{Bruinsma:NeuralProcesses}
 
 \hangcite{Bruinsma:NeuralProcesses_jl}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma (1 June 2022).
-% ``\texttt{gpcm}: Implementation of the Gaussian Process Convolution Model and Variations in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/gpcm}.
 \hangcite{Bruinsma:GPCM}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma (1 June 2022).
-% ``\texttt{oilmm}: Implementation of the Orthogonal Instantaneous Linear Mixing Model in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/oilmm}.
 \hangcite{Bruinsma:OILMM}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma (1 June 2022).
-% ``\texttt{gpar}: Implementation of the Gaussian Process Autoregressive Regression Model in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/gpar}.
 \hangcite{Bruinsma:GPAR}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma (1 June 2022).
-% ``\texttt{mlkernels}: Backend-Agnostic Positive Semi-Definite Kernels in Python''.
-% \textsc{url:}
-% % Manually take care of the line break.
-% \href{https://github.com/wesselb/mlkernels}{\texttt{https://github.com/wesselb/}} \\
-% \href{https://github.com/wesselb/mlkernels}{\texttt{mlkernels}}.
 \hangcite{Bruinsma:MLKernels}
 
 \subsection*{Other Software}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma, Filippo Vicentini, and Ruan Comelli (1 June 2022).
-% ``\texttt{plum}: Multiple Dispatch in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/plum}.
 \hangcite{Bruinsma:Plum}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma and Zeel B. Patel (1 June 2022).
-% ``\texttt{lab}: A Generic Interface for Linear Algebra Backends in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/lab}.
 \hangcite{Bruinsma:LAB}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma (1 June 2022).
-% ``\texttt{matrix}: Structured Matrix Types in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/matrix}.
 \hangcite{Bruinsma:Matrix}
 
-% \hangpara{\bibhang}{1}%
-% Will Tebbutt, Wessel P. Bruinsma, Frames C. White, Miha Zgubic, Alex Arslan, and thirteen other contributors (1 June 2022).
-% ``\texttt{FiniteDifferences.jl}: High-Accuracy Derivatives Estimated via Numerical Finite Differences in Julia''.
-% \textsc{url:}
-% \url{https://github.com/JuliaDiff/FiniteDifferences.jl}.
 \hangcite{Tebbutt:FiniteDifferences_jl}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma (1 June 2022).
-% ``\texttt{fdm}: High-Accuracy Derivatives Estimated via Numerical Finite Differences in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/fdm}.
 \hangcite{Bruinsma:FDM}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma and Will Tebbutt (1 June 2022).
-% ``\texttt{varz}: Backend-Agnostic Optimisation of Constrained Variables in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/varz}.
 \hangcite{Bruinsma:Varz}
 
-% \hangpara{\bibhang}{1}%
-% Wessel P. Bruinsma (1 June 2022).
-% ``\texttt{algebra}: Algebraic Structures in Python''.
-% \textsc{url:}
-% \url{https://github.com/wesselb/algebra}.
 \hangcite{Bruinsma:Algebra}
 
 \end{document}

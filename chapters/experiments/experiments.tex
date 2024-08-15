@@ -24,7 +24,6 @@ We establish the general strengths and weaknesses of the various classes of neur
 and we demonstrate that neural processes can be deployed in a variety of applications.
 
 \paragraph{Outline}
-%In \cref{sec:experiments:introduction}, we give an overview of all models that will be compared.
 \Cref{sec:experiments:synthetic} performs a large-scale bake-off between a variety of neural process models.
 In \cref{sec:experiments:predprey}, we apply neural processes to perform \emph{sim-to-real transfer}.
 Afterwards, in \cref{sec:experiments:eeg}, we challenge the models on an electroencephalography data set.
@@ -232,7 +231,6 @@ We first detail the experimental setup and then describe the results.
     \label{fig:synthetic_sawtooth}
 \end{figure}
 
-
 We synthetically generate data sets by randomly sampling from five different choices for the ground-truth stochastic process $f$.
 Let the inputs be $d_x$-dimensional.
 Then define the following stochastic processes:
@@ -278,18 +276,11 @@ Whereas thus far we only considered one-dimensional inputs and outputs,
 these configurations will generate context and target sets with potentially multidimensional inputs and outputs.
 We choose the parameters of the data processes based on the input dimensionality $d_x$:
 \begin{align}
-     % d_x&=1\colon\quad&
     \ell &= c \cdot\tfrac14, &
     \ell\ss{d} &= c \cdot\tfrac12, &
     \ell\ss{s} &= c, &
     p &= c \cdot\tfrac14, &
     \Omega &= [c^{-1} \cdot 2, c^{-1} \cdot 4]
-    % d_x&=2\colon&
-    % \ell &= \tfrac{c}4, &
-    % d &= \tfrac{c}2, &
-    % s &= {c}, &
-    % p &= \tfrac{c}4, &
-    % \Omega &= [\tfrac{2}{c}, \tfrac{4}{c}]
 \end{align}
 with $c = \sqrt{d_x}$.
 Scaling with the input dimensionality aims to roughly ensure that data with one-dimensional inputs and data with two-dimensional inputs are equally difficult.
@@ -338,7 +329,6 @@ After these summaries, the next ten pages show the full results:
 \cref{tab:synthetic_weakly-periodic-1,tab:synthetic_weakly-periodic-2} tabulate the results for the weakly periodic process,
 \cref{tab:synthetic_sawtooth-1,tab:synthetic_sawtooth-2} tabulate the results for the sawtooth process, and
 \cref{tab:synthetic_mixture-1,tab:synthetic_mixture-2} tabulate the results for the mixture process.
-%We first analyse the results for the Gaussian experiments.
 
 \paragraph{A word of caution}
 After this page, we will proceed to present all aforementioned tables.
@@ -639,7 +629,6 @@ As this thesis is primarily concerned with non-latent-variable neural processes,
 
 \afterpage{\FloatBarrier}
 
-
 \paragraph{Performance of CNPs in Gaussian experiments}
 \looseness=-1
 In the Gaussian experiments, the ground-truth $f$ is a Gaussian process, so we can compute the conditional neural process approximation (CNPA; \cref{\xrprefix{def:cnpa}}).
@@ -657,9 +646,7 @@ In contrast, the ACNP comes close, but is not quite able to converge onto the CN
 and the CNP is not able to come close at all.
 %
 For OOID interpolation, the performance of the ACNP and CNP deteriorates.
-% When the ACNP and CNP are evaluated outside of the training range, their performance deteriorates.
 The ConvCNP, on the other hand, performs equally well in the interpolation and OOID interpolation tasks.
-% has equally good interpolation performance beyond the training range as inside the training range.
 This clearly demonstrates the benefits of translation equivariance,
 which allows ConvCNP to generalise to unseen parts of the input space. 
 
@@ -849,7 +836,6 @@ Hence, at every autoregressive sampling step, the AR ConvCNP effectively ``renew
 compares predictions by the best-performing models in the sawtooth synthetic experiment with one-dimensional inputs ($d_x=1$) and two-dimensional outputs ($d_y=2$); see \cref{tab:synthetic_sawtooth-1}.
 Moreover, \cref{fig:synthetic_non-Gaussian_sawtooth_collape} illustrates the that, although the predictions of the ConvCNP are Gaussian, the AR ConvCNP can produce appropriate multi-modal predictions.
 
-
 \section{Sim-to-Real Transfer with the Lotka--Volterra Equations}
 \label{sec:experiments:predprey}
 
@@ -895,7 +881,6 @@ A digital version extracted from the original graph by \textcite{MacLulich:1937:
 is available at \url{http://people.whitman.edu/~hundledr/courses/M250F03/LynxHare.txt} \parencite{Hundley:2022:Introduction_to_Mathematical_Modelling}.
 \Textcite{Hundley:2022:Introduction_to_Mathematical_Modelling},
 the author of this digital source,
-% says that the hare--lynx data set is scanned from a graph originally published by \textcite{MacLulich:1937:Fluctuations_in_the_Numbers_of_the_Varying_Hare}.
 says that other authors caution that the hare--lynx data is actually a composition of multiple time series, and presents the data with that caution.
 We, therefore, also present the data with this caution.
 \Cref{fig:hare-lyxn_data} visualises the hare--lynx data set.
@@ -1063,7 +1048,6 @@ We conclude that the neural processes trained on our simulator can be used to pr
 However, these predictions are not perfectly calibrated,
 so we also conclude that there is a statistical mismatch between the simulator and the real hare--lynx data.
 \looseness=-1
-% between our stochastic version of the Lotka--Volterra equations and the real hare--lynx data.
 That there is a statistical mismatch is corroborated by the observation
  that the log-likelihoods for the real data are generally much lower than for the simulated data.
 
@@ -1073,10 +1057,6 @@ it works in a model's favour to generally produce predictions with bigger uncert
 whereas the AR ACNP and ANP generally produce bigger uncertainties.
 Consequently, the convolutional model comparably perform worse on the real data,
 and the AR ACNP and ANP comparably perform better.
-% Similarly, the ConvNP trained and evaluated with the ELBO objective produces the smallest uncertainty for the simulated data. 
-% Even though its performance on the simulated data is reasonable,
-% the ConvNP's predictions on the real data completely miss the held-out data.
-
 
 \section{Electroencephalography Experiments}
 \label{sec:experiments:eeg}
@@ -1188,7 +1168,6 @@ This strong performance of the ConvGNP is confirmed by \cref{fig:eeg_prediction}
 \index{downscaling}
 In the last experiment, we explore a climate science application.
 In climate modelling, future projections are generated by integrating the atmospheric equations of motion forward in time using a numerical solver.
-%In environmental modelling, a large effort is spent on simulating the atmospheric equations of motion to make predictions for the future.
 Unfortunately, computational constraints typically limit the spatial resolution of those projections to around \SI{100}{km} \parencite{Eyring:2016:Overview_of_the_Coupled_Model},
 which is insufficient to resolve extreme events and produce local predictions \parencite{Stocker:2013:Climate_Change_2013,Maraun:2017:Towards_Process-Informed_Bias_Correction_of}.
 Statistical downscaling methods attempt to address this issue by refining the coarse-grained outputs
@@ -1277,13 +1256,8 @@ In this experiment, we will consider two statistical downscaling tasks:
 the \emph{VALUE task} and the \emph{Germany task}.
 The VALUE task follows the VALUE framework \parencite{Maraun:2015:VALUE_A_Framework_to_Validate}, which provides results for a large ensemble of frequently used downscaling methods on a standardised set of tasks.
 More specifically, for the VALUE task, we consider experiment 1a from the VALUE framework
-%For the VALUE task, we follow the setup of \citeauthor{Vaughan:2022:Convolutional_Conditional_Neural_Processes_for}'s baseline experiment.
-%and compare against existing statistical downscaling approaches in a standardised experimental setup.
-%The standardised setup is experiment 1a from the VALUE framework \parencite{Maraun:2015:VALUE_A_Framework_to_Validate}.
-%Following experiment 1a from the VALUE framework, % \citeauthor{Vaughan:2022:Convolutional_Conditional_Neural_Processes_for}'s baseline experiment,
 and estimate the maximum daily temperature at 86 weather stations around Europe.
 To estimate these temperatures, we follow \textcite{Vaughan:2022:Convolutional_Conditional_Neural_Processes_for} and use 25 coarse-grained ERA-Interim reanalysis variables \parencite{Dee:2011:The_ERA-Interim_Reanalysis_Configuration_and} in combination with \SI{1}{km}--resolution elevation data \parencite{EROSC:1997:GPTOTO30}.
-%\parencite{Danielson:2011:Global_Multi-Resolution_Terrain_Elevation_Data}  high-resolution for MLP models
 We consider the following 25 ERA-Interim reanalysis variables:
 \begin{itemize}
     \item at the surface: maximum temperature, mean temperature, northward wind, and eastward wind;
@@ -1302,7 +1276,6 @@ We consider the following 25 ERA-Interim reanalysis variables:
 These variables are bilinearly interpolated to a $2^\circ$-resolution grid.
 The temperature data is provided by the VALUE framework at \url{http://www.value-cost.eu/data} and the ERA-Interim reanalysis data is available at \url{https://www.ecmwf.int/en/forecasts/datasets/reanalysis-datasets/era-interim}.
 The \SI{1}{km}--resolution elevation data is available at
-%\url{https://doi.org/10.5066/F7J38R2N} high-resolution for MLP models
 \url{https://doi.org/10.5066/F7DF6PQS}.
 The locations of the weather stations around Europe are visualised in \cref{fig:locations_value}.
 
@@ -1367,30 +1340,6 @@ We call these variations of the ConvCNP and ConvGNP the \emph{MLP ConvCNP} and \
     }
     \label{tab:climate_downscaling_results}
     \small
-    % Median of stationwise MAE:
-    % \begin{tabular}{lcccc}
-    %     \toprule
-    %     \multirow{2}{*}{Model} & VALUE & & Germany &  \\
-    %                            & Log-lik. & MAE & Log-lik.~\hspace{2pt} & MAE \\
-    %     \midrule
-    %     ConvCNP (MLP)
-    %         & $\shortminus 1.66 \, {\scriptstyle \pm 0.00}$
-    %         & $\mathbf{1.00} \, {\scriptstyle \pm 0.04}$
-    %         & $\shortminus 1.62 \, {\scriptstyle \pm 0.01}$
-    %         & $\mathbf{0.96} \, {\scriptstyle \pm 0.02}$ \\
-    %     ConvGNP (MLP)
-    %         & $\mathbf{\shortminus 1.63} \, {\scriptstyle \pm 0.00}$
-    %         & $\mathbf{0.97} \, {\scriptstyle \pm 0.03}$
-    %         & $\mathbf{\shortminus 1.45} \, {\scriptstyle \pm 0.00}$
-    %         & $1.07 \, {\scriptstyle \pm 0.02}$ \\
-    %     Best VALUE PP model
-    %         &
-    %         & $1.30 \, {\scriptstyle \pm 0.08}$ \\
-    %     Best VALUE model
-    %         &
-    %         & $\mathbf{1.08} \, {\scriptstyle \pm 0.09}$ \\
-    %     \bottomrule
-    % \end{tabular}
     % Mean of stationwise MAE:
     \begin{tabular}{lcccc}
         \toprule
@@ -1425,8 +1374,6 @@ On each of the five folds, we evaluate the neural process, using the four other 
 
 \paragraph{Results}
 The VALUE framework includes results for 52 downscaling approaches \parencite[\url{http://www.value-cost.eu/};][]{Maraun:2015:VALUE_A_Framework_to_Validate,Gutirrez:2019:An_Intercomparison_of_a_Large}.
-%The best performing approach in this comparison is shown in \cref{tab:climate_downscaling_results}.
-%Many of these approaches, however, like \note{explain quantile mapping (MOS; REF)}, are not at all comparable to the neural process approach.
 Amongst these 52 approaches,
 the category that is comparable to our neural process approach is called \emph{perfect prognosis} (PP) \parencite{Maraun:2010:Precipitation_Downscaling_Under_Climate_Change}.
 \Cref{tab:climate_downscaling_results} shows the results of the MLP ConvCNP and MLP ConvGNP on the VALUE and Germany downscaling tasks and compares these results to the overall best and the best PP approach from the VALUE framework.
@@ -1545,7 +1492,6 @@ We must therefore innovate on AR ConvCNP design to come up with a convolutional 
         and high-resolution component $D\ss{hr}$.
         The low-resolution context data $D\ss{lr}$ consists of the 25 coarse-grained ERA-Interim reanalysis variables.
         The medium-resolution $D\ss{mr}$ and high-resolution context data $D\ss{hr}$ both consist of the station observations and the \SI{1}{km}--resolution elevation data.
-        %The high-resolution context data $D\ss{hr}$ also consists of the station observations and the \SI{1}{km}--resolution elevation data.
         See \cref{sec:experiments:climate} for more details.
         The functions $\mathsf{data}(D)$ and $\mathsf{density}(D)$ produce respectively the data channel
         and density channel for context data $D$;
@@ -1578,43 +1524,22 @@ For example,
 predictions might depend on detailed orographic information nearby,
 but more on general orographic shapes farther away.
 
-% The motivation for this architecture is as follows.
-% In the autoregressive sampling procedure (\cref{\xrprefix{proc:ar}}),
-% the model is evaluated at one target point at a time.
-% Consider such a target point.
-% Let us zoom in on how the prediction for that target point depends on all input to the model: earlier AR samples from the model, the coarse-grained ERA-Interim reanalysis data, and the \SI{1}{km}--resolution elevation data.
-% The earlier AR samples from the model represent fine-grained weather predictions.
-% Since the local weather changes on a fairly short spatial scale, it seems reasonable that the prediction for the target point more strongly depends on earlier samples nearby, and less so on earlier samples farther away.
-% The coarse-grained ERA-Interim reanalysis data, on the other hand, includes features which vary on a long spatial scale.
-% For these features, it seems reasonable to conclude a dependence across all of Germany.
-% Lastly, for the \SI{1}{km}--resolution elevation data,
-% the prediction for the target point likely depends on detailed orographic information nearby,
-% but more on general orographic features farther away.
-% The general trend is that the prediction likely depends on short-length-scale details nearby the target point, and that this dependence weakens as we move farther away, starting to depend more on broad-stroke long-length-scale details.
-% It is this trend that the architecture attempts to exploit.
-
 \Cref{fig:multires_arch} depicts the multiscale architecture.
 The architecture is a cascade of three convolutional deep sets, parametrised by three CNNs;
 please see the caption.
 The low-resolution CNN handles the context data $D\ss{lr}$ with a long spatial length scale.
 Because these features have a long spatial length scale, the CNN can get away with a low-resolution discretisation.
-%This, in turn, allows the CNN to have a far-ranging discretisation, capturing long-scale dependencies.
 The output of the low-resolution CNN then feeds into a medium-resolution CNN.
 The medium-resolution CNN handles the context data $D\ss{mr}$ with a medium spatial length scale and has a medium-resolution discretisation.
-%and captures medium-scale dependencies.
 Finally, the output of the medium-resolution CNN feeds into a high-resolution CNN.
 This CNN handles the context data $D\ss{hr}$ with a short spatial length scale and has a high-resolution discretisation.
 
 The key to the computational efficiency of this architecture is that we construct the high-resolution discretisation
 only locally to the target points: a small square covering $0.25^\circ$ more than the most extremal target points.
-% Similarly, the medium-resolution discretisation dovers a medium-sized square covering $5^\circ$  more than the most extremal target points.
-% The low-resolution grid, however, covers all of Germany.
 If the target points are confined to a small region, then the high-resolution grid will also be small, covering only $0.25^\circ$ more than that region.
 Crucially, the high-resolution grid will not be constructed over all of Germany, like it would if we were to more naively apply the ConvCNP with a high-resolution discretisation, incurring prohitive computational cost.
 Even though the high-resolution grid is only constructed locally to the target points, the model can still capture long-range dependencies via the medium-resolution and low-resolution grids.
 Namely, the medium-resolution grid is a square covering $5^\circ$ more than the most extremal target points, and the low-resolution grid covers all of Germany; see \cref{fig:multires_arch}.
-%The central assumption of the architecture is that predictions for target points increasingly depend on broad-stroke features of context data farther away rather than high-resolution details.
-%more on context data farther away depends more on broad-stroke features rather than high-resolution details.
 To utilise this computational gain, the target points must be confined to a small region.
 This perfectly synergises with the autoregressive sampling procedure (\cref{\xrprefix{proc:ar}}),
 because this procedure evaluates the model one target point at a time.
@@ -1647,29 +1572,6 @@ The same holds for the weather station observations (and earlier AR samples).
     }
     \label{tab:climate_fusion_results}
     \small
-    % Median of stationwise MAE:
-    % \begin{tabular}{lcccc}
-    %     \toprule
-    %     \multirow{2}{*}{Model} & Downscaling & & Fusion~ &  \\
-    %                            & Log-lik.~~~~~~ & MAE & Log-lik & MAE  \\
-    %     \midrule
-    %     ConvCNP (MLP)
-    %         & $\shortminus 1.55 \, {\scriptstyle \pm 0.01}$
-    %         & $\mathbf{0.91} \, {\scriptstyle \pm 0.02}$
-    %         & $\shortminus 1.55 \, {\scriptstyle \pm 0.01}$ 
-    %         & $0.91 \, {\scriptstyle \pm 0.02}$ \\
-    %     ConvGNP (MLP)
-    %         & $\mathbf{\shortminus 1.36} \, {\scriptstyle \pm 0.01}$
-    %         & $0.97 \, {\scriptstyle \pm 0.03}$
-    %         & $\shortminus 1.38 \, {\scriptstyle \pm 0.01}$
-    %         & $0.97 \, {\scriptstyle \pm 0.03}$ \\
-    %     ConvCNP (AR)
-    %         & $\mathbf{\shortminus 1.36} \, {\scriptstyle \pm 0.01}$
-    %         & $0.97 \, {\scriptstyle \pm 0.04}$
-    %         & $\mathbf{\shortminus 1.31} \, {\scriptstyle \pm 0.01}$
-    %         & $\mathbf{0.79} \, {\scriptstyle \pm 0.04}$ \\
-    %     \bottomrule
-    % \end{tabular}
     % Mean of stationwise MAE:
     \begin{tabular}{lcccc}
         \toprule
@@ -1759,8 +1661,6 @@ Therefore, in the sim-to-real setting,
 post-hoc uncertainty calibration using a small part of the real data might be beneficial.
 Post-hoc uncertainty calibration has been shown to help for classification with neural networks \parencite{Guo:2017:On_Calibration_of_Modern_Neural,Tomani:2021:Post-Hoc_Uncertainty_Calibration_for_Domain}.
 
-%To this end, improving calibrating by appropriately inflating the uncertainty post-hoc could be further investigated.
-
 Third, in \cref{sec:experiments:eeg}, we pushed the limits of neural process models in an experiment with electroencephalography data.
 The FullConvGNP performed best, by a large margin, with the AR ConvCNP ranking second.
 Convolutional models again generally outperformed non-convolutional models.
@@ -1776,7 +1676,6 @@ The AR ConvCNP demonstrated performance on par with the ConvGNP.
 In a variation on the downscaling experiment, involving data fusion, the AR ConvCNP was even able to outperform the ConvCNP and ConvGNP.
 We remark, however, that \citeauthor{Vaughan:2022:Convolutional_Conditional_Neural_Processes_for}'s approach for the ConvCNP and ConvGNP was not designed for this data fusion setup. 
 These climate downscaling and fusion experiments demonstrate the considerable performance and flexibility of convolutional deep sets (\cref{\xrprefix{thm:conv_deep_set}}) and more generally the neural process framework.
-
 
 All in all, when stationarity is a reasonable assumption,
 convolutional neural process models

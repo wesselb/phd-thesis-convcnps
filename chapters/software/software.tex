@@ -49,9 +49,6 @@ Intead, one would prefer to make this change in only one place.
 This can be achieved by carefully crafting modular, composable building blocks, and constructing neural process models by putting together these building blocks in different ways.
 Then, when a building block is improved, that improvement immediately benefits every model built from that block.
 
-%The abstraction is simple.
-%It almost certainly can already be found in existing codebases, though perhaps not in the explicit form of our proposal.
-%Nevertheless, the abstraction is effective and formed the foundation for a concise and modular implementation of all models in the previous chapter.
 Two desirable qualities of a software design are \emph{low coupling} and \emph{high cohesion} \parencite{Stevens:1974:Structured_Design}.
 Low coupling means that modules communicate via simple and transparant interfaces
 and that connections between modules are minimised;
@@ -201,26 +198,11 @@ We now give the definition of a coder.
     into an \emph{output function} $\X\ss{o} \to Z\ss{o}$.
 \end{definition}
 
-% \index{coder!complete}
-% \index{coder!partial}
-% \begin{definition}[Complete coder, partial coder]
-%     \label{def:complete_coder}
-%     If always $\X\ss{t} = \X\ss{o}$, then the coder is called \emph{complete}.
-%     Otherwise, the coder is called \emph{partial}.
-% \end{definition}
-
 The most important example of a coder is the map from a data set $D$ and some target inputs $\vx$ to the prediction $P_\vx \pi_\theta(D)$ for the corresponding target outputs.
 For this coder,
 the \emph{input function} is the data set $D$,
 the \emph{target domain} is the set of target inputs $\vx$, and
 the \emph{output function} is the prediction $P_\vx \pi_\theta(D)$ for the target outputs.
-%Since this prediction is always a prediction at the target inputs---any other inputs would not make sense---this coder is \emph{complete}.
-% For example, suppose that the prediction $P_\vx \pi_\theta(D)$ consists of marginal means and variances.
-% Then, by representing the data set $D$ as a function $\X \to \Y$,
-% \begin{equation}
-%     (D, \vx) \mapsto P_\vx \pi_\theta(D) 
-%     \colon \underbracket[1pt]{\Y^\X\vphantom{[}}_{Z_1^{\X_1}}{} \times \underbracket[1pt]{\vphantom{[}\X}_{\vphantom{Z_1^{\X_1}}2^\X} \to \underbracket[1pt]{(\R \times [0, \infty))^\X}_{Z_2^{\X_2}}.
-% \end{equation}
 
 \index{coder!composition}
 In practice, a coder is a function \code{coder(xz, z, x)} where \code{(xz, z)} is the input function and \code{x} is the target domain.
@@ -238,13 +220,6 @@ Moreover, the output of the coder \code{xz2, z2 = coder(xz, z, x)} is the output
         \hspace{-2pt}
     \code{)}
 \end{equation}
-% This coder is complete if always \code{xz2 == x};
-% otherwise, the coder is partial
-% (\Cref{def:complete_coder}). 
-% Intuitively, complete coders allow you to control the domain of the output function with the target domain.
-
-% In \code{neuralprocesses}, the components \code{encoder} and \code{decoder} of a model are complete coders.
-% The building blocks of \code{encoder} and \code{decoder}, however, are more elementary coders, and these elementary coders might be partial.
 
 An important property of coders is that they can be composed.
 This property is what enables a compositional construction of neural processes.
@@ -425,7 +400,6 @@ In an ideal world, there would only be a single, gold-standard implementation of
 Such an implementation needs to be flexible enough to suit every project's needs.
 This flexibility, however, needs to not come at the cost of simplicity of use.
 The abstraction of coders hopes to strike this balance right.
-
 
 \end{document}
 

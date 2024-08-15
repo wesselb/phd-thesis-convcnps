@@ -2,8 +2,6 @@
 \input{../../preamble/preamble}
 \addbibresource{../../bibliography.bib}
 
-\usepackage{printlen}
-
 \usepackage{xr}
 \externaldocument[xr-]{../../main}
 \newcommand{\xrprefix}[1]{xr-#1}
@@ -30,9 +28,7 @@ As the name suggests, this is the objective that neural processes aim to optimis
 Then, in \cref{sec:predmap:np_approximations}, we define \emph{neural process approximations}.
 A neural process approximation precisely defines what a class of neural processes targets.
 Finally, in \cref{sec:predmap:consistency}, we analyse how a neural process approximation is estimated in practice.
-We engage in a discussion about convergence. % of this estimator.
-
-%We will assume no prior knowledge of meta-learning nor neural processes, though the introductions to these concepts will be terse.
+We engage in a discussion about convergence.
 
 \paragraph{Attributions and relationship to prior work}
 Prediction maps and translation equivariance of prediction were first considered by \fulltextcite{Foong:2020:Meta-Learning_Stationary_Stochastic_Process_Prediction} and later further analysed by \fulltextcite{Bruinsma:2021:The_Gaussian_Neural_Process}.
@@ -70,15 +66,12 @@ combine algorithmic stability with PAC-Bayes bounds;
 \textcite{Jose:2021:Information-Theoretic_Generalization_Bounds_for_Meta-Learning,
 Chen:2021:Generalization_Bounds_for_Meta-Learning_An,
 Rezazadeh:2021:Conditional_Mutual_Information-Based_Generalization_Bound}
-% Jose:2022:Information-Theoretic_Analysis_of_Epistemic_Uncertainty}  too late?
 use bounds based on mutual information, which are similar to PAC-Bayes bounds; and
 \textcite{Khodak:2019:Provable_Guarantees_for_Gradient-Based_Meta-Learning,
 Denevi:2019:Online-Within-Online_Meta-Learning}
 apply tools from convex analysis.
 Although the theoretical definitions that we propose in this chapter could be used to engage in similar analyses for neural processes,
 we will not get that far.
-%Since neural processes are based on stochastic processes,
-%the mathematical objects that we will consider are technically involved.
 We will spend our effort on establishing a solid theoretical grounding for neural processes.
 
 \index{ground truth}
@@ -111,8 +104,7 @@ Henceforth, to simplify the notation, we will drop the scripts $\vardot_m$, $\va
 Meta-learning algorithms aim to make the best possible prediction for a target set given a context set.
 For a meta--data set sampled from the generative model, the best possible prediction is given by the posterior over a target set given the context set.
 More specifically, for a context set $D$ and target inputs $\vx$, the desired prediction for the target outputs $\vy$ is given by
-%the posterior of $f(\vx)$ given the target inputs $\vx$ and $D$,
-$p(f(\vx) + \vep \cond \vx, D)$. % plus additional additive Gaussian noise with variance $\sigma_f^2$.
+$p(f(\vx) + \vep \cond \vx, D)$.
 We more concisely define this solution with the \emph{posterior prediction map}.
 
 \index{posterior prediction map}
@@ -138,7 +130,7 @@ In addition, for noise standard deviation $\sigma > 0$, the law of $g(\vx)$ plus
 Note that $P^\sigma_\vx \mu$ always has a density with respect to the Lebesgue measure given by $\vx \mapsto \E_g[\Normal(\vy \cond g(\vx), \sigma^2 \mI)]$.
 With this notation, to solve the meta-learning problem, for a context set $D$ and target inputs $\vx$, the desired prediction for the target outputs $\vy$ is given by $P^{\sigma_f}_\vx \pi_f(D)$.
 
-The central premise of the prediction map framework is that a neural process aims to approximate the posterior prediction map $\pi_f$. % and associated noise $\sigma_f$. 
+The central premise of the prediction map framework is that a neural process aims to approximate the posterior prediction map $\pi_f$.
 This means that, for every data set $D \in \D$, the neural process attempts to approximate $\pi_f(D)$.
 Let us elaborate on this simple, but important observation.
 
@@ -220,7 +212,7 @@ The particular loss function that we choose is called the \emph{neural process o
 \end{equation}
 This loss function is called the neural process objective because a Monte Carlo approximation over the tasks $(D_m)_{m=1}^M$
 recovers the \emph{empirical} neural process objective (\cref{\xrprefix{def:empirical_neural_process_objective}}) up to a constant that does not depend on $(\pi, \sigma)$.
-Consistent with the notation previously introduced for $q$, let $q_\theta(\vardot\cond \vx, D)$ denote the density of $P^\sigma_\vx \pi(D)$ with respect to the Lebesgue measure. % with $\theta = \set{\sigma}$.
+Consistent with the notation previously introduced for $q$, let $q_\theta(\vardot\cond \vx, D)$ denote the density of $P^\sigma_\vx \pi(D)$ with respect to the Lebesgue measure.
 Then\index{empirical neural process objective}
 \begin{align}
     \L\ss{NP}(\pi, \sigma)
@@ -237,9 +229,6 @@ The neural process objective raises three important points of concern, which we 
     \item
         The neural process objective $\L\ss{NP}$ is defined by taking an expectation of the function
         $(D, \vx) \mapsto \KL(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D))$
-        % \begin{equation} \label{eq:KL_dependence}
-        %     (D, \vx) \mapsto \KL(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D))
-        % \end{equation}
         over $p(D)p(\vx)$.
         However, it is not at all clear whether this function is even measurable.
         For example, measurability of this function depends on the regularity of $D \mapsto \pi_f(D)$ and $D \mapsto \pi(D)$, which thus far remain unaddressed.
@@ -248,7 +237,7 @@ The neural process objective raises three important points of concern, which we 
     \item 
         The neural process objective $\L\ss{NP}$ depends on $p(D)$ and $p(\vx)$.
         Therefore, if we minimise $\L\ss{NP}$ over a potentially restricted collection of prediction maps,
-        then the minimiser depends on $p(D)$ and $p(\vx)$. % especially if $\L\ss{NP}$ was minimised over a restricted collection of prediction maps.
+        then the minimiser depends on $p(D)$ and $p(\vx)$.
         In \cref{sec:predmap:np_approximations}, we define two classes of minimisers of $\L\ss{NP}$.
         We characterise these minimisers to determine how they depend on $p(D)$ and $p(\vx)$.
     \item 
@@ -325,7 +314,6 @@ if $\vx_i \to \vx$, then $\mu_{\vx_i} \weakto \mu_{\vx}$ where $\weakto$ denotes
 Note that this condition is automatically satisfied if $f$ is a continuous process, which means that the condition is weaker than pathwise continuity.
 Unfortunately, this assumption is still too strong, which we illustrate with an example.
 Consider the previous example of $f$ such that $f(\vx) \sim \Normal(\vnull,\mI)$ for all $\vx \in I$;
-%Gaussian process $f$ such that $\cov(f(0), f(0)) > 0$ but $\cov(f(x), f(y))=0$ for all $x \neq y$;
 that is, like conditional neural processes, $f$ does not model dependencies.
 Since $\cov(f(1/n), f(0)) \not\to \cov(f(0), f(0))$, $(x, y) \mapsto \cov(f(x), f(y))$ is not continuous at $(x, y) = (0, 0)$.
 Consequently, $\vx \mapsto \mu_\vx$ is not weakly continuous at inputs $\vx$ with repeated elements.
@@ -378,15 +366,6 @@ for some $\e > 0$.
 Choosing $p = 4$ and $\e = \tfrac14$ works for many kernels.
 More generally, if $k$ is H\"older continuous with any H\"older exponent, then we can always find large enough $p \ge 2$ and small enough $\e > 0$ such that \eqref{eq:limit_condition} is satisfied.
 
-% The proof of Kolmogorov's continuity criterion proceeds by controlling $f$'s modulus of continuity $\omega_f$:
-% \begin{equation}
-%     \omega_f(h) = \sup_{x, y \in \X\,:\, \abs{x - y} < h} \abs{f(x) - f(y)}.
-% \end{equation}
-% As part of our analysis of $f$, we will also require control of $\omega_f$.
-% \note{Refer to appendix.}
-%
-% \note{Examples: Gaussian process, sawtooth.}
-
 The prediction map framework is centred around approximating the posterior prediction map $\pi_f$ with another simpler, more tractable prediction map $\pi$.
 Let $\mu_f$ denote the law of the ground-truth stochastic process $f$.
 
@@ -413,8 +392,7 @@ Let $\mu_f$ denote the law of the ground-truth stochastic process $f$.
     and $Z(\vx, \vy) = \E_f[r(\vy - f(\vx))]$.
 \end{definition}
 
-Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ with positive probability for some $x \in \X$, contradicting \cref{assum:f_regularity}. %pathwise continuity of $f$.
-% For notational convenience, we denote the Radon--Nikodym derivative by $\pi'(D)(f)$, dropping the subscript $\vardot_{f}$ to not confuse this dependence with the dependence on its argument $f$.
+Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ with positive probability for some $x \in \X$, contradicting \cref{assum:f_regularity}.
 To approximate $\pi_f$, we must be concerned with regularity of $\pi_f$.
 The following definition captures the basic form of regularity of a prediction map: continuity.
 Recall that $\weakto$ denotes convergence in the weak topology.
@@ -434,29 +412,11 @@ Recall that $\weakto$ denotes convergence in the weak topology.
 
 The following proposition says that any posterior $\pi_f(D)$ satisfies the same $L^p$-H\"older and integrability condition as $f$ (\cref{assum:f_regularity}) and that $\pi_f$ is indeed continuous.
 
-% \begin{proposition}[Regularity of posterior prediction map, part one]
-%     \label{prop:posterior_prediction_map_regularity:part_one}
-%     ~\begin{proplist}[topsep=-5pt]
-%         \item 
-%             \label{prop:posterior_prediction_map_Holder}
-%             For all data sets $D \in \D$, there exists a constant $c_D > 0$ such that
-%             \begin{equation}
-%                 \norm{f(x) - f(y)}_{L^p(\pi_f(D))} \le c_D \abs{x - y}^\beta
-%                 \quad\text{whenever}\quad
-%                 \abs{x - y} < r.
-%             \end{equation}
-%             In addition, $\norm{f(x)}_{L^p(\pi_f(D))} < \infty$ for all $x \in \X$.
-%         \item 
-%             \label{prop:posterior_prediction_map_is_continuous}
-%             $\pi_f$ is continuous.
-%     \end{proplist}
-% \end{proposition}
 \index{posterior prediction map!regularity}
 \statement{statements/regularity_part_one.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_predmap:motivation}}.
 \end{proof}
-
 
 We have setup the basic definitions of the theoretical framework.
 We will now proceed with our formal analysis of neural processes.
@@ -497,9 +457,6 @@ We now formalise the space of noisy prediction maps.
     $(\pi_i, \sigma_i)_{i \ge 1}$ converges to $(\pi, \sigma)$ whenever
     (1) $P_\vx \pi_i(D)\weakto P_\vx\pi(D)$ for all $\vx \in I$ and $D \in \D$ and
     (2) $\sigma_i\to \sigma$.
-    %We call this the \emph{weak topology} on $\overline{\M}$ and $\overline{\M}\ss{c}$.
-    % Endow $\mathcal{M}$ and $\overline{\mathcal{M}}$ with the topology of pointwise convergence:
-    % $(\pi_i, \sigma_i) \to (\pi, \sigma)$ if $\pi_i(D) \weakto \pi(D)$ for all $D \in \mathcal{D}$ and $\sigma_i \to \sigma$.
 \end{definition}
 
 Fox example, under \cref{def:noisy_prediction_maps}, a function $g \colon \overline{\M} \to \R$ on the space of noisy prediction maps is continuous if $P_\vx \pi_i(D) \weakto P_\vx\pi(D)$ for all $\vx \in I$ and $D \in \D$ and $\sigma_i \to \sigma$ imply that $g(\pi_i, \sigma_i) \to g(\pi, \sigma)$.
@@ -520,9 +477,6 @@ It is not at all clear that the expectations in \cref{def:neural_process_objecti
 The following proposition addresses this.
 \Cref{prop:neural_process_objective_is_well-defined} looks innocent, but its proof unfortunately is considerably technical.
 
-% \begin{proposition} \label{prop:neural_process_objective_is_well-defined}
-%     The neural process objective $\L\ss{NP}$ is well defined.
-% \end{proposition}
 \statement{statements/neural_process_objective_well-defined.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_predmap:neural_process_objective}}.
@@ -530,12 +484,8 @@ The following proposition addresses this.
 
 We next show that $\L\ss{NP}$ is lower semi-continuous.
 It is also true that $\L\ss{NP}$ is convex, which follows directly from convexity of the Kullback--Leibler divergence \parencite[Lemma 7.2;][]{Gray:2011:Entropy_and_Information_Theory} and linearity of expectation, but we will not need this property.
-%This establishes $\L\ss{NP}$ as an appropriate objective function that we can use to approximate $(\pi_f, \sigma_f)$.
 
 \statement{statements/neural_process_objective_lsc.tex}
-% \begin{proposition} \label{prop:neural_process_objective_is_lower_semi-continuous}
-%     The neural process objective $\L\ss{NP}$ is weakly lower semi-continuous.
-% \end{proposition}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_predmap:neural_process_objective}}.
 \end{proof}
@@ -547,21 +497,10 @@ Unfortunately, minimising $\L\ss{NP}$ over all possible noisy prediction maps is
 Instead, we could hope to approximate $(\pi_f, \sigma_f)$ by minimising $\L\ss{NP}$ over a tractable, large-enough class of noisy prediction maps.
 This is the approach that we will consider in the next section.
 
-
-% \begin{proposition} \label{prop:neural_process_objective_minimiser}
-%     Assume that $\tI \sub I$ is dense.
-%     Then $(\pi, \sigma)$ is a minimiser of $\L\ss{NP}$ over $\overline{\M}\ss{c}$ if and only if
-%     \begin{equation}
-%         \pi_f|_{\tD} = \pi|_{\tD}
-%         \quad\text{and}\quad
-%         \sigma = \sigma_f.
-%     \end{equation}
-% \end{proposition}
 \statement{statements/neural_process_objective_minimiser.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_predmap:neural_process_objective}}.
 \end{proof}
-
 
 Note that \cref{prop:neural_process_objective_minimiser} minimises over $\overline{\M}\ss{c}$ rather than $\overline{\M}$.
 This restriction is necessary, because otherwise some of the aleatoric noise $\sigma_f$ can be absorbed in the epistemic uncertainty, which means that the minimiser would not be unique.
@@ -630,7 +569,6 @@ Analysing the properties of neural process approximations is a way to understand
     \label{fig:overview_theory}
 \end{figure}
 
-
 \index{variational family}
 \index{neural process}
 \begin{definition}[Variational family, neural process]
@@ -696,16 +634,12 @@ The following definitions set up the notation that we will use to define CNPs an
 If a prediction map $\pi_i$ is subscripted, for example by $i$, we more simply denote $m_i = m_{\pi_i}$, $k_i = k_{\pi_i}$, and $v_i = v_{\pi_i}$.
 Similarly, for the ground-truth stochastic process $f$, we more simply denote $m_f = m_{\pi_f}$, $k_f = k_{\pi_f}$, and $v_f = v_{\pi_f}$.
 
-% Let $\pi\colon\D \to \Pc$ be a prediction map and $D \in \D$ a data set.
-% Because $\pi(D)$ is only $p(\vx)$-regular rather than continuous, $m_\pi(D)$, $k_\pi(D)$, and $v_\pi(D)$ are continuous almost everywhere rather than continuous everywhere.
-
 We will now define the classes of conditional neural processes and Gaussian neural processes.
 CNPs require the following technical condition, which we already alluded to in \cref{sec:predmap:prelims}.
 
 \begin{assumption} \label{assum:repeated_elements_is_null_set}
     Assume that the collection of inputs $\vx \in I$ with repeated elements is a $p(\vx)$-null set.
 \end{assumption}
-
 
 \index{neural process!conditional}
 \begin{definition}[Conditional neural process; CNP]
@@ -776,24 +710,11 @@ Having defined two variational families $\Qc\ss{G,MF}$ and $\Qc\ss{G}$, we next 
 The following propositions characterise CNPAs and GNPAs.
 Whereas \cref{prop:neural_process_objective_minimiser} requires the assumption that $\tI$ is dense in $I$, GNPAs and CNPAs admit weaker assumptions on $\tI$.
 
-% \begin{proposition}[Characterisation of CNPA] \label{prop:cnpa_characterisation}
-%     Assume that $\inf_{\Qc\ss{G,MF}} \L\ss{NP} < \infty$.
-%     Also assume that $\tI$ is dense in $I_N$ for some $N \ge 1$.
-%     Then a noisy prediction map $(\pi, \sigma) \in \Qc\ss{G,MF}$ is a CNPA if and only if
-%     \begin{equation} \label{eq:cnpa_characterisation}
-%         m_\pi|_{\tD} = m_f|_{\tD}
-%         \quad
-%         \text{and}
-%         \quad
-%         v_\pi|_{\tD} + \sigma^2 = v_f|_{\tD} + \sigma_f^2,
-%     \end{equation}
-% \end{proposition}
 \index{neural process approximation!characterisation}
 \statement{statements/cnpa_characterisation.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_predmap:np_approximations}}.
 \end{proof}
-
 
 If $\tD = \D$, then $(\pi, \sigma) \in \Qc\ss{G,MF}$ is a CNPA if and only if $m_{\pi} = m_f$ and $v_{\pi} + \sigma^2 = v_f^2 + \sigma_f^2$.
 This means that a CNPA is \emph{not} unique:
@@ -804,20 +725,6 @@ We therefore see that $\tD$ determines the approximation properties of CNPAs.
 \Cref{prop:cnpa_characterisation} requires that $\tI$ is dense in $I_N$ for some $N \ge 1$.
 This means that a CNPA can be found even if the target set size is only one.
 
-% \begin{proposition}[Characterisation of GNPA] \label{prop:gnpa_characterisation}
-%     Assume that $\inf_{\Qc\ss{G}} \L\ss{NP} < \infty$.
-%     Also assume that $\tI$ is dense in $I_N$ for some $N \ge 2$.
-%     Then a noisy prediction map $(\pi, \sigma) \in \Qc\ss{G}$ is a GNPA if and only if 
-%     \begin{equation} \label{eq:gnpa_characterisation}
-%         m_\pi|_{\tD} = m_f|_{\tD},
-%         \quad
-%         k_\pi|_{\tD} = k_f|_{\tD},
-%         \quad
-%         \text{and}
-%         \quad
-%         \sigma = \sigma_f.
-%     \end{equation}
-% \end{proposition}
 \index{neural process approximation!characterisation}
 \statement{statements/gnpa_characterisation.tex}
 \begin{proof}
@@ -841,17 +748,6 @@ One might wonder whether moment matching the posterior prediction map yields a p
 As the following proposition shows, the GNPA inherits $L^p$-H\"older regularity from the posterior prediction map (\cref{assum:f_regularity}), but with $p = 2$.
 In particular, this means that the GNPA indeed maps to continuous processes.
 
-% \begin{proposition}[Regularity of GNPA]
-%     \label{prop:gnpa_regularity}
-%     Let $(\pi, \sigma) \in \Qc\ss{G}$ be a Gaussian neural process approximation.
-%     Then, for all data sets $D \in \tD$, 
-%     \begin{equation}
-%         \norm{f(x) - f(y)}_{L^2(\pi(D))} \le c_D \abs{x - y}^\beta
-%         \quad\text{whenever}\quad
-%         \abs{x - y} < r,
-%     \end{equation}
-%     where $c_D > 0$ is the constant from \cref{prop:posterior_prediction_map_Holder}.
-% \end{proposition}
 \begingroup
     \newcommand{\possibleprefix}[1]{#1}
     \statement{statements/gnpa_regularity.tex}
@@ -895,7 +791,6 @@ Consequently, our estimator will \emph{overfit}.
 
 To combat overfitting, we must constrain our variational family $\Qc$ to a \emph{smaller} family $\widetilde{\Qc} \sub \Qc$ such that estimation with $\widetilde{\Qc}$ is consistent and, crucially, minimising $\L_M$ over $\widetilde{\Qc}$ still gives the desired neural process approximation.
 As we will discuss shortly, a sufficient condition for $\widetilde\Qc$ to be appropriately small is that $\widetilde\Qc$ be \emph{compact} in an appropriate topology.\index{compactness}
-% The technical approach that we will follow is one by \textcite{Wald:1949:Note_on_the_Consistency_of}, which states that a family $\widetilde{\Qc}$ which is \emph{compact} is appropriately small.
 In this section, we will show that there exist reasonable assumptions and a compact $\widetilde{\Qc}$ such that, for any ground-truth stochastic process satisfying these assumptions, the CNPA and GNPA are contained in $\widetilde{\Qc}$.
 For the moment, let us very roughly compare $\Qc$ to $\R^n$. 
 Then the sought-after neural process approximation would be some $z \in \R^n$.
@@ -909,71 +804,6 @@ Therefore, it is not at all clear that we can find an appropriate $\widetilde{\Q
 The main result of this section, however, is that we can (\cref{prop:posterior_prediction_map_regularity:part_two}),
 leading us to consistency results for neural processes (\cref{prop:cnpa_consistency,prop:gnpa_consistency}).
 
-% If we were to very roughly compare $\Qc$ to $\R^n$ for some $n \ge 1$, then intuitively we could think to set $\Qc^{(k)}$ to the equivalent of $[-k, k]^n$.
-% This analogy is flawed, because $\Qc$ is infinite-dimensional, which means that, unlike $\R^n$, it cannot be locally compact.
-% Consequently, it is not at all clear that we can find a reasonable restriction $\Qc^{(k)}$.
-% The main result of this section is to show that there does exist a appropriate choice for $\Qc^{(k)}$ such that, for ground-truth stochastic processes $f$ satisfying reasonable assumptions, the minimiser of $\Qc$ over $\L\ss{NP}$ is contained in some $\Qc^{(k)}$.
-% In other words, we shall show that there exists a sequence of estimators which is eventually consistent.
-
-% To show consistency of an estimator for a neural process approximation, we will follow \citeauthor{Wald:1949:Note_on_the_Consistency_of} (\citeyear{Wald:1949:Note_on_the_Consistency_of}).
-% Before we specialise our discussion to neural processes, we outline \citeauthor{Wald:1949:Note_on_the_Consistency_of}'s approach in a more general setting.
-% Consider i.i.d.\ observations $(x_m, y_m)_{m=1}^M \sub \X \times \Y$.
-% Let $\H \sub \Y^\X$ be a hypothesis space, endowed with some metric, which attempts to estimate the relationship between inputs and outputs.
-% Let $\ell\colon \Y \times \Y \to \R$ be some loss function.
-% Then define the infinite-sample objective $\L$ and the finite-sample objective $\L_M$ as follows:
-% \begin{equation}
-%     \L(h) = \E[\ell(h(X), Y)],
-%     \quad
-%     \L_M(h) = \frac1M\sum_{m=1}^M \ell(h(x_m), y_m)
-% \end{equation}
-% where indeed $\L_M$ is a Monte Carlo approximation of $L$.
-% Assume that $\L$ is lower semi-continuous and admits a unique minimiser $h^*$.
-% Let $\hat h_M$ be a minimiser $\L_M$.
-% Our goal will be to establish that $\hat h_M \to h^*$ as $M \to \infty$.
-% If the convergence is in probability, then $\hat h_M$ is called \emph{consistent} or \emph{weakly consistent};
-% and if the convergence is almost surely, then $\hat h_M$ is called \emph{strongly consistent}.
-%
-% The starting point is to use that $\L_M$ is a Monte Carlo approximation of $\L$ and that $\hat h_M$ minimises $\L_M$:
-% \begin{equation}
-%     \L(\hat h_M)
-%     \overset{\text{(i)}}{\vphantom{\le}\approx} \L_M(\hat h_M)
-%     \overset{\text{(ii)}}{\le} \L_M(h^*)
-%     \overset{\text{(iii)}}{\vphantom{\le}\approx} \L(h^*)
-% \end{equation}
-% where (i) holds approximately because $\L_M$ should approximate $\L$ for large $M$,
-% (ii) holds because $\hat h_M$ is a minimiser of $\L_M$,
-% and (iii) again holds approximately because $\L_M$ should approximate $\L$ for large $M$.
-% Therefore, as $M \to \infty$, we would expect that $\L(\hat h_M) \to \L(h^*)$, then hopefully leading us to $\hat h_M \to h^*$, the desired conclusion.
-% Importantly, this last implication $\L(\hat h_M) \to \L(h^*) \implies \hat h_M \to h^*$ requires assumptions beyond that $\L$ is lower semi-continuous and admits $h^*$ as a unique minimiser.
-% A simple such assumption, following \citeauthor{Wald:1949:Note_on_the_Consistency_of}'s (\citeyear{Wald:1949:Note_on_the_Consistency_of}) approach of consistency of maximum-likelihood estimators, is that $\H$ be \emph{compact}.
-% This is also the route that we will take.
-% If $\H$ is not compact, \citeauthor{Wald:1949:Note_on_the_Consistency_of}'s argument can be applied to a compactification of $\H$ or the argument can be supplemented by a proof that $\hat h_M$ is eventually contained in a compact subset of $\H$. 
-% See Section 5.2.1 by \textcite{Vaart:1998:Asymptotic_Statistics} and the examples therein for an illustration of these techniques.
-% To complete the argument, it remains to make (i) and (iii) precise.
-%
-% Whereas for (iii) a simple argument like the law of large numbers often works,
-% the key difficulty is (i):
-% $\hat h_M$ minimises $\L_M$, which means that $\L_M(\hat h_M)$ is \emph{not} an average of independent random variables, so the law of large numbers does not apply.
-% Instead, one can try to prove a \emph{uniform} law of large numbers:
-% \begin{equation}
-%     \abs{\L_M(\hat h_M) - \L(\hat h_M)}
-%     \le \sup_{h \in \H}\,\abs{\L_M(h) - \L(h)}
-%     \to 0.
-% \end{equation}
-% Classes of hypotheses $\H$ for which such laws hold are also called \emph{Glivenko--Cantelli classes}.
-% Although a uniform law of large numbers suffices, estimating $\abs{\L_M(\hat h_M) - \L(\hat h_M)}$ by taking a supremum can be very pessimistic and result in loose bounds, especially if $\H$ is large.
-% A much better bound can be obtained by noting that we expect $\hat h_M \approx h^*$ for large $M$, so there should exist some $\delta_M > 0$ such that 
-% \begin{equation} \label{eq:local_uniform_law}
-%     \abs{\L_M(\hat h_M) - \L(\hat h_M)}
-%     \le \sup_{h \in \H \colon \norm{h - h^*} \le \delta_M}\,\abs{\L_M(h) - \L(h)}.
-% \end{equation}
-% This idea is called \emph{localisation}.
-% Choosing $\delta_M$ right can lead to optimal rates of convergence.
-% See Chapters 13 and 14 by \textcite{Wainwright:2019:High-Dimensional_Statistics_A_Non-Asymptotic_Viewpoint} for an introduction to using a localised versions of complexity measures to obtain minimax rates in nonparametric regression problems.
-% Although more refined approaches such as location lead to better bounds, they also add significant technical complexity.
-% We will therefore opt for the simpler approach of a uniform law of large numbers.
-% This is also the approach of \textcite{Wald:1949:Note_on_the_Consistency_of}, who uses again \emph{compactness} of $\H$ to establish such a uniform law.
-
 To establish consistency of an estimator of a neural process approximation, we will follow \citeauthor{Wald:1949:Note_on_the_Consistency_of}'s (\citeyear{Wald:1949:Note_on_the_Consistency_of}) proof of consistency of maximum-likelihood estimators.
 At the heart of \citeauthor{Wald:1949:Note_on_the_Consistency_of}'s approach lies \emph{compactness of the parameter space}.
 As we revealed in the previous paragraph, in our setting, this means that we require \emph{compactness of the variational family $\Qc$}.
@@ -984,39 +814,9 @@ This topology is problematic, because it admits ``too large'' compact sets.
 As a result, optimising \eqref{eq:predmap:consistency:finite-sample_objective} over a set compact in this topology does not constrain the optimiser enough to avoid the problem of exactly fitting the data.
 For example, by Tychonoff's theorem \parencite[Theorem 37.3;][]{Munkres:2000:Topology}, the collection of mean functions defined by all possible functions $\D \to [0, 1]^\X$ would be compact in this topology, but clearly we cannot optimise over this collection without running the risk of overfitting!
 
-
-% recall that we endowed the space of noisy prediction maps $\overline{\M}$ with a topology in \cref{def:noisy_prediction_maps}.
-% Unfortunately, a problem immediately presents, because compactness in the topology of $\overline{\M}$ is too weak to establish consistency.
-% We discuss this issue now briefly.
-% Consider $(\pi_i)_{i \ge 1} \sub \Qc\ss{G}$.
-% Then $(\pi_i)_{i \ge1}$ converges in $\overline{\M}$ if and only if $m_{\pi_i}(D)$ and $k_{\pi_i}(D)$ converge pointwise for every $D \in \D$.
-% Therefore, very roughly, the topology on $\overline{\M}$ can be identified with the topology of pointwise convergence, \ie~the product topology.
-% The problem is that the product topology very coarse and admits ``too large'' compact sets.
-% As a result, optimising \eqref{eq:predmap:consistency:finite-sample_objective} over a set compact in the topology of $\overline{\M}$ does not constrain the optimiser enough to avoid the problem of exactly fitting the data.
-% For example, the collection of mean functions defined by all possible functions $\X \to [0, 1]$ would be compact in the product topology, but clearly we cannot optimise over this collection without running the risk of overfitting.
-
 We therefore choose a topology on $\Qc\ss{G,MF}$ and $\Qc\ss{G}$ which does not admit ``too large'' compact sets.
 Henceforth, in this section, we view mean maps more simply as functions $\D \times \X \to \Y$ rather than functions $\D \to \Y^\X$.
 Similarly, we view kernel maps more simply as functions $\D \times \X \times \X \to \R$ and variance maps more simply as functions $\D \times \X \to [0, \infty)$.
-% Consider $\Qc\ss{G}$ and identify this family with the collection of associated mean maps and kernel maps $\set{(m_\pi, k_\pi, \sigma) : (\pi, \sigma) \in \Qc\ss{G}}$.
-% % Recall that, for $\pi \in \Qc\ss{G}$, $m_\pi \colon \D \to C(\X, \Y)$ and $k_\pi \colon \D \to C\us{p.s.d.}(\X \times \X, \Y)$.
-% Let
-% \begin{equation}
-%     \Qc' = \set{(m_\pi, k_\pi, \sigma): m_\pi \colon \D \times \X \to \Y,\,k_\pi \colon \D \times \X \times \X \to \R,\, \sigma > 0}
-% \end{equation}
-% and endow $\Qc'$ also with the topology of pointwise convergence.
-% Then $\Qc\ss{G}$ is topologically equivalent to $\set{(m_\pi, k_\pi, \sigma) : (\pi, \sigma) \in \Qc\ss{G}} \sub \Qc'$.
-% The problem now becomes apparent: 
-% a pointwise limit of continuous functions is not necessary continuous,
-% so $\set{(m_\pi, k_\pi, \sigma) : (\pi, \sigma) \in \Qc\ss{G}}$ is not closed in $\Qc'$, which means that it certainly is not compact!
-% % Importantly, for $\pi \in \Qc\ss{G}$ and $D \in \D$, we cannot give up continuity of $m_\pi$ nor $m_\pi(D)$, because continuity was an essential element of the proof of \cref{prop:gnpa_characterisation} and
-% % we would run into issues of measurability.
-% On a high level, what is going wrong is the following:
-% the topology of pointwise convergence is too coarse and consequently admits too ``large'' compact sets.
-% As a result, optimising \eqref{eq:predmap:consistency:finite-sample_objective} over a set compact in the topology of pointwise convergence does not constrain the optimiser enough to avoid the problem of exactly fitting the data.
-%
-% In the foregoing paragraph, the essence of the problem was that continuous functions are not closed in the topology of pointwise convergence.
-% Fortunately, continuous function are closed in the topology uniform convergence, which motivates the following definitions.
 For mean maps, define the supremum norm relative to $\tD$ as follows:%
 \begin{equation}
     \norm{m_1 - m_2}_{\widetilde\infty} = \sup_{D \in \tD, x \in \X}\,\abs{m_{1}(D, x) - m_{2}(D, x)}.
@@ -1083,7 +883,6 @@ By assuming that only the context sets are bounded, whenever $D \in \tD$, we can
 
 Finally, consider $D_n = \set{(-2^{-n}, -1), (2^{-n}, 1)}$ and a sequence of ground-truth stochastic processes $f_n$ with observation noises $\sigma_{f_n} = 2^{-n}$.
 Then, as $n \to \infty$, the observation noise becomes smaller and smaller, so $m_{f_n}(D_n)$ will interpolate $(-2^{-n}, -1)$ and $(2^{-n}, 1)$ more and more closely, meaning that the slope of $m_{f_n}(D_n)$ at $x = 0$ will again become arbitrarily large.
-% Just like we can obtain arbitrarily steep mean functions by choosing pathological sequences of observations, we can find increasingly ill-behaved posteriors by making the observation noise $\sigma_f$ arbitrarily small.
 We therefore require a universal lower bound on the allowed values for $\sigma_f$.
 
 \begin{assumption}[Boundedness of noise] \label{assum:noise_boundedness}
@@ -1121,46 +920,6 @@ Henceforth, when we say that an object exists universally, we mean that it depen
 We now come to the first result of this section, which says that the mean map and the kernel map of the posterior prediction map satisfy a H\"older condition.
 Crucially, the H\"older constants and exponents are universal, meaning that they only depend on the universal parameters.
 
-% The main result of this section is that $\pi_f$ admits a regularity properties.
-% Previously, in \cref{prop:posterior_prediction_map_regularity:part_one}, we saw that the posterior prediction map $\pi_f$ is continuous.
-% Continuity will helped us to resolve issues of measurability, allowing us to carefully define the neural process objective $\L\ss{NP}$.
-% However, continuity will not be enough to show consistency of a finite-sample estimator, for which we will need something stronger.
-% To this end, \cref{prop:posterior_prediction_map_is_uniformly_continuous_in_data} shows that the posterior mean $\E_{\pi_f(D)}[f(x)]$ and covariance $\cov_{\pi_f(D)}(f(x), f(y))$ are uniformly continuous in the data $D$.
-% Note that \cref{prop:posterior_prediction_map_is_continuous} does not imply \cref{prop:posterior_prediction_map_is_uniformly_continuous_in_data} and \textit{vice versa};
-% if, however, $\pi_f$ would map to Gaussian processes, \cref{prop:posterior_prediction_map_is_uniformly_continuous_in_data} would imply \cref{prop:posterior_prediction_map_is_continuous}.
-% Finally, we combine \cref{prop:posterior_prediction_map_is_uniformly_continuous_in_data} with \cref{assum:f_regularity} to prove the third and strongest regularity property, \cref{prop:posterior_prediction_map_is_uniformly_continuous}, which says that the posterior mean and covariance are uniformly continuous even when viewed as a function of the data $D$ \emph{and} $(x, y)$.
-
-% \begin{proposition}[Regularity of posterior prediction map, part two]
-%     \label{prop:posterior_prediction_map_regularity:part_two}
-%     ~\begin{proplist}
-%         \item 
-%             \label{prop:posterior_prediction_map_is_uniformly_continuous_in_data}
-%             There exist universal constants $c_m > 0$ and $c_k > 0$ such that, for any two $D_1, D_2 \in \tD$, whenever $d_\D(D_1, D_2) < 1$, then
-%             \begin{align}
-%                 \sup_{x \in \X} \,\abs{\E_{\pi_f(D_1)}[f(x)] - \E_{\pi_f(D_2)}[f(x)]}
-%                 &\le c_m\,d_\D(D_1, D_2)^{\frac{2 + 2\gamma}{3 + 2\gamma}(\beta - \frac1p)}, \\
-%                 \sup_{x, y \in \X} \,\abs{\E_{\pi_f(D_1)}[f(x)f(y)] - \E_{\pi_f(D_2)}[f(x)f(y)]}
-%                 &\le c_k\,d_\D(D_1, D_2)^{\frac{\gamma}{1+\gamma}(\beta - \frac1p)}.
-%             \end{align}
-%         \item
-%             \label{prop:posterior_prediction_map_is_uniformly_continuous}
-%             Consequently, for any $D_1, D_2 \in \tD$ and $x,y \in \X$, whenever $d_\D(D_1, D_2) < 1$, $\abs{x_1 - x_2} < r$, and $\abs{y_1 - y_2} < r$, then
-%             \begin{equation}
-%                 \abs{\E_{\pi_f(D_1)}[f(x_1)] - \E_{\pi_f(D_2)}[f(x_2)]}
-%                 \le c_m\,d_\D(D_1, D_2)^{\frac{2 + 2\gamma}{3 + 2\gamma}(\beta - \frac1p)} + \frac{c}{c_\ell} \abs{x_1 - x_2}^\beta
-%             \end{equation}
-%             and
-%             \vspace{-0.5\baselineskip}
-%             \begin{align}
-%                 &\abs{\E_{\pi_f(D_1)}[f(x_1)f(y_1)] - \E_{\pi_f(D_2)}[f(x_2)f(y_2)]} \nonumber \\
-%                 &\qquad \le
-%                     c_k\,d_\D(D_1, D_2)^{\frac{\gamma}{1+\gamma}(\beta - \frac1p)}
-%                     + B_f \frac{c}{c^2_\ell} \abs{x_1 - x_2}^\beta
-%                     + B_f \frac{c}{c^2_\ell} \abs{y_1 - y_2}^\beta,
-%             \end{align}
-%             where $c_\ell > 0$ is a universal constant from \cref{\xrprefix{lem:bounds_Z}}.
-%     \end{proplist}
-% \end{proposition}
 \index{posterior prediction map!regularity}
 \statement{statements/regularity_part_two.tex}
 \begin{proof}
@@ -1194,20 +953,12 @@ and the metric $d\ss{G}$ on $\widetilde\Qc\ss{G}$ defined in \eqref{eq:metric_Q_
 By $o_\P(1)$, we denote a random variable that converges to zero in probability as $M \to \infty$.
 In the following statements, $o_\P(1)$ is models noise deriving stochastic optimisation procedures.
 
-% \begin{proposition}[Consistency of CNPA] \label{prop:cnpa_consistency}
-%     Let $(\pi_M, \sigma_M)$ minimise $\L_M$ over $\widetilde\Qc\ss{G,MF}$.
-%     Then, as $M \to \infty$, almost surely the distance of $(\pi_M, \sigma_M)$ to any CNPA goes to zero.
-% \end{proposition}
 \index{neural process approximation!consistency}
 \statement{statements/cnpa_consistency.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_predmap:consistency}}.
 \end{proof}
 
-% \begin{proposition}[Consistency of GNPA] \label{prop:gnpa_consistency}
-%     Let $(\pi_M, \sigma_M)$ minimise $\L_M$ over $\widetilde\Qc\ss{G}$.
-%     Then, as $M \to \infty$, almost surely the distance of $(\pi_M, \sigma_M)$ to the GNPA goes to zero.
-% \end{proposition}
 \index{neural process approximation!consistency}
 \statement{statements/gnpa_consistency.tex}
 \begin{proof}
