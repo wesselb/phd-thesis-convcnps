@@ -2,6 +2,9 @@ chapters/experiments/climate_baseline_numbers
 
 # Output:
 *.pdf
+log.txt
+log_out.txt
+script.py
 
 # Temporary files:
 _minted-*
