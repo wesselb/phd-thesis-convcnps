@@ -1,0 +1,854 @@
+\documentclass[12pt, twoside]{report}
+\input{../../preamble/preamble}
+\addbibresource{../../bibliography.bib}
+
+\usepackage{xr}
+\externaldocument[xr-]{../../main}
+\newcommand{\xrprefix}[1]{xr-#1}
+
+\begin{document}
+
+\chapter
+    {Proofs for Chapter \ref{\xrprefix{chap:predmap}}}
+\label{app:proofs_predmap}
+
+\section{Proofs for Section \ref{\xrprefix{sec:predmap:motivation}}}
+\label{sec:proofs_predmap:motivation}
+
+%Before proving \cref{\xrprefix{prop:posterior_prediction_map_regularity:part_one}}, we require a lemma about the normalising constant $Z$, which was defined in \eqref{\xrprefix{def:posterior_prediction_map}}.
+
+Recall the definition of the posterior prediction map in \cref{\xrprefix{def:posterior_prediction_map_formal}}.
+Henceforth, for all $D \in \D$, denote the Radon--Nikodym derivative of $\pi_f(D)$ with respect to $\mu_f$ by $\pi'(D)$:
+\begin{equation}
+    \pi'(D) = \frac
+        {r(\vy - f(\vx))}
+        {Z(\vx, \vy)}
+\end{equation}
+where $D = (\vx, \vy)$,
+$r(\vx) = \exp({-\tfrac{1}{2\sigma_f^2}\norm{\vx}_2^2})$,
+and $Z(\vx, \vy) = \E_f[r(\vy - f(\vx))]$.
+
+\begin{lemma} \label{lem:inf_sup_Z}
+    Let $(D_i)_{i \ge 1} \sub \D$ be a bounded sequence and denote $D_i = (\vx_i, \vy_i)$.
+    Then
+    \begin{equation}
+        0
+        < \inf_{i \ge 1}\, Z(\vx_i, \vy_i)
+        \le \sup_{i \ge 1}\, Z(\vx_i, \vy_i)
+        < \infty.
+    \end{equation}
+\end{lemma}
+\begin{proof}
+    That the supremum is finite follows from that $r(\vx) \le 1$.
+    For the infimum,
+    let $M > 0$, and consider the event $A = \set{f : \norm{f(\vx_i)}_\infty \le M}$.
+    Then
+    \begin{equation}
+        \E_f[e^{-\tfrac1{2\sigma_f^2}\norm{\vy_i - f(\vx_i)}_2^2}]
+        \ge \E_f[\ind_A e^{-\tfrac1{\sigma_f^2}(\norm{\vy_i}_2^2 + \norm{f(\vx_i)}_2^2)}]
+        \ge \P(A)\, e^{-\tfrac1{\sigma_f^2}\norm{\vy_i}_2^2 - \tfrac{1}{\sigma^2} N M^2}.
+    \end{equation}
+    To lower bound the probability, denote $V = \sup_{x \in \X}\, \norm{f(x)}^2_{L^2}$.
+    Note that $V < \infty$ by \cref{\xrprefix{assum:f_regularity}}.
+    Estimate
+    \begin{equation}
+        \P(A)
+        = 1 - \P(A^\c) \vphantom{\sup_{x \in \X}}
+        \ge 1 - \vphantom{\frac NN} N\,\sup_{x \in \X}\, \P(\abs{f(x)} \ge M)
+        \ge 1 - \frac{N V}{M^2}.
+    \end{equation}
+    Set $M = \sqrt{2 N V}$ to find $\P(A) \ge \tfrac12$.
+    Hence
+    \begin{equation} \label{lem:inf_sup_Z:lower_bound}
+        \E_f[e^{-\tfrac1{2\sigma_f^2}\norm{\vy_i - f(\vx_i)}_2^2}]
+        \ge \tfrac12 e^{-\tfrac1{\sigma_f^2}\norm{\vy_i}_2^2 - \tfrac{2}{\sigma_f^2} VN^2}
+    \end{equation}
+    We conclude that the infimum is non-zero: $(\norm{\vy_i}^2_2)_{i \ge 1}$ is bounded, because $(D_i)_{i \ge 1}$ is bounded.
+\end{proof}
+
+\restatement{../../chapters/predmap/statements/regularity_part_one.tex}
+\begin{proof}
+    \listnum{1}:
+    Let $D \in \D$ and denote $D = (\vx, \vy)$.
+    Then use that
+    \begin{equation}
+        \norm{\vardot}_{L^p(\pi_f(D))}
+        = \E_f[\pi'(D)(f)(\vardot)^p]^{1/p}
+        \le \frac{1}{(Z(\vx, \vy))^{1/p}} \norm{\vardot}_{L^p},
+    \end{equation}
+    and we already noted that $Z(\vx, \vy) > 0$.
+
+    \listnum{2}:
+    Let $D_i \to D$ and let $L\colon C_b(\X, \Y) \to \R$ be a continuous and bounded function.
+    To begin with, $(\vx, \vy) \mapsto Z(\vx, \vy)$ is continuous by pathwise continuity of $f$ in combination with bounded convergence, and $(\vx, \vy) \mapsto r(\vy - f(\vx))$ is almost surely continuous also by pathwise continuity of $f$.
+    Hence, for almost every $f$, $(D, f) \mapsto \pi'(D)(f)$ is continuous in $D$.
+    In addition, $(D_i)_{i \ge 1}$ is bounded, so
+    $\sup_{i \ge 1,\, f \in \Y^\X} \pi'(D_i)(f) < \infty$
+    by \cref{lem:inf_sup_Z}.
+    Therefore, by bounded convergence,
+    \begin{align}
+        \lim_{i \to \infty} \E_{\pi_f(D_i)}[L(f)]
+        &= \lim_{i \to \infty} \E_{f}[\pi'(D_i)(f)L(f)] \\
+        &= \vphantom{\lim_{i \to \infty}}\E_{f}[ \pi'(D)(f)L(f)] \\
+        &= \E_{\pi_f(D)}[L(f)].
+    \end{align}
+    Since $L$ was arbitrary, we conclude that $\pi_f(D_i) \weakto \pi_f(D)$.
+\end{proof}
+
+
+\section{Proofs for Section \ref{\xrprefix{sec:predmap:neural_process_objective}}}
+\label{sec:proofs_predmap:neural_process_objective}
+
+
+\restatement{../../chapters/predmap/statements/neural_process_objective_well-defined.tex}
+\begin{proof}
+    Let $(\pi, \sigma) \in \overline{\M}$ and
+    $D \in \D$.
+    We have $\pi_f(D) \in \Pc$, so there exists a measurable $A_1 \sub \tI$ such that $\vx \mapsto P_\vx^{\sigma_f} \pi_f(D)$ is weakly continuous at all $\vx \in A_1$ and $\int_{A_1} p(\vx) \isd \vx = 1$.
+    Similarly, $\pi(D) \in \Pc$, so there exists another measurable $A_2 \sub \tI$ such that $\vx \mapsto P_\vx^{\sigma} \pi(D)$ is weakly continuous at all $\vx \in A_2$ and $\int_{A_2} p(\vx) \isd \vx = 1$.
+    Set $A = A_1 \cap A_2$.
+    Then still $\int_A p(\vx) \isd \vx = 1$.
+    Denote $h\colon \tI \to \R \cup \set{\infty}$, $h(\vx) =\KL(P_\vx^{\sigma_f} \pi_f(D), P_\vx^{\sigma} \pi(D))$.
+    Let $\tau$ be all open sets of $\tI$.
+    By weak lower semi-continuity of the Kullback--Leibler divergence \parencite{Posner:1975:Random_Coding_Strategies_for_Minimum}, the restriction $h|_A$ of $h$ to $A$ is a lower semi-continuous function with respect to the subspace topology $(A, A \cap \tau)$.
+    In particular, $h|_A$ is measurable with respect to the Borel $\sigma$-algebra on $(A, A \cap \tau)$, which is equal to $\sigma(A \cap \tau) = A \cap \sigma(\tau) = A \cap \B(\tI)$.
+    Since $A$ has probability one, this suggests that $h$ is also measurable, which we now argue.
+    Let $y \in \R$.
+    Decompose
+    \begin{equation}
+        \set{\vx \in \tI : h(\vx) \le y}
+        =
+            \set{\vx \in A : h(\vx) \le y}
+            \cup \set{\vx \in \tI \setminus A : h(\vx) \le y}.
+    \end{equation}
+    By $A \cap \B(I)$--measurability of $h|_A$, $\set{\vx \in A : h(\vx) \le y} \in A \cap \B(\tI) \sub \B(\tI)$.
+    In addition, $\set{\vx \in \tI \setminus A : h(\vx) \le y} \sub \tI \setminus A$, so it is measurable by completeness of $p(\vx)$ (\cref{\xrprefix{assum:full_support_and_complete}}).
+    Therefore, $\set{\vx \in \tI : h(\vx) \le y}$ is measurable.
+    Since $y \in \R$ was arbitary, $h$ is measurable.
+    We conclude that the expectation $\E_{p(\vx)}[\KL(P_\vx^{\sigma_f} \pi_f(D), P_\vx^{\sigma} \pi(D))]$ is well defined.
+
+    By \cref{\xrprefix{prop:posterior_prediction_map_is_continuous}}, the posterior prediction map $\pi_f$ is continuous.
+    Note that $\pi$ is also continuous.
+    Then, for any $\vx \in I$ and $\sigma > 0$, $D \mapsto (P_\vx^{\sigma_f} \pi_f(D), P_\vx^{\sigma} \pi(D))$ is weakly continuous, so $D \mapsto \KL(P_\vx^{\sigma_f} \pi_f(D), P_\vx^{\sigma} \pi(D))$ is lower semi-continuous by weak lower semi-continuity of the Kullback--Leibler divergence \parencite{Posner:1975:Random_Coding_Strategies_for_Minimum}.
+    By Fatou's lemma, $D \mapsto \E_{p(\vx)}[\KL(P_\vx^{\sigma_f} \pi_f(D), P_\vx^{\sigma} \pi(D))]$ is then also lower semi-continuous.
+    In particular, it is measurable, which means that $\E_{p(D)p(\vx)}[\KL(P_\vx^{\sigma_f} \pi_f(D), P_\vx^{\sigma} \pi(D))]$
+    is well defined.
+\end{proof}
+
+\restatement{../../chapters/predmap/statements/neural_process_objective_lsc.tex}
+\begin{proof}
+    Consider $(\pi, \sigma) \mapsto P^\sigma_\vx \pi(D)$.
+    This function is weakly continuous;
+    recall that the topology on $\overline{\M}$ is defined in
+    \cref{\xrprefix{def:noisy_prediction_maps}}.
+    The result then follows from Fatou's lemma in combination with weak lower semi-continuity of the Kullback--Leibler divergence \parencite{Posner:1975:Random_Coding_Strategies_for_Minimum}.
+\end{proof}
+
+\begin{lemma} \label{lem:equality_dense}
+    Consider $\mu_1, \mu_2 \in \Pc\ss{c}$.
+    Let $I' \sub I$ be dense.
+    Then $P^{\sigma_1}_\vx \mu_1 = P^{\sigma_2}_\vx \mu_2$ for all $\vx \in I'$ if and only if $\mu_1 = \mu_2$ and $\sigma_1 = \sigma_2$.
+\end{lemma}
+\begin{proof}
+    The ``if'' is clear, so we show the ``only if''.
+    Let $f^{(1)} \sim \mu_1$ and $f^{(2)} \sim \mu_2$.
+    Fix some $\vx \in I$, and let $(\vx^{(\ell)}_1, \ldots, \vx^{(\ell)}_\ell)_{\ell \ge 1} \sub I$ be a sequence of tuples of vectors such that
+    (1) every concatenation $\vx^{(\ell)}_1 \oplus \cdots \oplus \vx^{(\ell)}_\ell$ is in $I'$; and
+    (2) as $m \to \infty$, it holds that $\sup\, \abs{\vx - \vx^{(\ell)}_k} \to 0$, where the supremum is over $\ell \ge m$ and $k = m, \ldots, \ell$.
+    To construct such a sequence, take any sequence $(\vz_{\ell})_{\ell \ge 1} \sub I$ convergent to $\vx$ and use density of $I'$ to find, for every $\ell \ge 1$, an element $\vx^{(\ell)}_1 \oplus \cdots \oplus \vx^{(\ell)}_\ell \in I'$ which is at most distance $1/\ell$ from $\vz_1 \oplus \cdots \oplus \vz_\ell$.
+
+    For all $k \ge 1$,
+        let $\vep\us{(1)}_k \sim \Normal(\vnull, \sigma_1^2 \mI)$
+        and $\vep\us{(2)}_k \sim \Normal(\vnull, \sigma_2^2 \mI)$.
+    Set
+    \begin{equation}
+        \vy^{(1)}_\ell = \frac1\ell\sum_{k=1}^\ell f\us{(1)}(\vx^{(\ell)}_k) + \frac1\ell\sum^\ell_{k=1}\vep\us{(1)}_k,
+        \quad
+        \vy^{(2)}_\ell = \frac1\ell\sum_{k=1}^\ell f\us{(2)}(\vx^{(\ell)}_k) + \frac1\ell\sum^\ell_{k=1}\vep\us{(2)}_k.
+    \end{equation}
+    By almost sure uniform continuity of $f\us{(1)}$ and $f\us{(2)}$ ($\X$ is compact) and the strong law of large numbers,%
+    \begin{equation}
+        \vy_\ell\us{(1)} \to f\us{(1)}(\vx)
+        \quad \text{and} \quad
+        \vy_\ell\us{(2)} \to f\us{(2)}(\vx)
+    \end{equation}
+    almost surely and therefore weakly.
+    But, by assumption, 
+    \begin{equation}
+        P^{\sigma_1}_{\vx^{(\ell)}_1 \oplus \ldots \oplus \vx_\ell^{(\ell)}} \mu_1
+         = P^{\sigma_2}_{\vx^{(\ell)}_1 \oplus \ldots \oplus \vx_\ell^{(\ell)}} \mu_2
+         \quad\text{for all $\ell \ge 1$},
+    \end{equation}
+    so $\vy\us{(1)}_\ell \disteq \vy\us{(2)}_\ell$ for all $\ell \ge 1$.
+    Therefore, since weak limits are unique, $f\us{(1)}(\vx) \disteq f\us{(2)}(\vx)$.
+    Since $\vx \in I$ was arbitrary, we conclude that $f\us{(1)} \disteq f\us{(2)}$.
+
+    To find that also $\sigma_1 = \sigma_2$, repeat the above construction with $\vx$ instead fixed to some $\tilde\vx \in I'$.
+    Denote $\tilde\vy\us{(1)} = f\us{(1)}(\tilde\vx) + \tilde\vep\us{(1)}$
+    and $\tilde\vy\us{(2)} = f\us{(2)}(\tilde\vx) + \tilde\vep\us{(2)}$.
+    Then
+    \begin{equation}
+        (\vy_\ell\us{(1)}, {\tilde\vy}\us{(1)})
+        \to (f\us{(1)}(\tilde\vx), {\tilde\vy}\us{(1)})
+        \quad\text{and}\quad
+        (\vy_\ell\us{(2)}, \tilde\vy\us{(2)})
+        \to (f\us{(2)}(\tilde\vx), {\tilde\vy}\us{(2)})
+    \end{equation}
+    weakly
+    and $(\vy_\ell\us{(1)}, \tilde\vy\us{(1)}) \disteq (\vy_\ell\us{(2)}, \tilde\vy\us{(2)})$ for all $\ell \ge 1$,
+    so $(f\us{(1)}(\tilde\vx), \tilde\vy\us{(1)}) \disteq (f\us{(2)}(\tilde\vx), \tilde\vy\us{(2)})$.
+    Finally apply $(\vf, \vy) \mapsto \vy - \vf$ to find that $\tilde\vep\us{(1)} \disteq \tilde\vep\us{(2)}$, so $\sigma_1 = \sigma_2$.
+\end{proof}
+
+\restatement{../../chapters/predmap/statements/neural_process_objective_minimiser.tex}
+\begin{proof}
+    It is clear that $\L\ss{NP}(\pi_f, \sigma_f) = 0$.
+    For the converse, assume that $\L\ss{NP}(\pi, \sigma) = 0$ for some $(\pi, \sigma) \in \overline{M}\ss{c}$.
+    Then there exists a measurable $A \sub \tD$ such that $\int_A p(D) \isd D = 1$ and 
+    \begin{equation}
+        \E_{p(\vx)}[\KL(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D)] = 0
+        \quad\text{for all $D \in A$}.
+    \end{equation}
+    Fix such a $D \in A$.
+    Then there exists a measurable $B \sub \tI$ such that $\int_{B} p(\vx) \isd \vx = 1$ and $P^{\sigma_f}_\vx \pi_f(D)= P^\sigma_\vx \pi(D)$ for all $\vx \in B$.
+    But $B$ is dense in $\tI$, because $p(\vx)$ assigns positive probability to every open set (\cref{\xrprefix{assum:full_support_and_complete}}), which means that $B$ is also dense in $I$.
+    Therefore, by \cref{lem:equality_dense}, $\pi_f(D) = \pi(D)$ and $\sigma_f = \sigma$.
+    Similarly, $A$ is dense in $\tD$, because $p(D)$ assigns positive probability to every open set.
+    Since $\pi_f$ and $\pi$ are two continuous functions that agree on a dense subset of $\tD$, $\pi_f$ and $\pi$ must agree on all of $\tD$.
+\end{proof}
+
+\section{Proofs for Section \ref{\xrprefix{sec:predmap:np_approximations}}}
+\label{sec:proofs_predmap:np_approximations}
+
+
+\restatement{../../chapters/predmap/statements/gnpa_characterisation.tex}
+\begin{proof}
+    Let $\Pc^N_\lambda$ be the collection of distributions on $\R^N$
+    that (a) have a density with respect to the Lebesgue measure and (b) have a covariance matrix which is strictly positive definite.
+    Let $\Pc\ss{$\lambda$,G}^N \sub \Pc_\lambda^N$ be subcollection of distributions which are Gaussian.
+    Consider $\mu \in \Pc_\lambda^N$ and $\nu \in \Pc\ss{$\lambda$,G}^N$ such that
+    $\inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(\mu, \nu\ss{G}) < \infty$.
+    Define
+    \begin{equation}
+        \text{G}(\mu, \nu) =% \begin{cases}
+            \KL(\mu, \nu) - \inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(\mu, \nu\ss{G})
+        %     &\text{if } \inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(\mu, \nu\ss{G}) < \infty, \\
+        %     \infty &\text{otherwise}.
+        % \end{cases}
+    \end{equation}
+    Note that $\text{G}(\mu, \nu) \ge 0$, because $\nu \in \Pc\ss{$\lambda$,G}^N$.
+    Moreover, a computation shows that $\text{G}(\mu, \nu) = \KL(\Normal(\mu), \nu)$
+    where we denote $\Normal(\mu) = \Normal(\vmu, \mSigma)$ with $\vmu$ the mean vector of $\mu$ and $\mSigma$ the covariance matrix of $\mu$.
+    Therefore,
+    \begin{equation}
+        \KL(\mu, \nu)
+        =
+        \text{G}(\mu, \nu)
+        + \inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(\mu, \nu\ss{G})
+    \end{equation}
+ and $\text{G}(\mu, \nu) = 0$ if and only if $\nu = \Normal(\mu)$.
+
+    Consider $(\pi, \sigma) \in \Qc\ss{G}$.
+    Let $\vx \in \tI$ and $D \in \tD$.
+    Note that $P^{\sigma_f}_\vx \pi_f(D) \in \Pc_\lambda^N$ and $P_\vx^\sigma \pi(D) \in \Pc\ss{$\lambda$,G}^N$.
+    Moreover, using that $\sigma_f > 0$, $\inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(P_\vx^{\sigma_f} \pi_f(D), \nu\ss{G}) < \infty$, so
+    \begin{align}
+        &\KL(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D)) \nonumber \\
+        &\qquad= \text{G}(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D))
+        + \inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(P^{\sigma_f}_\vx \pi_f(D), \nu\ss{G}).
+    \end{align}
+    We therefore have the decomposition
+    \begin{align}
+        &\E_{p(D)p(\vx)}[\KL(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D))] \\
+        &\qquad=
+        \underbracket[1pt]{\E_{p(D)p(\vx)}[
+            \vphantom{\inf_{\nu\ss{G} \in \Pc\ss{G}^N}}
+            \text{G}(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D))
+        ]}_{\text{(i)}}
+        +
+        \underbracket[1pt]{\E_{p(D)p(\vx)}[
+            \inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(P^{\sigma_f}_\vx \pi_f(D), \nu\ss{G})
+        ]}_{\text{(ii)}}.
+         \nonumber
+    \end{align}
+    It is clear that $\text{(ii)} \le \inf_{\Qc\ss{G}} \L\ss{NP} < \infty$, so (ii) is finite.
+    Hence, $(\pi, \sigma)$ minimises $\L\ss{NP}$ over $\Qc\ss{G}$ if and only if $(\pi, \sigma)$ minimises (i) over $\Qc\ss{G}$.
+
+    Suppose that (i) is zero.
+    Then there exists a measurable $A \sub \tD$ such that $\int_A p(D) \isd D = 1$ and
+    \begin{equation}
+        \E_{p(\vx)}[\text{G}(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D))] = 0
+        \quad \text{for all $D \in A$}.
+    \end{equation}
+    Fix such a $D \in A$.
+    Then there exists a measurable $B \sub \tI$ such that $\int_{B} p(\vx) \isd \vx = 1$ and%
+    \begin{equation}
+        \text{G}(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D)) = 0
+        \quad \text{for all $\vx \in B$}.
+    \end{equation}
+    Hence, %by our earlier observation about $\text{G}$, % this is equivalent to
+    $
+        P^{\sigma}_\vx \pi(D)
+        = \Normal(P^{\sigma_f}_\vx \pi_f(D))
+        % \quad \text{for all $\vx \in B$}.
+    $ for all $\vx \in B$, which means that
+    %This condition, in turn, is equivalent to
+    \begin{align}
+        \label{eq:gaussian_np_approximation:mean_condition}
+        m_\pi(D)(x') &= m_f(D)(x') \\
+               % &\text{for all $x \in \set{x_1, \ldots, x_{\abs{\vx}}}$,} \\
+        \label{eq:gaussian_np_approximation:kernel_condition}
+        k_\pi(D)(x', y') + \sigma^2 \ind(x' = y') &= k_f(D)(x', y') + \sigma^2_f \ind(x' = y')
+               % &\text{for all $x, y \in \set{x_1, \ldots, x_{\abs{\vx}}}$}.
+    \end{align}
+    for all $\vx \in B$ and $x', y' \in \set{x_1, \ldots, x_{\abs{\vx}}}$.
+    But $B$ is dense in $\tI$, because $p(\vx)$ assigns positive probability to every open set (\cref{\xrprefix{assum:full_support_and_complete}}). 
+    Additionally, by assumption, $\tI$ is dense in $\X^N$ for some $N \ge 2$.
+    Therefore, \eqref{eq:gaussian_np_approximation:mean_condition} and \eqref{eq:gaussian_np_approximation:kernel_condition} hold for a collection of $(x',y')$ dense in $\X^2$.
+    The condition that $N \ge 2$ is necessary, otherwise always $x' = y'$, so \eqref{eq:gaussian_np_approximation:kernel_condition} would not necessarily hold for $x' \neq y'$.
+    Taking appropriate limits, using that $m_\pi$, $m_f$, $k_\pi$, and $k_f$ are continuous, we hence find that
+    \begin{equation}
+        m_\pi|_{B} = m_f|_{B},
+        \qquad
+        k_\pi|_{B} = k_f|_{B},
+        \qquad
+        \text{and}
+        \qquad
+        \sigma = \sigma_f.
+    \end{equation}
+    Finally, using density of $B$ in $\tD$ in combination with continuity of $\pi_f$ and $\pi$ gives
+    \begin{equation} \label{eq:gnpa_characterisation:desired_condition}
+        m_\pi|_{\tD} = m_f|_{\tD},
+        \qquad
+        k_\pi|_{\tD} = k_f|_{\tD},
+        \qquad
+        \text{and}
+        \qquad
+        \sigma = \sigma_f,
+    \end{equation}
+    which is the desired condition.
+%
+    Conversely, suppose that \eqref{eq:gnpa_characterisation:desired_condition} is satisfied.
+    Then \eqref{eq:gaussian_np_approximation:mean_condition} and \eqref{eq:gaussian_np_approximation:kernel_condition} are satisfied for all $x', y' \in \X$ and $D \in \tD$, so (i) is zero.
+\end{proof}
+
+\restatement{../../chapters/predmap/statements/cnpa_characterisation.tex}
+\begin{proof}
+    The proof goes exactly like the proof of \cref{\xrprefix{prop:gnpa_characterisation}}, with the following modifications.
+    Additionally assume that the distributions in $\Pc\ss{$\lambda$,G}^N$ factorise, \ie~that the dimensions are independent.
+    Then $\text{G}(\mu, \nu) = 0$ if and only if $\nu = \mathcal{N}\ss{d}(\mu)$
+    where $\Nc\ss{d}(\mu) = \Nc(\vmu, d(\mSigma))$ with $d(\mSigma)$ the diagonal matrix with diagonal equal to $\diag(\mSigma)$.
+    The key difference with respect to the proof of \cref{\xrprefix{prop:gnpa_characterisation}} is that $k_\pi(D)$ in \eqref{eq:gaussian_np_approximation:mean_condition} and \eqref{eq:gaussian_np_approximation:kernel_condition} is now only evaluated at $x' = y'$, which yields a condition on the variance map.
+    Because the variance map is a function of one argument,
+    rather than requiring $N \ge 2$, the requirement $N \ge 1$ suffices.
+    Since always $x' = y'$,
+    the indicator functions in \eqref{eq:gaussian_np_approximation:mean_condition} and \eqref{eq:gaussian_np_approximation:kernel_condition} cannot be used any more to find $\sigma = \sigma_f$;
+    we now only find $v_\pi|_{\tD} + \sigma^2 = v_f|_{\tD} + \sigma_f^2$.
+\end{proof}
+
+\begingroup
+    \newcommand{\possibleprefix}[1]{\xrprefix{#1}}
+    \restatement{../../chapters/predmap/statements/gnpa_regularity.tex}
+\endgroup
+\begin{proof}
+    Let $D \in \tD$.
+    By \cref{\xrprefix{prop:gnpa_characterisation}}, $m_{\pi\ss{G}}(D) = m_f(D)$ and $k_{\pi\ss{G}}(D) = k_f(D)$.
+    Therefore, for any $x, y \in \X$,
+    \begin{equation}
+        \norm{f(x) - f(y)}_{L^2(\pi\ss{G}(D))}
+        = \norm{f(x) - f(y)}_{L^2(\pi_f(D))}.
+    \end{equation}
+    The result then follows from $\norm{\vardot}_{L^2(\pi_f(D))} \le \norm{\vardot}_{L^p(\pi_f(D))}$ ($p \ge 2$; see \cref{\xrprefix{assum:f_regularity}}) in combination with \cref{\xrprefix{prop:posterior_prediction_map_Holder}}.
+\end{proof}
+
+
+\section{Proofs for Section \ref{\xrprefix{sec:predmap:consistency}}}
+\label{sec:proofs_predmap:consistency}
+
+\begin{lemma} \label{lem:local_Lipschitzness_r}
+    \begin{equation}
+        \abs{r(\vx_1) - r(\vx_2)} \le \frac{1}{\underline{\sigma}}\norm{\vx_1 - \vx_2}_2.
+    \end{equation}
+\end{lemma}
+\begin{proof}
+    For $x_1, x_2 \in \R$, using the fundamental theorem of calculus,
+    \begin{equation}
+        \abs{e^{-\frac12 x_1^2} - e^{-\frac12 x_2^2}} = \abs*{
+            \int_{x_1}^{x_2} x e^{-\frac12 x^2} \isd x
+        }
+        \le \norm{x \mapsto x e^{-\frac12 x^2}}_\infty \abs{x_1 - x_2},
+    \end{equation}
+    and $\norm{x \mapsto x e^{-\frac12 x^2}}_\infty \le 1$.
+    Set $x_1 = \frac1{\sigma}\norm{\vx_1}_2$ and $x_2 = \frac1{\sigma}\norm{\vx_2}_2$,
+    so
+    \begin{equation}
+        \abs{r(\vx_1) - r(\vx_2)}
+        \le \frac{1}{\sigma} \abs{\norm{\vx_1}_2 - \norm{\vx_2}_2}
+        \le \frac{1}{\underline{\sigma}} \norm{\vx_1 - \vx_2}_2,
+    \end{equation}
+    which concludes.  
+\end{proof}
+
+\begin{lemma} \label{lem:bounds_Z}
+    There exist universal $c_\ell$ and $c_u$ such that, for all $(\vx, \vy) \in \tD$,
+    \begin{equation}
+        0
+        < c_\ell
+        \le Z(\vx, \vy)
+        \le c_u
+        < \infty.
+    \end{equation}
+    In particular, $\frac12 e^{-\frac{1}{\underline{\sigma}^2} B_{\tD}^2 (1 + 2 B_f^2)} \le c_\ell$ and $c_u \le 1$.
+\end{lemma}
+\begin{proof}
+    The proof is similar to \cref{lem:inf_sup_Z}.
+    For the lower bound on $c_\ell$, see \eqref{lem:inf_sup_Z:lower_bound}.
+\end{proof}
+
+For $f \in C(\X, \Y)$, define the \emph{modulus of continuity} by
+\begin{equation}
+    \omega_f(h)
+    = \sup_{x, y \in \X \,:\, \abs{x - y} < h} \abs{f(x) - f(y)}.
+\end{equation}
+
+\begin{proposition}
+    Under \cref{\xrprefix{assum:f_regularity}},
+    \begin{equation}
+        \P(\omega_f(h) \ge \e) \le \frac{c_{\beta, p}}{\e} h^{\beta - \frac{1}{p}}
+    \end{equation}
+    where $c_{\beta, p} > 0$ is a constant only depending on $c$, $\beta$, and $p$.
+\end{proposition}
+\begin{proof}
+    This follows directly from \cref{prop:uniform_control_modulus_of_continuity}.
+    \Cref{prop:uniform_control_modulus_of_continuity} is a stronger result which we will prove later.
+\end{proof}
+
+\begin{proposition} \label{prop:Lipschitzness_Z}
+    There exists a universal $c_Z > 0$ such that, for all $D_1, D_2 \in \D$,
+    \begin{equation}
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+        \le c_Z\, d_\D(D_1, D_2)^{\frac12(\beta - \frac1p)}
+        \quad\text{whenever}\quad
+        d_\D(D_1,D_2) < 1
+    \end{equation}
+    where $D_1 = (\vx_1, \vy_1)$ and $D_2 = (\vx_2, \vy_2)$.
+\end{proposition}
+\begin{proof}
+    Suppose that $D_1, D_2 \in \D^N$.
+    Consider the event $A = \set{f : 
+        \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e
+    }$.
+    We have
+    \begin{equation}
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+         \le 
+            \abs{\E_f[
+                (
+                    r(\vy_1 - f(\vx_1)) 
+                    - r(\vy_2 - f(\vx_2)) 
+                ) \ind_A
+            ]}
+            + 2\, \P(A^\c).
+    \end{equation}
+    We bound the two terms separately, starting with the second term:
+    \begin{equation}
+        \P(A^\c)
+        =
+            \P(\omega_f(\norm{\vx_1 - \vx_2}_\infty) \ge \e)
+            % + \P(\norm{f(\vx_1)}_\infty \ge M)
+            % + \P(\norm{f(\vx_2)}_\infty \ge M) \nonumber \\
+        \le 
+        \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}.
+        % + \frac{2N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
+    \end{equation}
+    For the first term, simply take a supremum and use \cref{lem:local_Lipschitzness_r}:
+    \begin{align}
+        &\abs{\E_f[
+            \ind_A
+            (
+                r(\vy_1 - f(\vx_1)) 
+                - r(\vy_2 - f(\vx_2)) 
+            ) 
+        ]}
+        \vphantom{\frac{}{\underline{\sigma}}}
+        \nonumber \\
+        &\qquad \le 
+            \vphantom{\frac{1}{\underline{\sigma}}}
+            \sup_{f \in A} \, 
+                \abs{
+                    r(\vy_1 - f(\vx_1)) 
+                    - r(\vy_2 - f(\vx_2)) 
+                } \\
+        &\qquad \le 
+            \frac{1}{\underline{\sigma}}\, \sup_{f \in A} \, 
+                (\norm{f(\vx_1) - f(\vx_2)}_2 + \norm{\vy_1 - \vy_2}_2) \\
+        &\qquad \le 
+            \frac{1}{\underline{\sigma}}\, \sup_{f \in A} \, 
+                (\sqrt{N}\omega_f(\norm{\vx_1 - \vx_2}_\infty) + \norm{\vy_1 - \vy_2}_2) \\
+        &\qquad \le 
+            \frac{1}{\underline{\sigma}}\,
+                (\sqrt{N} \e + \norm{\vy_1 - \vy_2}_2),
+    \end{align}
+    where the last inequality follows from that $\omega_f(\norm{\vx_1 - \vx_2}_\infty) \le \e$ for all $f \in A$.
+    Putting the bounds for the two terms together, we have
+    \begin{equation}
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+        \le 
+            \frac{2 c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
+            + \frac{1}{\underline{\sigma}}(\sqrt{N}\e + \norm{\vy_1 - \vy_2}_2).
+            %+ \frac{4N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
+    \end{equation}
+    This holds for any choice of $\e > 0$, so we may also take an infimum over $\e > 0$.
+    For $a,b \ge 0$, note that the infimum of $a/\e + b$ over $\e > 0$ is given by $2 \sqrt{a b}$.
+    Therefore,
+    \begin{equation}
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+        \le 
+            \frac{2\sqrt{2}}{\sqrt{\underline{\sigma}}}
+            (\sqrt{N} c_{\beta,p})^{\frac12}
+            \norm{\vx_1 - \vx_2}_\infty^{\frac12(\beta - \frac1p)}
+            + \frac{1}{\underline{\sigma}}\norm{\vy_1 - \vy_2}_2.
+    \end{equation}
+    Finally note that $\norm{\vx_1 - \vx_2}_\infty < 1$ and $\norm{\vy_1 - \vy_2}_2 < 1$ whenever $d_\D(D_1, D_2) <1$ to find the result.
+\end{proof}
+
+\begin{proposition} \label{prop:Lipschitzness_functional}
+    Let $D_1, D_2 \in \D_N \cap \tD$ and denote $D_1 = (\vx_1, \vy_1)$ and $D_2 = (\vx_2, \vy_2)$.
+    Let $F\colon C(\X, \Y) \to \R$ be a continuous functional such that, for some $\gamma' > 0$, $B_F = \norm{F(f)}_{L^{1+\gamma'}} < \infty$.
+    Then there exists a function $L\colon[0,\infty) \to [0, \infty)$ such that
+    \begin{equation}
+        \abs{\E_{\pi(D_1)}[F(f)] - \E_{\pi(D_2)}[F(f)]}
+        \le L(d(D_1, D_2)).
+    \end{equation}
+    Moreover, $L$ only depends on the universal parameters, $\gamma'$, and $B_F$; and $L$ goes to zero as $d(D_1, D_2)$ goes to zero.
+\end{proposition}
+\begin{proof}
+    Consider the event $A = \set{f : 
+        \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e
+    }$.
+    Denote $g(\vx, \vy) = r(\vy - f(\vx)) / Z(\vx, \vy)$ and
+    note that $g(\vx_1, \vy_1) \le 1 /c_\ell$ and $g(\vx_2, \vy_2) \le 1/c_\ell$, where $c_\ell$ is defined in \cref{lem:bounds_Z}.
+    Then
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[F(f)] - \E_{\pi(D_2)}[F(f)]} \nonumber \\
+        &\qquad = \vphantom{\frac11} \abs{\E_f\sbrac{
+            \parens{
+                g(\vx_1, \vy_1)
+                - g(\vx_2, \vy_2)
+            }
+            F(f)
+        }} \\
+        &\qquad \le \abs{\E_f\sbrac{
+            \ind_A\parens{
+                g(\vx_1, \vy_1)
+                - g(\vx_2, \vy_2)
+            }
+            F(f)
+        }} + \frac2{c_\ell} \E_f[\ind_{A^\c}\abs{F(f)}].
+    \end{align}
+    We bound the two terms separately, starting with the second term:
+    \begin{equation}
+        \E[\ind_{A^\c} \abs{F(f)}]
+        \le
+            \norm{F(f)}_{L^{1 + \gamma'}}
+            \P(A^\c)^{\frac{\gamma'}{1 + \gamma'}} 
+        \le
+            \norm{F(f)}_{L^{1 + \gamma'}}
+            \sbrac*{
+                \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
+            }^{\smash{\frac{\gamma'}{1 + \gamma'}}}.
+    \end{equation}
+    For the first term, observe that, for any two functions $f$ and $g$ such that $0 < c_\ell \le g$ and $f, g \le c_u < \infty$,
+    \begin{equation}
+        \abs*{
+            \frac{f(x_1)}{g(x_1)}
+            -
+            \frac{f(x_2)}{g(x_2)}
+        }
+        \le \frac{c_u}{c_\ell^2}\parens*{
+            \abs{f(x_1) - f(x_2)}
+            + \abs{g(x_1) - g(x_2)}
+        }.
+    \end{equation}
+    Therefore, taking a supremum,
+    \begin{align}
+        &\abs{\E_f\sbrac{
+            \ind_A\parens{
+                g(\vx_1, \vy_1)
+                - g(\vx_2, \vy_2)
+            }
+            F(f)
+        }} \\
+        &\qquad\le 
+            \frac{c_u}{c_\ell^2}
+            \,
+            \norm{F(f)}_{L^1}
+            \,
+            \sup_{f \in A}
+            \,\big[
+                \abs{
+                    r(\vy_1 - f(\vx_1))
+                    - r(\vy_2 - f(\vx_2))
+                }
+                + \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+            \big]. \nonumber
+    \end{align}
+    Here, using \cref{lem:local_Lipschitzness_r,prop:Lipschitzness_Z},
+    \begin{align}
+        \abs{
+            r(\vy_1 - f(\vx_1))
+            - r(\vy_2 - f(\vx_2))
+        }
+        &\le \frac{1}{\underline{\sigma}}(
+            \norm{f(\vx_1) - f(\vx_2)}_2
+            + \norm{\vy_1 - \vy_2}_2
+        ) \\
+        &\le \frac{1}{\underline{\sigma}}(
+            \sqrt{N}\omega_f(\norm{\vx_1 - \vx_2}_\infty)
+            + \norm{\vy_1 - \vy_2}_2
+        ), \\
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+        &\le \vphantom{\frac{1}{}} L_Z(d(D_1, D_2)),
+    \end{align}
+    so, using that $\omega_f(\norm{\vx_1 - \vx_2}_\infty) \le \e$ for $f \in A$,
+    \begin{align}
+        &\abs{\E_f\sbrac{
+            \ind_A\parens{
+                g(\vx_1, \vy_1)
+                - g(\vx_2, \vy_2)
+            }
+            F(f)
+        }} \nonumber \\
+        &\qquad
+            \le 
+            \frac{c_u}{c_\ell^2}
+            \,\norm{F(f)}_{L^1}
+            \,\sbrac*{
+                \frac{1}{\underline{\sigma}}(
+                    \sqrt{N}\e
+                    + \norm{\vy_1 - \vy_2}_2
+                )
+                + L_Z(d(D_1, D_2))
+            }.
+    \end{align}
+    Putting the bounds for the two terms together, we have
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[F(f)] - \E_{\pi(D_2)}[F(f)]} \nonumber \\
+        &\qquad
+            \le
+            \frac{2}{c_\ell}
+            \,\norm{F(f)}_{L^{1 + \gamma'}}
+            \,\sbrac*{
+                \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
+            }^{\frac{\gamma'}{1 + \gamma'}}
+            \nonumber \\
+        &\qquad\phantom{\le}\;
+            + \frac{c_u}{c_\ell^2}\,\norm{F(f)}_{L^1}
+            \,\sbrac*{
+                \frac{1}{\underline{\sigma}}(
+                    \sqrt{N}\e
+                    + \norm{\vy_1 - \vy_2}_2
+                )
+                + L_Z(d(D_1, D_2))
+            },
+    \end{align}
+    which we simplify to
+    \begin{align}
+        &\frac{c_\ell}{2}\, \norm{F(f)}^{-1}_{L^{1 + \gamma'}}\abs{\E_{\pi(D_1)}[F(f)] - \E_{\pi(D_2)}[F(f)]} \\
+        &\qquad
+            \le
+            \sbrac*{
+                \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
+            }^{\frac{\gamma'}{1 + \gamma'}}
+            + \frac{c_u}{c_\ell}
+            \,\sbrac*{
+                \frac{1}{\underline{\sigma}}(
+                    \sqrt{N}\e
+                    + \norm{\vy_1 - \vy_2}_2
+                )
+                + L_Z(d(D_1, D_2))
+            }. \nonumber
+    \end{align}
+    This holds for any choice of $\e > 0$,
+    so we may also take an infimum over $\e > 0$.
+    Temporarily denote $\rho = \frac{\gamma'}{1 + \gamma'}$.
+    For $a, b \ge 0$ and $\rho > 0$, note that the infimum of $(a/\e)^\rho + b \e$ over $\e > 0$ is given by
+    $c_\rho (ab)^{\frac{\rho}{1+\rho}}$ with $c_\rho = \rho^{\frac1{1+\rho}} + \rho^{-\frac{\rho}{1+\rho}}$.
+    Therefore,
+    \begin{align}
+        &\frac{c_\ell}{2} \norm{F(f)}^{-1}_{L^{1 + \gamma'}}\abs{\E_{\pi(D_1)}[F(f)] - \E_{\pi(D_2)}[F(f)]} \\
+        &\qquad
+            \le
+            c_\rho \sbrac*{
+                \frac{c_u}{c_\ell}
+                \frac{\smash{\sqrt{N}}}{\underline{\sigma}}
+                c_{\beta, p} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
+            }^{\frac{\gamma'}{1 + 2 \gamma'}}
+            + \frac{c_u}{c_\ell}
+            \,\sbrac*{
+                \frac{1}{\underline{\sigma}} \norm{\vy_1 - \vy_2}_2
+                + L_Z(d(D_1, D_2))
+            }, \nonumber
+    \end{align}
+    noting that $\frac{\rho}{1+ \rho}=\frac{\gamma'}{1+2\gamma'}$.
+\end{proof}
+
+
+\restatement{../../chapters/predmap/statements/regularity_part_two.tex}   
+\begin{proof}
+    \listnum{1}:
+    For the mean, choose some $x \in \X$, apply \cref{prop:Lipschitzness_functional} with $F(f) = f(x)$ and $\gamma' = 1 + \gamma$, and verify that
+    \begin{equation}
+        \norm{f(x)}_{L^{1 + \gamma'}}
+        \le \sup_{x \in \X} \, \norm{f(x)}_{L^{2 + \gamma}}
+        = B_f,
+    \end{equation}
+    which only depends on the universal parameters.
+    For the covariance, choose two $x, y \in \X$, apply \cref{prop:Lipschitzness_functional} with $F(f) = f(x)f(y)$ and $\gamma' = \frac12 \gamma$, and verify that 
+    \begin{equation}
+        \norm{f(x) f(y)}_{L^{1 + \gamma'}}
+        \le
+            \norm{f(x)}_{L^{2 + 2\gamma'}}
+            \norm{f(y)}_{L^{2 + 2\gamma'}}
+        \le \sup_{x \in \X}\, \norm{f(x)}^2_{L^{2 + \gamma}}
+        = B^2_f
+    \end{equation}
+    which again only depends on the universal parameters.
+    
+    \listnum{2}:
+    We will repeatedly use the observation that, for any $q \ge 1$ and $D \in \tD$,
+    \begin{equation}
+        \norm{\vardot}_{L^q(\pi(D))} \le \frac{1}{c_\ell^{1/q}} \norm{\vardot}_{L^q}
+    \end{equation}
+    where $c_\ell$ is from \cref{lem:bounds_Z}.
+    We first prove the inequality for the mean:
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[f(x_1)] - \E_{\pi(D_2)}[f(x_2)]} \nonumber \\
+        &\qquad\le
+            \abs{\E_{\pi(D_1)}[f(x_1)] - \E_{\pi(D_2)}[f(x_1)]}
+            + \abs{\E_{\pi(D_2)}[f(x_1)] - \E_{\pi(D_2)}[f(x_2)]} \\
+        &\qquad\le
+            L_m(d(D_1, D_2))
+            + \norm{f(x_1) - f(x_2)}_{L^1(\pi(D_2))} \\
+        &\qquad\le
+            L_m(d(D_1, D_2))
+            + \frac{c}{c_\ell} \abs{x_1 - x_2}^\beta
+    \end{align}
+    where the second inequality follows from part \listnum{2} and the third inequality from the observation combined with \cref{\xrprefix{assum:f_regularity}}.
+    For the covariance,
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_2)f(y_2)]} \nonumber \\
+        &\qquad\le
+            \abs{\E_{\pi(D_1)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_1)f(y_1)]} \nonumber \\
+        &\qquad\;\qquad\qquad
+            + \abs{\E_{\pi(D_2)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_1)f(y_2)]} \nonumber \\
+        &\qquad\;\qquad\qquad
+            + \abs{\E_{\pi(D_2)}[f(x_1)f(y_2)] - \E_{\pi(D_2)}[f(x_2)f(y_2)]}.
+    \end{align}
+    From part \listnum{2}, we have
+    \begin{equation}
+        \abs{\E_{\pi(D_1)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_1)f(y_1)]}
+        \le L_k(d(D_1, D_2)).
+    \end{equation}
+    We also have
+    \begin{align}
+        \abs{\E_{\pi(D_2)}[f(x_1)(f(y_1) - f(y_2))]}
+        &\le \vphantom{\frac{}{c_\ell}}\norm{f(x_1)}_{L^2(\pi(D_2))}\norm{f(y_1) - f(y_2)}_{L^2(\pi(D_2))} \\
+        &\le \vphantom{\frac{B_f}{}}\frac1{c_\ell}
+            \norm{f(x_1)}_{L^2} \norm{f(y_1) - f(y_2)}_{L^2} \\
+        &\le B_f \frac{c}{c_\ell}
+            \abs{y_1 - y_2}^\beta.
+    \end{align}
+    Therefore,
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_2)f(y_2)]} \nonumber \\
+        &\qquad\le
+            L_k(d(D_1, D_2))
+            + B_f \frac{c}{c_\ell} \abs{x_1 - x_2}^\beta
+            + B_f \frac{c}{c_\ell} \abs{y_1 - y_2}^\beta,
+    \end{align}
+    which concludes.
+\end{proof}
+
+\restatement{../../chapters/predmap/statements/cnpa_consistency.tex}
+\begin{proof}
+    The result follows directly from \cref{\xrprefix{prop:cnpa_characterisation}} in combination with Theorem 5.41 by \textcite{Vaart:1998:Asymptotic_Statistics}.
+    It remains to verify the conditions for Theorem 5.4.1.
+    Convergence in the metric on $\widetilde\Qc\ss{G,MF}$ (see \eqref{\xrprefix{eq:metric_Q_G_MF}}) implies convergence of all means and variances, which is stronger than the required continuity condition.
+    For the integrability condition, combine the following three facts.
+    First, by assumption, the maximum target set size is bounded.
+    Second, the universal H\"older condition implies that $\sup_{\pi \in \widetilde\Qc\ss{G,MF},\,D \in \tD,\, x \in \X} \E_{\pi(D)}[f^2(x)] < \infty$, which bounds all means and covariances.
+    Third, by \cref{\xrprefix{assum:noise_boundedness}} and the following paragraph, every noise variance $\sigma$ is in $[\underline{\sigma}, \overline{\sigma}]$. 
+\end{proof}
+
+\restatement{../../chapters/predmap/statements/gnpa_consistency.tex}
+\begin{proof}
+    The proof goes exactly like the proof of \cref{\xrprefix{prop:cnpa_consistency}}.
+\end{proof}
+
+\begin{proposition} \label{prop:uniform_control_modulus_of_continuity}
+    Consider $(\mu_i)_{i\ge1} \sub \mathcal{P}\ss{c}$.
+    Suppose there exist $p > 0$, $\beta > \tfrac1p$, a constant $c > 0$, and a radius $r > 0$ such that
+    \begin{equation}
+        \sup_{i \ge 1}\,
+        \norm{f(x) - f(y)}_{L^p(\mu_i)} \le c \abs{x - y}^\beta
+        \quad\text{whenever}\quad
+        \abs{x - y} < r.
+    \end{equation}
+    Then, for all $\e > 0$,
+    \begin{equation}
+        \sup_{i \ge 1}\, \mu_i(\omega_f(h) \ge \e)
+        \le \frac{c}{\e} \frac{2}{1 - 2^{-(\beta - \frac1p)}} h^{\beta - \frac1p}.
+    \end{equation}
+\end{proposition}
+\begin{proof}
+    Choose $k \in \N$ such that $2^{-(k + 1)} \le h \le 2^{-k}$.
+    The proof strategy mimics the proof of Theorem 4.2.1 by \textcite{Norris:2018:Advanced_Probability}.
+    Let $i \in \N$.
+    For $n \in \N$, denote $\Db_n = \set{0, 2^{-n}, 2 \cdot 2^{-n}, \ldots, 1}$.
+    Consider $f \in C([0, 1], \mathcal{Y})$.
+    Set
+    \begin{equation}
+        K_n = \sup_{x \in \Db_n \setminus \set{1}} = \abs{f(x + 2^{-n}) - f(x)}.
+    \end{equation}
+    Overestimate the supremum by a sum and use $L^{p}$-H\"older continuity of $\mu_i$:
+    \begin{equation}
+         \E_{\mu_i}[K_n^p]
+         \le c \sum_{i=0}^{2^n - 1} \E_{\mu_i}[\abs{f(x + 2^{-n}) - f(x)}^p]
+         \le c \sum_{i=0}^{2^n - 1} 2^{-\beta p n}
+         = 2^{-(\beta p - 1) n}.
+    \end{equation}
+    For any $x, y \in \union_{n=1}^\infty \Db_n$ such that $x < y < x + 2^{-k}$, note that the interval $[x, y)$ is the finite, disjoint union of intervals $[r, r + 2^{-n})$ with $r \in \Db_n$ for $n \ge k + 1$ where no three intervals have the same length \parencite[proof of Theorem 4.2.1;][]{Norris:2018:Advanced_Probability}.
+    Therefore, for such $x$ and $y$, by continuity of $f$,
+    \begin{equation}
+        \omega_f(2^{-k})
+        = \sup_{x, y \in \union_{n=1}^\infty \Db_n: \abs{x - y}< 2^{-k}}\abs{f(x) - f(y)}
+        \le 2\sum_{n=k+1}^\infty K_n.
+    \end{equation}
+    Hence,
+    \begin{equation}
+        \E_{\mu_i}\sbrac{\omega_f(2^{-k})}
+        % \le 2\sum_{n=k+1}^\infty \E_{\mu_i}[K_n]
+        \le 2\sum_{n=k+1}^\infty \E_{\mu_i}[K_n^p]^{\frac1p}
+        \le 2c\sum_{n=k+1}^\infty 2^{-(\beta - \frac1p)n}
+        = c\frac{2^{1-(\beta - \frac1p)(k + 1)}}{1 - 2^{-(\beta - \frac1p)}},
+        %= c_{p,q} 2^{-(\beta - \frac1p)k},
+    \end{equation}
+    using that $\beta - \frac1p > 0$,
+    where
+    is some constant $c_{p, q}$ that depends on $p$, $\beta$ and $c$. 
+    Then, for any $\e > 0$, by Markov's inequality,
+    \begin{equation}
+        \sup_{i \ge 1}\, \mu_i(\omega_f(h) \ge \e)
+        \le \sup_{i \ge 1}\, \mu_i(\omega_f(2^{-k}) \ge \e)
+        % \le \frac{c_{p,q}}{\e} 2^{-(\beta - \frac1p)k}
+        \le \frac{2c}{\e} \frac{2^{-(\beta - \frac1p)k}}{2^{\beta - \frac1p} - 1}
+        \le \frac{2c}{\e} \frac{(2h)^{\beta - \frac1p}}{2^{\beta - \frac1p} - 1}
+        %\le \frac{c_{p,q}}{\e} (2h)^{\beta - \frac1p},
+    \end{equation}
+    which proves the result.
+\end{proof}
+
+
+
+\end{document}

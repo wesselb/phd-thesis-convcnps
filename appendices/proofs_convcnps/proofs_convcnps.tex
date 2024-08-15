@@ -1,0 +1,288 @@
+\documentclass[12pt, twoside]{report}
+\input{../../preamble/preamble}
+\addbibresource{../../bibliography.bib}
+
+\usepackage{xr}
+\externaldocument[xr-]{../../main}
+\newcommand{\xrprefix}[1]{xr-#1}
+
+\begin{document}
+
+\chapter
+    {Proofs for Chapter \ref{\xrprefix{chap:convcnps}}}
+\label{app:proofs_convcnps}
+
+\section{Proofs for Section \ref{\xrprefix{sec:convcnps:convcnps}}}
+\label{sec:proofs_convcnps:convcnps}
+
+\restatement{../../chapters/convcnps/statements/stationary_iff_te.tex}
+\begin{proof}
+    Suppose that the ground-truth stochastic process $f$ is stationary: $f \disteq \T_\tau f$ for all $\tau \in \X$.
+    Let $D \in \D$ and $\tau \in \X$.
+    Let $\mu_f$ denote the law of $f$, 
+    and let $\pi'(D)$ denote the Radon--Nikodym of $\pi_f(D)$ with respect to $\mu_f$ (\cref{\xrprefix{def:posterior_prediction_map_formal}}).
+    From \cref{\xrprefix{def:posterior_prediction_map_formal}} and stationarity of $f$, 
+    it is clear that $\pi'(\T_\tau D) = \pi'(D) \comp \T_{-\tau}$.
+    Let $B$ be a cylinder set.
+    Then, by the changes-of-variables formula for pushforward measures \parencite[Theorem 14.1;][]{Schilling:2005:Measures_Integrals_and_Martingales},%
+    \begin{align}
+        \int_B \pi'(\T_\tau D) \isd \mu_f
+        &= \int_B \pi'(D) \comp \T_{-\tau} \isd \mu_f \\
+        &= \int_{\T_{-\tau}(B)} \pi'(D) \isd \T_{-\tau}(\mu_f) &&\text{(change of variables)}\\
+        &= \int_{\T^{-1}_{\tau}(B)} \pi'(D) \isd \mu_f. && \text{($f$ is stationary and $\T_{-\tau} = \T^{-1}_\tau$)}
+    \end{align}
+    We conclude that $\pi_f$ is translation equivariant (\cref{\xrprefix{def:translation_equivariance}}).
+    Conversely, if $\pi_f$ is translation equivariant, then
+    \begin{equation}
+        \T_\tau \pi_f(\es) = \pi_f(\T_\tau \es) = \pi_f(\es)
+        \quad\text{ for all $\tau \in \X$}.\hspace{-15pt}
+    \end{equation}
+    Since $\pi_f(\es) = \mu_f$, this means that $f$ is stationary.
+\end{proof}
+
+If we just assume that $f$ is stationary and $\pi_f$ is translation equivariant,
+then we can prove that $\pi'(\T_{\tau} D) = \pi'(D) \comp \T_{-\tau}$ $\mu_f$--almost surely.
+Let $B$ be a cylinder set.
+Then
+\begin{align}
+    \int_B \pi'(\T_{\tau} D) \isd \mu_f
+    &= \int_{\T^{-1}_{\tau}(B)} \pi'(D) \isd \mu_f  && \text{($\pi_f$ is translation equivariant)} \\
+    &= \int_{\T_{-\tau}(B)} \pi'(D) \isd \mathsf{T}_{-\tau}(\mu_f) &&\text{($\T^{-1}_\tau = \T_{-\tau}$ and $f$ is stationary)}\\
+    &= \int_B \pi'_P(D) \comp \T_{-\tau} \isd \mu_f. &&\text{(change of variables)}
+\end{align}
+Since this holds for all cylinder sets, $\pi'(\T_{\tau} D) = \pi'(D) \comp \T_{-\tau}$ $\mu_f$--almost surely.
+Therefore, we have actually proven the stronger statement that
+$\pi_f$ is stationary
+if and only if
+$f$ is stationary and $\pi'(\T_{\tau} D) = \pi'(D) \comp \T_{-\tau}$ $\mu_f$--almost surely.
+However, for the current exposition, this generality is unnecessary,
+because we assume the form of $\pi'$ in \cref{\xrprefix{def:posterior_prediction_map_formal}}.
+
+\restatement{../../chapters/convcnps/statements/te_cnp.tex}
+\begin{proof}
+    ``$\Rightarrow$'':
+    Let $D \in \D$ and $\tau \in \X$.
+    Then 
+    \begin{align}
+        m_\pi(\T_{\tau} D)(x)
+        &= \E_{\pi(\T_\tau D)}[f(x)] && \text{(\cref{\xrprefix{def:mean_map}})} \\
+        &= \E_{\T_\tau \pi(D)}[f(x)] && \text{(translation equivariance of $\pi$)} \\
+        &= \E_{\pi(D)}[f(x - \tau)] && \text{(change of variables)} \\
+        &= m_\pi(D)(x - \tau). && \text{(\cref{\xrprefix{def:mean_map}})}
+    \end{align}
+    The proof for $v_\pi$ is similar.
+    ``$\Leftarrow$'':
+    A conditional neural process $\pi$ in the sense of \cref{\xrprefix{def:cnp}} is characterised by $m_\pi$ and $v_\pi$ (\cref{\xrprefix{sec:predmap:np_approximations}}).
+    Namely, let $D \in \D$, $\vx \in I_N$.
+    Then
+    \begin{equation}
+        P_\vx \pi(D) = \Normal\parens*{
+            \begin{bmatrix}
+                m(D)(x_1) \\ \vdots \\ m(D)(x_N)
+            \end{bmatrix},
+            \begin{bmatrix}
+                v(D)(x_1) &  & 0 \\    
+                 & \ddots & \vdots \\
+                0 &  & v(D)(x_N)
+            \end{bmatrix}
+        }.
+    \end{equation}
+    Therefore, if $m_\pi$ and $v_\pi$ are translation equivariant, then $\pi(D)$ is translation equivariant.
+\end{proof}
+
+\section{Proofs for Section \ref{\xrprefix{sec:convcnps:generalisation}}}
+\label{sec:proofs_convcnps:generalisation}
+
+\restatement{../../chapters/convcnps/statements/generalisation.tex}
+\begin{proof}
+    The proof follows the intuition from \cref{\xrprefix{fig:generalisation}}.
+    Let $M > 0$, $n \in \set{1, \ldots, N}$, $\vx \in [0, M]^n$, and $D \in \D \cap \union_{n=0}^\infty ([0, M] \times \R)^n$.
+    Sort and put the $n$ inputs $\vx$ into $B = \ceil*{M/\tfrac12 R}$ buckets $(B_i)_{i=1}^B$ such that $x_j \in [(i - 1)\cdot \tfrac12 R, i\cdot\tfrac12R]$ for all $j \in B_i$.
+    More concisely written, $\vx_{B_i} \in [(i -1)\cdot \tfrac12 R, i\cdot \tfrac12 R]^{\abs{B_i}}$.
+    Write $C_i = \union_{j=1}^{i - 1} B_i$.
+    Let $D_i$ be the subset of $D$ with inputs in $[\min(\vx_{B_{i-2}}), \max(\vx_{B_{i+1}})]$.
+    
+    % If $f \sim \pi_1(D)$, then denote the distribution of $f(\vx) \cond f(\vy)$ by $\pi_1(f(\vx) \cond f(\vy), D)$.
+    If $\vy_1 \oplus \vy_2 \sim P^\sigma_{\vx_1 \oplus \vx_2} \pi(D)$, then denote the distribution of $\vy_1 \cond \vy_2$ by $P^{\sigma}_{\vx_1 \cond \vx_2} \pi(D)$.
+    Use the chain rule for the KL divergence to decompose
+    \begin{align}
+        &\KL(P^{\sigma_1}_\vx \pi_1(D), P^{\sigma_2}_\vx \pi_2(D)) \nonumber \\
+        &\quad= \sum_{i=1}^B
+        \E_{P_{\vx_{C_i}}^{\sigma_1} \pi_1(D)}[
+                \KL(
+                    P_{\vx_{B_i} \cond \vx_{C_i}}^{\sigma_1} \pi_1(D),
+                    P_{\vx_{B_i} \cond \vx_{C_i}}^{\sigma_2} \pi_2(D)
+                )
+            ].
+    \end{align}
+    We focus on the $i$\textsuperscript{th} term in the sum.
+    Using that $\pi_1(D)$ and $\pi_2(D)$ have receptive field $R$, we may drop the dependency on $B_1, \ldots, B_{i-2}$:
+    \begin{align}
+        \KL(
+            P_{\vx_{B_i} \cond \vx_{C_i}}^{\sigma_1} \pi_1(D),
+            P_{\vx_{B_i} \cond \vx_{C_i}}^{\sigma_2} \pi_2(D)
+        )
+        = \KL(
+            P_{\vx_{B_i} \cond \vx_{B_{i-1}}}^{\sigma_1} \pi_1(D),
+            P_{\vx_{B_i} \cond \vx_{B_{i-1}}}^{\sigma_2} \pi_2(D)
+        )
+        % &\KL[
+        %     \pi_1(f(\vx_{B_i}) \cond f(\vx_{C_i}), D),
+        %     \pi_2(f(\vx_{B_i}) \cond f(\vx_{C_i}), D)
+        % ] \nonumber \\
+        % &\qquad=
+        % \KL[
+        %     \pi_1(f(\vx_{B_i}) \cond f(\vx_{B_{i-1}}), D),
+        %     \pi_2(f(\vx_{B_i}) \cond f(\vx_{B_{i-1}}), D)
+        % ]
+    \end{align}
+    Therefore,
+    \begin{align}
+        &\E_{P^{\sigma_1}_{\vx_{C_i}} \pi_1(D)}[ \KL(
+            P_{\vx_{B_i} \cond \vx_{C_i}}^{\sigma_1} \pi_1(D),
+            P_{\vx_{B_i} \cond \vx_{C_i}}^{\sigma_2} \pi_2(D)
+        )] \nonumber \\
+        &\qquad= \E_{P^{\sigma_1}_{\vx_{B_{i-1}}}\pi_1(D)}[\KL(
+            P_{\vx_{B_i} \cond \vx_{B_{i-1}}}^{\sigma_1} \pi_1(D),
+            P_{\vx_{B_i} \cond \vx_{B_{i-1}}}^{\sigma_2} \pi_2(D)
+            )] \\
+        &\qquad\le \KL(
+            P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_1} \pi_1(D),
+            P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_2} \pi_2(D)
+            ).
+        % &\KL[
+        %     \pi_1(f(\vx_{B_i}) \cond f(\vx_{B_{C_i}}), D),
+        %     \pi_2(f(\vx_{B_i}) \cond f(\vx_{B_{C_i}}), D)
+        % ] \\
+        % &\qquad
+        % \KL[
+        %     \pi_1(f(\vx_{B_i} - \tau) \cond f(\vx_{B_{i-1}} - \tau_i),
+        %         D_i - \tau_i
+        %     )), \nonumber \\
+        % &\qquad\hphantom{=\KL[}\;
+        %     \pi_2(f(\vx_{B_i} - \tau) \cond f(\vx_{B_{i-1}} - \tau_i), 
+        %         D_i - \tau_i
+        %     ))
+        % ], \nonumber
+    \end{align}
+    Next, we use that $\pi_1$ and $\pi_2$ also have receptive field $R$, allowing us to replace $D$ with $D_i$:
+    \begin{align}
+        \KL(
+            P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_1} \pi_1(D),
+            P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_2} \pi_2(D)
+            )
+        = \KL(
+            P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_1} \pi_1(D_i),
+            P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_2} \pi_2(D_i)
+            ).
+    \end{align}
+    Finally, we use translation equivariance to shift everything back to the origin.
+    Let $\tau_i$ be $\min(\vx_{B_{i-2}})$.
+    By translation equivariance of $\pi_1$,
+    \begin{equation}
+        P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_1} \pi_1(D_i)
+        = P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_1} \T_{\tau_i} \pi_1(\T_{-\tau_i} D_i)
+        = P_{\vx_{B_i \cup B_{i-1}} - \tau_i}^{\sigma_1} \pi_1(\T_{-\tau_i} D_i)
+    \end{equation}
+    where by $\vx_{B_i \cup B_{i-1}} - \tau_i$ we mean subtraction elementwise.
+    Crucially, note that all elements of $\vx_{B_i \cup B_{i-1}} - \tau_i$ and all inputs of $\T_{-\tau_i} D_i$ lie in $[0, 4 \cdot \tfrac12 R]$.
+    We have a similar equality for $\pi_2$.
+    Putting everything together,
+    \begin{align}
+        &\E_{P^{\sigma_1}_{\vx_{C_i}}\pi_1(D)}[ \KL(
+            P_{\vx_{B_i} \cond \vx_{C_i}}^{\sigma_1} \pi_1(D),
+            P_{\vx_{B_i} \cond \vx_{C_i}}^{\sigma_2} \pi_2(D)
+        )] \nonumber \\
+        &\qquad\le \KL(
+        P_{\vx_{B_i \cup B_{i-1}} - \tau_i}^{\sigma_1} \pi_1(\T_{-\tau_i}D_i),
+        P_{\vx_{B_i \cup B_{i-1}} - \tau_i}^{\sigma_2} \pi_2(\T_{-\tau_i}D_i)
+            ),
+    \end{align}
+    which is less than $\e$ by the assumption of the theorem.
+    The conclusion now follows.
+\end{proof}
+
+\section{Proofs for Section \ref{\xrprefix{sec:convcnps:gnp}}}
+\label{sec:proofs_convcnps:gnp}
+
+\restatement{../../chapters/convcnps/statements/te_gnp.tex}
+\begin{proof}
+
+    ``$\Rightarrow$'': Follows from ``$\Rightarrow$'' of \cref{\xrprefix{prop:TE_iff_m_TE_v_TE}}, noting that TE of $v_\pi$ implies DTE of $k_\pi$.
+    ``$\Leftarrow$'': Exactly like the proof for ``$\Leftarrow$'' of \cref{\xrprefix{prop:TE_iff_m_TE_v_TE}}, now using DTE of $k_\pi$ rather than TE of $v_\pi$.
+\end{proof}
+
+
+\section{Proofs for Section \ref{\xrprefix{sec:convcnps:ar}}}
+\label{sec:proofs_convcnps:ar}
+
+\restatement{../../chapters/convcnps/statements/advantage_ar.tex}
+\begin{proof}
+    Use the notation $P_{\vx_1 \cond \vx_2}^\sigma \pi$ from the proof of \cref{\xrprefix{thm:generalisation_of_gnp}}.
+    We will argue that, for all $n = 1, \ldots, \abs{\vx}$,
+    \begin{align}
+        &\KL(
+            P_{x_n \cond \vx_{1:(n-1)}}^{\sigma_f} \pi_f(D),
+            P_{x_n}^{\sigma\ss{C}} \pi\ss{C}(D \oplus (\vx_{1:(n-1)}, \vy_{1:(n - 1)}))
+        ) \nonumber \\
+        &\qquad\le \KL(
+            P_{x_n \cond \vx_{1:(n-1)}}^{\sigma_f} \pi_f(D),
+            P_{x_n \cond \vx_{1:(n-1)}}^{\sigma\ss{G}} \pi\ss{G}(D)
+        )
+    \end{align}
+    where $\vy_{1:(n-1)}$ is the realisation for inputs $\vx_{1:(n-1)}$ on which the KL divergences are conditioned.
+    Assuming this inequality, the result follows from the chain rule for the KL divergence in combination with the definition of $\AR_\vx^{\sigma\ss{C}}$ (\cref{\xrprefix{proc:ar}}).
+    To prove the inequality, note that,
+    conditional on $\vy_{1:(n-1)}$,%
+    \begin{equation} \label{eq:advantage_ar:argmin}
+        \argmin_{\mu\ss{G} \in \Pc\ss{$\lambda$,G}^1}\,
+        \KL(
+            P_{x_n \cond \vx_{1:(n-1)}}^{\sigma_f} \pi_f(D),
+            \mu
+        )
+        = \Normal(P_{x_n \cond \vx_{1:(n-1)}}^{\sigma_f} \pi_f(D)).
+    \end{equation}
+    See the proof of \cref{\xrprefix{prop:gnpa_characterisation}} for the definition of $\Pc\ss{$\lambda$,G}^1$ and the argument for \eqref{eq:advantage_ar:argmin}.
+    But, by \cref{\xrprefix{prop:cnpa_characterisation}}, this is exactly what 
+    $P_{x_n}^{\sigma\ss{C}} \pi\ss{C}(D \oplus (\vx_{1:(n-1)}, \vy_{1:(n - 1)}))$
+    is!
+    Since $P_{x_n \cond \vx_{1:(n-1)}}^{\sigma\ss{G}} \pi\ss{G}(D) \in \Pc\ss{$\lambda$,G}^1$, the inequality follows.
+\end{proof}
+
+
+\restatement{../../chapters/convcnps/statements/recovery_of_smooth_samples.tex}
+\begin{proof}
+    Consider the increasing filtration $\mathcal{F}_n = \sigma(y_1, \ldots, y_n)$ with limit $\mathcal{F}_\infty = \sigma(\smash{\union_{n=1}^\infty} \mathcal{F}_n)$.
+    Also let $\Tc_n = \sigma(\e_{n+1}, \e_{n+2}, \ldots)$ and consider the tail $\sigma$-algebra $\Tc = \intersection_{n=1}^\infty \Tc_n$.
+    Let $(x_{n_i})_{i=1}^\infty$ be a subsequence of $(x_n)_{n=1}^\infty$ such that $x_{n_i} \to x^*$.
+    Let $g_n = \frac{1}{n} \sum_{i=1}^n y_i$.
+    Since $g_n$ is a function of $y_1, \ldots, y_n$, it is $\F_n$--measurable and therefore $\mathcal{F}_\infty$--measurable.
+    Note that
+    \begin{equation}
+        g_n = \frac{1}{n} \sum_{i=1}^n f(x_{n_i}) + \frac{1}{n} \sum_{i=1}^n \e_i.
+    \end{equation}
+    By sure continuity of $f$, the first term converges to $f(x^*)$ surely.
+    By the strong law of large numbers \parencite[Example 5.6.1;][]{Durrett:2010:Probability_Theory_and_Examples}, % and the conditions on $(\e_n)_{n \ge 1}$,
+    the second term converges to zero on a tail event $A \in \Tc$ of probability one.
+    % More precisely, we set
+    % \begin{equation}
+    %     A = \set*{\limsup_{n \ge 1} \frac1n\abs*{\sum_{i=1}^n \e_i} = 0}.
+    % \end{equation}
+    % Since both $A \in \F_\infty$ and $A \in \Tc$, we have $\P(A) \in \set{0, 1}$ \parencite[Kolmogorov's 0--1 law; Theorem 2.5.1;][]{Durrett:2010:Probability_Theory_and_Examples}, so $\P(A) = 1$ by the SLNN.
+    We conclude that $\ind_{A} f(x^*)$ is $\sigma(\F_\infty, \Tc)$--measurable.
+    Therefore, by almost sure convergence of $L^2$--bounded martingales \parencite[Theorem 5.4.5;][]{Durrett:2010:Probability_Theory_and_Examples}, 
+    \begin{align}
+        \lim_{n \to \infty} \E[y(x^*) \cond y_1, \ldots, y_n]
+        &= \lim_{n \to \infty} \E[f(x^*) \cond y_1, \ldots, y_n] && \text{($\E[\e_0] = 0$)} \\
+        &= \lim_{n \to \infty} \E[f(x^*) \cond \F_n]  && \text{(definition of $\F_n$)} \\
+        &= \lim_{n \to \infty} \E[f(x^*) \cond \F_n, \Tc] && \text{($\sigma(f(x^*), \F_n) \perp \Tc$)} \\
+        &= \lim_{n \to \infty} \E[\ind_A f(x^*) \cond \F_n, \Tc] && \text{($\P(A) = 1$)} \\
+        &= \vphantom{\lim_n} \E[\ind_A f(x^*) \cond \F_\infty, \Tc] && \text{($L^2$--mart.\ convergence)}\\
+        &= \vphantom{\lim_n} \ind_A f(x^*) && \text{($\ind_A f(x^*) \in \sigma(\F_\infty, \Tc)$)} \\
+        &= f(x^*), && \text{($\P(A) = 1$)}
+    \end{align}
+    where all equalities hold almost surely.  
+\end{proof}
+
+
+\end{document}

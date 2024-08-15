@@ -1,0 +1,457 @@
+\documentclass[12pt]{report}
+\input{../../preamble/preamble}
+\addbibresource{../../bibliography.bib}
+
+\usepackage{xr}
+\externaldocument[xr-]{../../main}
+\newcommand{\xrprefix}[1]{xr-#1}
+
+\begin{document}
+
+\chapter
+    [Regularity of the Posterior Prediction Map]
+    {Regularity of the \tnl Posterior Prediction Map}
+\label{app:regularity}
+
+This appendix proves \cref{\xrprefix{prop:posterior_prediction_map_regularity}}.
+For notational convenience, we drop the dependence on $f$ and denote the law $p(f)$ of $f$ by simply $\mu$, denote $\sigma^2_f$ by simply $\sigma^2$, and denote $\pi_f(D)$ by simply $\pi(D)$.
+By the assumption of additive Gaussian noise with variance $\sigma^2$, the Radon--Nikodym derivative of $\pi(D)$ with respect to $\mu$ is given by
+\begin{equation}
+    \frac{\sd \pi(D)}{\sd \mu}(f)
+    =
+    \frac
+        {\Normal(\vy\us{(c)} \cond f(\vx\us{(c)}), \sigma^2 \mI)}
+        {\E_f[\Normal(\vy\us{(c)} \cond f(\vx\us{(c)}), \sigma^2 \mI)]}
+    =
+    \frac
+        {r(\vy\us{(c)} - f(\vx\us{(c)}))}
+        {Z(\vx\us{(c)}, \vy\us{(c)})}
+\end{equation}
+where $r(\vx) = e^{-\tfrac{1}{2\sigma^2}\norm{\vx}_2^2}$
+and $Z(\vx, \vy) = \E_f[r(\vy - f(\vx))]$.
+Throughout, we denote this Radon--Nikodym derivative by
+$
+    \pi'(D) = \sd \pi(D)/ \sd \mu.
+$
+Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely for some $x \in \X$, contradicting \cref{\xrprefix{assum:f_boundedness}}.
+
+\begin{lemma} \label{lem:local_Lipschitzness_r}
+    \begin{equation}
+        \abs{r(\vx_1) - r(\vx_2)} \le \frac{1}{\underline{\sigma}}\norm{\vx_1 - \vx_2}_2.
+    \end{equation}
+\end{lemma}
+\begin{proof}
+    For $x_1, x_2 \in \R$, using the fundamental theorem of calculus,
+    \begin{equation}
+        \abs{e^{-\frac12 x_1^2} - e^{-\frac12 x_2^2}} = \abs*{
+            \int_{x_1}^{x_2} x e^{-\frac12 x^2} \isd x
+        }
+        \le \norm{x \mapsto x e^{-\frac12 x^2}}_\infty \abs{x_1 - x_2},
+    \end{equation}
+    and $\norm{x \mapsto x e^{-\frac12 x^2}}_\infty \le 1$.
+    Set $x_1 = \frac1{\sigma}\norm{\vx_1}_2$ and $x_2 = \frac1{\sigma}\norm{\vx_2}_2$,
+    so
+    \begin{equation}
+        \abs{r(\vx_1) - r(\vx_2)}
+        \le \frac{1}{\sigma} \abs{\norm{\vx_1}_2 - \norm{\vx_2}_2}
+        \le \frac{1}{\underline{\sigma}} \norm{\vx_1 - \vx_2}_2,
+    \end{equation}
+    which concludes.  
+\end{proof}
+
+
+
+\begin{proposition}
+    \begin{equation}
+        \P(\omega_f(h) \ge \e) \le \frac{c_{\beta, p}}{\e} h^{\beta - \frac{1}{p}}.
+    \end{equation}
+\end{proposition}
+
+
+\begin{proposition} \label{prop:Lipschitzness_Z}
+    Let $D_1, D_2 \in \D_N$ and denote $D_1 = (\vx_1, \vy_1)$ and $D_2 = (\vx_2, \vy_2)$.
+    Then there exists a universal function $L_Z\colon[0,\infty)\to[0,\infty)$ such that
+    \begin{equation}
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+        \le L_Z(d(D_1, D_2)),
+    \end{equation}
+    and $L_Z$ goes to zero as $d(D_1, D_2)$ goes to zero.
+\end{proposition}
+\begin{proof}
+    Consider the event $A = \set{f : 
+        \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e
+    }$.
+    % \begin{equation}
+    %     A = \set{f : 
+    %         \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e,\,
+    %         \norm{f(\vx_1)}_\infty < M,\,
+    %         \norm{f(\vx_2)}_\infty < M
+    %     }.
+    % \end{equation}
+    We have
+    \begin{equation}
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+         \le 
+            \abs{\E_f[
+                (
+                    r(\vy_1 - f(\vx_1)) 
+                    - r(\vy_2 - f(\vx_2)) 
+                ) \ind_A
+            ]}
+            + 2\, \P(A^\c).
+    \end{equation}
+    We bound the two terms separately, starting with the second term:
+    \begin{equation}
+        \P(A^\c)
+        =
+            \P(\omega_f(\norm{\vx_1 - \vx_2}_\infty) \ge \e)
+            % + \P(\norm{f(\vx_1)}_\infty \ge M)
+            % + \P(\norm{f(\vx_2)}_\infty \ge M) \nonumber \\
+        \le 
+        \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}.
+        % + \frac{2N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
+    \end{equation}
+    For the first term, simply take a supremum and use \cref{prop:local_Lipschitzness_r}:
+    \begin{align}
+        &\abs{\E_f[
+            \ind_A
+            (
+                r(\vy_1 - f(\vx_1)) 
+                - r(\vy_2 - f(\vx_2)) 
+            ) 
+        ]}
+        \vphantom{\frac{}{\underline{\sigma}^2}}
+        \nonumber \\
+        &\qquad \le 
+            \vphantom{\frac{1}{\underline{\sigma}^2}}
+            \sup_{f \in A} \, 
+                \abs{
+                    r(\vy_1 - f(\vx_1)) 
+                    - r(\vy_2 - f(\vx_2)) 
+                } \\
+        &\qquad \le 
+            \frac{1}{\underline{\sigma}^2}\, \sup_{f \in A} \, 
+                (\norm{f(\vx_1) - f(\vx_2)}_2 + \norm{\vy_1 - \vy_2}_2) \\
+        &\qquad \le 
+            \frac{1}{\underline{\sigma}^2}\, \sup_{f \in A} \, 
+                (\sqrt{N}\omega_f(\norm{\vx_1 - \vx_2}_\infty) + \norm{\vy_1 - \vy_2}_2) \\
+        &\qquad \le 
+            \frac{1}{\underline{\sigma}^2}\,
+                (\sqrt{N} \e + \norm{\vy_1 - \vy_2}_2),
+    \end{align}
+    where the last inequality follows from that $\omega_f(\norm{\vx_1 - \vx_2}_\infty) \le \e$ for all $f \in A$.
+    Putting the bounds for the two terms together, we have
+    \begin{equation}
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+        \le 
+            \frac{1}{\underline{\sigma}^2}(\sqrt{N}\e + \norm{\vy_1 - \vy_2}_2)
+            + \frac{2 c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}.
+            %+ \frac{4N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
+    \end{equation}
+    This holds for any choice of $\e > 0$, so we may also take an infimum over $\e > 0$.
+    Taking the infimum gives a function right-hand side which only depends on the universal parameters
+    and which goes to zero as 
+    $\norm{\vx_1 - \vx_2}_2$ and $\norm{\vy_1 - \vy_2}_2$ go to zero.
+\end{proof}
+
+\begin{proposition} \label{prop:bounds_Z}
+    There exist universal $c_\ell$ and $c_u$ such that, for all $(\vx, \vy) \in \G$,
+    \begin{equation}
+        0
+        < c_\ell
+        \le Z(\vx, \vy)
+        \le c_u
+        < \infty.
+    \end{equation}
+    In particular $c_\ell \ge \frac12 e^{-\frac{1}{\underline{\sigma}^2} B_{\tilde\D}^2 (1 + 2 B_f^2)}$ and $c_u \le 1$.
+    Additionally, let $(D_i)_{i \ge 1} \sub \D$ be a bounded sequence and denote $D_i = (\vx_i, \vy_i)$.
+    Then
+    \begin{equation}
+        0
+        < \inf_{i \ge 1}\, Z(\vx_i, \vy_i)
+        \le \sup_{i \ge 1}\, Z(\vx_i, \vy_i)
+        < \infty.
+    \end{equation}
+\end{proposition}
+\begin{proof}
+    The upper bounds are clear, so it remains to prove the lower bounds.
+    Let $(\vx, \vy) \in \D_N$.
+    Consider the event $A = \set{f : \norm{f(\vx)}_\infty \le M}$.
+    Then
+    \begin{equation}
+        \E_f[e^{-\tfrac1{2\sigma^2}\norm{\vy - f(\vx)}_2^2}]
+        \ge \E_f[\ind_A e^{-\tfrac1{\underline{\sigma}^2}(\norm{\vy}_2^2 + \norm{f(\vx)}_2^2)}]
+        \ge \P(A)\, e^{-\tfrac1{\underline{\sigma}^2}\norm{\vy}_2^2 - \tfrac{1}{\sigma^2} N M^2}.
+    \end{equation}
+    To lower bound the probability, denote $V = \sup_{x \in \X}\, \norm{f(x)}^2_{L^2}$ and estimate
+    \begin{equation}
+        \P(A)
+        = 1 - \P(A^\c) \vphantom{\sup_{x \in \X}}
+        \ge 1 - \vphantom{\frac NN} N\,\sup_{x \in \X}\, \P(\abs{f(x)} \ge M)
+        \ge 1 - \frac{N V}{M^2}.
+    \end{equation}
+    Set $M = \sqrt{2 N V}$ to find $\P(A) \ge \tfrac12$.
+    Hence
+    \begin{equation}
+        \E_f[e^{-\tfrac1{2\underline{\sigma}^2}\norm{\vy - f(\vx)}_2^2}]
+        \ge \tfrac12 e^{-\tfrac1{\underline{\sigma}^2}\norm{\vy}_2^2 - \tfrac{2}{\underline{\sigma}^2} VN^2},
+    \end{equation}
+    which concludes the lower bounds.
+\end{proof}
+
+
+\begin{proposition} \label{prop:Lipschitzness_functional}
+    Let $D_1, D_2 \in \D_N \cap \G$ and denote $D_1 = (\vx_1, \vy_1)$ and $D_2 = (\vx_2, \vy_2)$.
+    Let $F\colon C(\X, \Y) \to \R$ be a continuous functional such that, for some $\gamma' > 0$, $B_F = \norm{F(f)}_{L^{1+\gamma'}} < \infty$.
+    Then there exists a function $L\colon[0,\infty) \to [0, \infty)$ such that
+    \begin{equation}
+        \abs{\E_{\pi(D_1)}[F(f)] - \E_{\pi(D_2)}[F(f)]}
+        \le L(d(D_1, D_2)).
+    \end{equation}
+    Moreover, $L$ only depends on the universal parameters, $\gamma'$, and $B_F$; and $L$ goes to zero as $d(D_1, D_2)$ goes to zero.
+\end{proposition}
+\begin{proof}
+    Consider the event $A = \set{f : 
+        \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e
+    }$.
+    % \begin{equation}
+    %     A = \set{f : 
+    %         \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e,\,
+    %         \norm{f(\vx_1)}_\infty < M,\,
+    %         \norm{f(\vx_2)}_\infty < M
+    %     }.
+    % \end{equation}
+    Denote $g(\vx, \vy) = r(\vy - f(\vx)) / Z(\vx, \vy)$ and
+    note that $g(\vx_1, \vy_1) \le 1 /c_\ell$ and $g(\vx_2, \vy_2) \le 1/c_\ell$, where $c_\ell$ is defined in \cref{prop:bounds_Z}.
+    Then
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[F(f)] - \E_{\pi(D_2)}[F(f)]} \nonumber \\
+        &\qquad = \vphantom{\frac11} \abs{\E_f\sbrac{
+            \parens{
+                g(\vx_1, \vy_1)
+                - g(\vx_2, \vy_2)
+            }
+            F(f)
+        }} \\
+        &\qquad \le \abs{\E_f\sbrac{
+            \ind_A\parens{
+                g(\vx_1, \vy_1)
+                - g(\vx_2, \vy_2)
+            }
+            F(f)
+        }} + \frac2{c_\ell} \E_f[\ind_{A^\c}\abs{F(f)}].
+    \end{align}
+    We bound the two terms separately, starting with the second term:
+    \begin{equation}
+        \E[\ind_{A^\c} \abs{F(f)}]
+        \le
+            \P(A^\c)^{\frac{\gamma'}{1 + \gamma'}} 
+            \norm{F(f)}_{L^{1 + \gamma'}}
+        \le
+            \parens*{
+                \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
+            }^{\smash{\frac{\gamma'}{1 + \gamma'}}}
+            \norm{F(f)}_{L^{1 + \gamma'}}.
+    \end{equation}
+    % where, just like in the proof of \cref{prop:local-Lipschitzness-r},
+    % \begin{equation}
+    %     \P(A^\c)
+    %     \le
+    %     \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
+    %     + \frac{2N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
+    % \end{equation}
+    For the first term, observe that, for any two functions $f$ and $g$ such that $g \ge c_\ell > 0$ and $f, g \le c_u < \infty$,
+    \begin{equation}
+        \abs*{
+            \frac{f(x_1)}{g(x_1)}
+            -
+            \frac{f(x_2)}{g(x_2)}
+        }
+        \le \frac{c_u}{c_\ell^2}\parens*{
+            \abs{f(x_1) - f(x_2)}
+            + \abs{g(x_1) - g(x_2)}
+        }.
+    \end{equation}
+    Therefore, taking a supremum,
+    \begin{align}
+        &\abs{\E_f\sbrac{
+            \ind_A\parens{
+                g(\vx_1, \vy_1)
+                - g(\vx_2, \vy_2)
+            }
+            F(f)
+        }} \\
+        &\qquad\le 
+            \frac{c_u}{c_\ell^2}
+            \,
+            \norm{F(f)}_{L^1}
+            \,
+            \sup_{f \in A}
+            \,\big[
+                \abs{
+                    r(\vy_1 - f(\vx_1))
+                    - r(\vy_2 - f(\vx_2))
+                }
+                + \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+            \big]. \nonumber
+    \end{align}
+    Here, using \cref{prop:local_Lipschitzness_r,prop:Lipschitzness_Z},
+    \begin{align}
+        \abs{
+            r(\vy_1 - f(\vx_1))
+            - r(\vy_2 - f(\vx_2))
+        }
+        &\le \frac{1}{\underline{\sigma}^2}(
+            \norm{f(\vx_1) - f(\vx_2)}_2
+            + \norm{\vy_1 - \vy_2}_2
+        ) \\
+        &\le \frac{1}{\underline{\sigma}^2}(
+            \sqrt{N}\omega_f(\norm{\vx_1 - \vx_2}_\infty)
+            + \norm{\vy_1 - \vy_2}_2
+        ), \\
+        \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
+        &\le \vphantom{\frac{1}{}} L_Z(d(D_1, D_2)),
+    \end{align}
+    so, using that $\omega_f(\norm{\vx_1 - \vx_2}_\infty) \le \e$ for $f \in A$,
+    \begin{align}
+        &\abs{\E_f\sbrac{
+            \ind_A\parens{
+                g(\vx_1, \vy_1)
+                - g(\vx_2, \vy_2)
+            }
+            F(f)
+        }} \nonumber \\
+        &\qquad
+            \le 
+            \frac{c_u}{c_\ell^2}
+            \,\norm{F(f)}_{L^1}
+            \,\sbrac*{
+                \frac{1}{\underline{\sigma}^2}(
+                    \sqrt{N}\e
+                    + \norm{\vy_1 - \vy_2}_2
+                )
+                + L_Z(d(D_1, D_2))
+            }.
+    \end{align}
+    Putting the bounds for the two terms together, we have
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[F(f)] - \E_{\pi(D_2)}[F(f)]} \nonumber \\
+        &\qquad
+            \le
+            \frac{2}{c_\ell}
+            \parens*{
+                \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
+            }^{\frac{\gamma'}{1 + \gamma'}}
+            \norm{F(f)}_{L^{1 + \gamma'}}
+            % \frac{2}{c_\ell}\sbrac*{
+            %     \frac{c_{\beta, p}}{c_\ell} \frac1{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta -\frac{1}{p}}
+            %     + \frac {2N}M \sup_{x \in \X} \, \norm{f(x)}_{L^1}
+            % }^{\frac{\gamma'}{1 + \gamma'}}
+            % \times\norm{F(f)}_{L^{1 + \gamma'}}
+            \nonumber \\
+        &\qquad\phantom{\le}\;
+            + \frac{c_u}{c_\ell^2}\,\norm{F(f)}_{L^1}
+            \,\sbrac*{
+                \frac{1}{\underline{\sigma}^2}(
+                    \sqrt{N}\e
+                    + \norm{\vy_1 - \vy_2}_2
+                )
+                + L_Z(d(D_1, D_2))
+            }.
+    \end{align}
+    This holds for any choice of $\e > 0$,
+    so we may also take an infimum over $\e > 0$.
+    Taking the infimum gives a function on the right-hand side which only depends on the universal parameters, $\gamma'$, and $B_F$, and which goes to zero as $\norm{\vx_1 - \vx_2}_2$ and $\norm{\vy_1 - \vy_2}_2$ go to zero.
+\end{proof}
+
+
+\begin{proof}[Proof of \ref{\xrprefix{prop:posterior_prediction_map_regularity}}]
+    \listnum{1}:
+    Consider a sequence $D_i \to D$.
+    Let $\vx \in I$ be some inputs and let $L \in C_b(\R^{N}, \R)$.
+    Note that $(D, f) \mapsto \pi'(D)(f)$ is continuous in $D$ and bounded in $f$ (\cref{prop:bounds_Z}).
+    Then
+    \begin{align}
+        \lim_{i \to \infty} \E_{\pi(D_i)}[L(f(\vx))]
+        &= \lim_{i \to \infty} \E_{f}[\pi'(D_i)(f) L(f(\vx))] \\
+        &= \E_{f}[\,\lim_{i \to \infty} \pi'(D_i)(f) L(f(\vx))] \\
+        &= \E_{\pi(D)}[L(f(\vx))],
+    \end{align}
+    where the interchange of limit and expectation follows from bounded convergence.
+
+    \listnum{2}:
+    For the mean, choose some $x \in \X$, apply \cref{prop:Lipschitzness_functional} with $F(f) = f(x)$ and $\gamma' = 1 + \gamma$, and verify that
+    \begin{equation}
+        \norm{f(x)}_{L^{1 + \gamma'}}
+        \le \sup_{x \in \X} \, \norm{f(x)}_{L^{2 + \gamma}}
+        = B_f,
+    \end{equation}
+    which only depends on the universal parameters.
+    For the covariance, choose two $x, y \in \X$, apply \cref{prop:Lipschitzness_functional} with $F(f) = f(x)f(y)$ and $\gamma' = \frac12 \gamma$, and verify that 
+    \begin{equation}
+        \norm{f(x) f(y)}_{L^{1 + \gamma'}}
+        \le
+            \norm{f(x)}_{L^{2 + 2\gamma'}}
+            \norm{f(y)}_{L^{2 + 2\gamma'}}
+        \le \sup_{x \in \X}\, \norm{f(x)}^2_{L^{2 + \gamma}}
+        = B^2_f
+    \end{equation}
+    which again only depends on the universal parameters.
+    
+    \listnum{3}:
+    We will repeatedly use the observation that, for any $q \ge 1$ and $D \in \G$,
+    \begin{equation}
+        \norm{\vardot}_{L^q(\pi(D))} \le \frac{1}{c_\ell^{1/q}} \norm{\vardot}_{L^q}
+    \end{equation}
+    where $c_\ell$ is from \cref{prop:bounds_Z}.
+    We first prove the inequality for the mean:
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[f(x_1)] - \E_{\pi(D_2)}[f(x_2)]} \nonumber \\
+        &\qquad\le
+            \abs{\E_{\pi(D_1)}[f(x_1)] - \E_{\pi(D_2)}[f(x_1)]}
+            + \abs{\E_{\pi(D_2)}[f(x_1)] - \E_{\pi(D_2)}[f(x_2)]} \\
+        &\qquad\le
+            L_m(d(D_1, D_2))
+            + \norm{f(x_1) - f(x_2)}_{L^1(\pi(D_2))} \\
+        &\qquad\le
+            L_m(d(D_1, D_2))
+            + \frac{c}{c_\ell} \abs{x_1 - x_2}^\beta
+    \end{align}
+    where the second inequality follows from part \listnum{2} and the third inequality from the observation combined with \cref{\xrprefix{assum:f_regularity}}.
+    For the covariance,
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_2)f(y_2)]} \nonumber \\
+        &\qquad\le
+            \abs{\E_{\pi(D_1)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_1)f(y_1)]} \nonumber \\
+        &\qquad\;\qquad\qquad
+            + \abs{\E_{\pi(D_2)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_1)f(y_2)]} \nonumber \\
+        &\qquad\;\qquad\qquad
+            + \abs{\E_{\pi(D_2)}[f(x_1)f(y_2)] - \E_{\pi(D_2)}[f(x_2)f(y_2)]}.
+    \end{align}
+    From part \listnum{2}, we have
+    \begin{equation}
+        \abs{\E_{\pi(D_1)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_1)f(y_1)]}
+        \le L_k(d(D_1, D_2)).
+    \end{equation}
+    We also have
+    \begin{align}
+        \abs{\E_{\pi(D_2)}[f(x_1)(f(y_1) - f(y_2))]}
+        &\le \vphantom{\frac{}{c_\ell}}\norm{f(x_1)}_{L^2(\pi(D_2))}\norm{f(y_1) - f(y_2)}_{L^2(\pi(D_2))} \\
+        &\le \vphantom{\frac{B_f}{}}\frac1{c_\ell}
+            \norm{f(x_1)}_{L^2} \norm{f(y_1) - f(y_2)}_{L^2} \\
+        &\le B_f \frac{c}{c_\ell}
+            \abs{y_1 - y_2}^\beta
+    \end{align}
+    Therefore,
+    \begin{align}
+        &\abs{\E_{\pi(D_1)}[f(x_1)f(y_1)] - \E_{\pi(D_2)}[f(x_2)f(y_2)]} \nonumber \\
+        &\qquad\le
+            L_k(d(D_1, D_2))
+            + B_f \frac{c}{c_\ell} \abs{x_1 - x_2}^\beta
+            + B_f \frac{c}{c_\ell} \abs{y_1 - y_2}^\beta,
+    \end{align}
+    which concludes.
+\end{proof}
+
+
+\end{document}

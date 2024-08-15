@@ -1,0 +1,141 @@
+\documentclass[12pt]{report}
+\input{../../preamble/preamble}
+\addbibresource{../../bibliography.bib}
+
+\usepackage{xr}
+\externaldocument[xr-]{../../main}
+\newcommand{\xrprefix}[1]{xr-#1}
+
+\begin{document}
+
+\chapter
+    [Behind the Scenes of the ConvCNP]
+    {Behind the Scenes \tnl of the ConvCNP}
+\label{app:inside_convcnp}
+
+\paragraph{Attributions}
+\looseness=-1
+Connecting the discretisation of the ConvCNP to inducing points of a sparse Gaussian process was first suggested by Tom Minka.
+Tom Minka also suggested using the Jacobi method to approximate the inverse.
+These suggestions were worked out in more detail by the author in collaboration with Stratis Markou, James Requeima, and Anna Vaughan.
+
+\section{Introduction}
+Although the ConvCNP works well in practice, the model remains a black box.
+In this chapter, we attempt to improve our understanding of what could be going on inside a ConvCNP.
+We will explicitly construct a convolutional deep set (\cref{\xrprefix{thm:conv_deep_set}}) that approximates the posterior mean of a Gaussian process with a stationary kernel.
+This draws a connection between ConvCNPs and Gaussian processes and gives one possible explanation of what could be going on inside. % the convolutional architecture.
+
+To approximate the posterior mean of a Gaussian process with a ConvCNP,
+the idea is to consider a sparse approximation of a Gaussian processes \parencite{Titsias:2009:Variational_Learning} with inducing point locations equal to the discretisation of the convolutional deep set (\cref{\xrprefix{proc:discretisation}}).
+
+Let $k\colon \X \times \X \to \R$ be a stationary kernel and consider $f \sim \GP(0, k)$.
+Let $\vt \in I$ be target inputs, and let $(\vx, \vy) \in \D_N$ be context data observed under Gaussian noise with variance one.
+Consider inducing point locations $\vz \in \X^M$.
+Then the sparse approximation of the posterior mean is given by
+\begin{equation} \label{eq:sparse_posterior}
+    \E[f(\vt) \cond \vy] \approx \mK_{\vt\vz} (\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-1} \mK_{\vz\vx} \vy
+\end{equation}
+where $\mK_{\vt\vz} = k(\vt,\vz)$, $\mK_\vz = k(\vz, \vz)$, $\mK_{\vz\vx} = k(\vz, \vx)$, and $\mK_{\vx\vz} = k(\vx, \vz)$.
+See (6) and (10) by \textcite{Titsias:2009:Variational_Learning}.
+In this chapter, we will argue that \eqref{eq:sparse_posterior} can be approximated with a convolutional deep set.
+
+\section{Construction of a Convolutional Deep Set}
+
+Set the inducing point locations $\vz$ to positions equally spaced over some interval $[a, b]$ with interpoint spacing $\Delta$.
+For simplicity, assume that the inputs of the observations $\vx$ are all distinct.
+Moreover, assume that every input of an observation is equal to some inducing point location;
+that is, every element of $\vx$ is some element of $\vz$.
+Consider a convolutional deep set (\cref{\xrprefix{thm:conv_deep_set}}) implemented according \cref{\xrprefix{proc:discretisation}}.
+In \cref{\xrprefix{proc:discretisation}}, set the discretisation equal to $\vz$.
+Let $\vc_y$ denote the discretised data channel and $\vc_1$ the discretised density channel of the convolutional deep set (see \eqref{\xrprefix{eq:data_channel}} and \eqref{\xrprefix{eq:density_channel}}).
+
+In the encoder $\enc$ of the convolutional deep set, assume that the length scale of the Gaussian kernel is infinitesimally small.
+Then, by the assumptions on the inputs of the observations,%
+\begin{equation}
+    c_{y,m}
+    = \begin{cases}
+        y_n    & \text{if $z_m = x_n$,} \\
+        0   & \text{otherwise,} \\
+    \end{cases}
+    \qquad
+    c_{1,m}
+    = \begin{cases}
+        1    & \text{if $z_m = x_n$,} \\
+        0   & \text{otherwise,}
+    \end{cases}
+\end{equation}
+for all $m = 1,\ldots,M$.
+Therefore, $\mK_{\vz\vx}\vy = \mK_\vz \vc_y$.
+This reveals a first connection between \eqref{eq:sparse_posterior} and a discretised convolutional deep set:
+\begin{equation} \label{eq:connection_1}
+    \mK_{\vt \vz} (\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-1} \mK_{\vz\vx} \vy
+    = 
+    \underbracket[1pt]{\vphantom{c_y}\mK_{\vt\vz}}_{\mathclap{\text{smoothing}}}
+    \smash{\overbracket[1pt]{(\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-1}
+        \mK_{\vz}
+    }^{\text{CNN}}}
+    \underbracket[1pt]{\vc_y}_{\mathclap{\text{data channel}}}.
+\end{equation}
+The sparse approximation of the posterior mean starts out with the data channel $\vc_y$,
+performs some matrix multiplications $(\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-1}
+    \mK_{\vz}$, and ends with a matrix multiplication by $\mK_{\vt\vz}$.
+If we replace the Gaussian kernel in step \ballnumber{4} of \cref{\xrprefix{proc:discretisation}} with $k$,
+then multiplication by $\mK_{\vt\vz}$ exactly performs step \ballnumber{4}.
+Therefore, if we can implement the intermediate matrix multiplications with a convolutional neural network (CNN),
+%then \eqref{eq:connection_1} reveals that
+the sparse approximation of the posterior mean can be implemented with a convolutional deep set discretised according to \cref{\xrprefix{proc:discretisation}}.
+
+To begin with, since $k$ is stationary and the elements of $\vz$ are equally spaced, $\mK_{\vz}$ is a Toeplitz matrix, and matrix multiplication with a Toeplitz matrix can be implemented with a convolutional filter.
+Therefore, multiplication by $\mK_\vz$ can be implemented with a convolutional filter.
+It remains to argue that multiplication by $(\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-1}$ can be approximated with a CNN.
+
+Let $\vv = (\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-1} \vu$ and split $\mK_\vz = \mD + \mO$ into a diagonal part $\mD$ and off-diagonal part $\mO$.
+Rearrange
+\begin{equation}
+    % (\mD + \mO + \mK_{\vz\vx} \mK_{\vx\vz})\vv &= \vu, \\
+    \vv = \mD^{-1} (\vu - \mO\vv - \mK_{\vz\vx} \mK_{\vx\vz}\vv).
+\end{equation}
+This suggests the iterative scheme
+\begin{equation}
+    \vv_{r+1} = \overbracket[1pt]{\mD^{-1}}^{\mathclap{\text{diag.\ matrix $=$ filter}}} (\vu - \underbracket[1pt]{\mO}_{\mathclap{\text{Toeplitz matrix $=$ filter}}} \vv_r - \mK_{\vz\vx} \mK_{\vx\vz}\vv_r).
+\end{equation}
+This iterative scheme is known as the \emph{Jacobi method}.
+Note that multiplication by $\mD^{-1}$ and multiplication by $\mO$ can both be implemented with convolutional filters.
+Therefore, if $\mK_{\vz\vx} \mK_{\vx\vz}\vv_r$ can also be approximated with convolutional filters, then rolling out the iterative scheme suggests that multiplication by $(\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-1}$ can be implemented with a multi-layer CNN.
+The last piece of the puzzle is therefore to figure out whether $\mK_{\vz\vx} \mK_{\vx\vz}\vv_r$ can be approximated with convolutional filters.
+And it is here that the density channel comes into play.
+
+Let $\vd_m$ be the $m$\textsuperscript{th} diagonal of the matrix $\mK_{\vz\vx} \mK_{\vx\vz}$.
+Then
+\begin{equation}
+    \mK_{\vz\vx} \mK_{\vx\vz}\vv_r = \sum_{m=-M}^M \vd_m \had \T_{-m} \vv_r
+\end{equation}
+where $\had$ denotes the Hadamard product and $\T_{m}$ denotes shifting elementwise by $m$ positions, discarding what falls off: $\T_{m} \vx = \vx_{1 + m:\abs{\vx}}$ if $m \ge 0$ and $\T_m \vx = \vx_{1 : \abs{\vx} + m}$ otherwise.
+Note that the Hadamard product can be approximated with a pointwise multi-layer perceptron (MLP),
+and that elementwise shifts can be implemented exactly with convolutional filters.
+To compute $\vd_m$, using stationarity of $k$,
+\begin{equation}
+    d_{m, m'}
+    = \sum_{n=1}^N k(u_{m'} - x_n) k(x_n - (u_{m'} + m \Delta))
+    = \sum_{n=1}^N w_m(u_{m'} - x_n)
+\end{equation}
+where $w_m(\tau) = k(\tau) k(\tau - m \Delta)$.
+Therefore, denoting $\mW_m = w_m(\vz - \vz^\T)$, which is again a Toeplitz matrix, we find
+$
+    \vd_{m} = \mW_m \vc_1
+$.
+We conclude that
+\begin{equation}
+    \mK_{\vz\vx} \mK_{\vx\vz}\vv_r = \sum_{m=-M}^M \vd_m \had \T_{-m} \mW_m \vc_1,
+\end{equation}
+which can be approximated with convolutional filters and pointwise MLPs.
+
+\section{Conclusion}
+By connecting the inducing point locations of a sparse Gaussian process to the discretisation of a convolutional deep set,
+we were able to explicitly approximate the posterior mean of a Gaussian process with a discretised convolutional deep set.
+Both the data channel and the density channel played an important role.
+The data channel communicated the values of the observations,
+and the density channel was necessary to appropriately calibrate the uncertainty according to the inputs of the observations.
+We leave it for future work to further work out this connection between ConvCNPs and Gaussian processes.
+
+\end{document}

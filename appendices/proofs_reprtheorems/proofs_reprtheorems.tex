@@ -1,0 +1,486 @@
+\documentclass[12pt, twoside]{report}
+\input{../../preamble/preamble}
+\addbibresource{../../bibliography.bib}
+
+\usepackage{xr}
+\externaldocument[xr-]{../../main}
+\newcommand{\xrprefix}[1]{xr-#1}
+
+\begin{document}
+
+\chapter
+    {Proofs for Chapter \ref{\xrprefix{chap:repr_theorems}}}
+\label{app:proofs_repr_theorems}
+
+\section{Proofs for Section \ref{\xrprefix{sec:repr_theorems:functions}}}
+\label{sec:proofs_repr_theorems:functions}
+
+In what follows, $D,E,F \in \D$ will denote generic data sets, and $A \sub \D$ will denote a generic collection of data sets.
+For $\e > 0$, denote the open balls of radius $\e$ by
+\begin{equation}
+    \Bb_\e(D) = \set{E \in \D : d_\D(D, E) < \e},
+    \quad
+    \Bb_\e([D]) = \set{E \in \D : d_{[\D]}([D], [E]) < \e}.
+\end{equation}
+Let $\Sb = \union_{N \ge 0} \Sb^N$ be the collection of permutations of any size.
+
+
+\restatement{../../chapters/reprtheorems/statements/properties.tex}
+\begin{proof}
+    \listnum{1}:
+    To begin with, observe that $d_{\D}(D, E) = d_{\D}(\sigma D, \sigma E)$ for all $\sigma \in \Sb^{\abs{D}}$.
+    We call this property \emph{permutation invariance} of $d_\D$.
+    We first show that $d_{[\D]}$ is well defined.
+    To this end, consider $D, D', E, E' \in \D$ such that $D = \sigma_D D'$ and $E = \sigma_E E'$ for some $\sigma_D \in \Sb^{\abs{D'}}$ and $\sigma_E \in \Sb^{\abs{E'}}$.
+    In particular, this means that $\abs{D} = \abs{D'}$ and $\abs{E} = \abs{E'}$.
+    Then
+    \begin{align}
+        d_{[\D]}([D], [E])
+        &= \inf_{\sigma_2 \in \Sb^{\abs{E}}} d_\D(D, \sigma_2 E) \\
+        &= \inf_{\sigma_2 \in \Sb^{\abs{E'}}} d_\D(\sigma_D D', \sigma_2 \sigma_E E') \\
+        &= \inf_{\sigma_2 \in \Sb^{\abs{E'}}} d_\D(D', \sigma_D^{-1} \sigma_2 \sigma_E E') \\
+        &= \inf_{\sigma_2 \in \Sb^{\abs{E'}}} d_\D(D', \sigma_2 E') \\
+        &= d_{[\D]}([D'], [E']).
+    \end{align}
+    We conclude that $d_{[\D]}$ does not depend on the choice of the representative, so it is well defined.
+    It remains to show that $d_{[\D]}$ is a metric.
+    It is clear that $d_{[\D]}([D], [E]) = d_{[\D]}([E], [D])$ and that $d_{[\D]}([D], [E]) = 0$ if and only if $[D] = [E]$.
+    To show the triangle inequality,
+    let $D, E, F \in \D$.
+    We will show that
+    \begin{equation}
+        d_{[\D]}([D], [F])
+        \le
+        d_{[\D]}([D], [E])
+        + d_{[\D]}([E], [F]).
+    \end{equation}
+    If either of the terms on the right-hand side is infinite, then nothing remains to be shown.
+    Hence, assume that both are finite.
+    In that case, $\abs{D} = \abs{E} = \abs{F}$.
+    Let $\sigma_2, \sigma'_2 \in \Sb^{\abs{D}}$.
+    Then, by the triangle inequality of $d_\D$,
+    \begin{equation}
+        d_\D(D, \sigma_2 \sigma_2' F) \le d_\D(D, \sigma_2 E) + d_\D(\sigma_2 E, \sigma_2 \sigma_2' F)
+        = d_\D(D, \sigma_2 E) + d_\D(E, \sigma_2' F),
+    \end{equation}
+    using permutation invariance of $d_\D$.
+    Take the infimum over $\sigma_2 \in \Sb^{\abs{D}}$ then $\sigma_2' \in \Sb^{\abs{D}}$ to conclude.
+
+    \listnum{2}:
+    Let $[D] \in [A]$.
+    Then there exists a $\sigma \in \Sb$ such that $\sigma D \in A$.
+    Hence, there exists a $\e > 0$ such that $B_\e(\sigma D) \sub A$.
+    We claim that $\Bb_\e([D]) \sub [A]$, which shows the result.
+    To show the claim, let $[E] \in \Bb_\e([D])$.
+    Then $d_{[\D]}([D], [E]) < \e$, so $d_\D(D, \sigma' E) < \e$ for some $\sigma' \in \Sb$,
+    meaning that $d_\D(\sigma D, \sigma \sigma' E) < \e$.
+    Hence $\sigma \sigma' E \in \Bb_\e(\sigma D) \sub A$, so $[E] = [\sigma \sigma' E] \in [A]$.
+
+    \listnum{3}:
+    Let $([D_i])_{i \ge 1} \sub [A]$ be convergent to some $[D] \in [\D]$.
+    Then $d([D_i], [D]) \to 0$,
+    so there exists a sequence $(\sigma_i)_{i \ge 1}$ such that $d(\sigma_i D_i, D) \to 0$.
+    Since $A$ is permutation invariant, all $\sigma_i D_i \in A$.
+    Hence $D \in A$, because $A$ is closed.
+    We conclude that $[D] \in [A]$, so $[A]$ is also closed.
+    
+    \listnum{4}:
+    Denote $p\colon \D \to [\D]$, $p(D) = [D]$.
+    Note that $p$ is $d_\D$--$d_{[\D]}$ continuous.
+    Let $[A] \sub [\D]$.
+    If $[A]$ is open in the quotient topology, then, by definition, $p^{-1}([A])$ is open.
+    Hence, by \listnum{3}, $p(p^{-1}([A]))$ is open in $d_{[\D]}$.
+    Conversely, assume that $[A]$ is open in $d_{[\D]}$.
+    Then, by $d_\D$--$d_{[\D]}$ continuity of $p$, $p^{-1}([A])$ is open in $d_\D$.
+    Hence, $[A]$ is open in the quotient topology.
+\end{proof}
+
+\restatement{../../chapters/reprtheorems/statements/equivalence.tex}
+\begin{proof}
+    That $[f]$ is well defined follows from permutation invariance of $f$,
+    and that $[f]$ is continuous follows from continuity of $f$.
+    Using continuity of the quotient map $D \mapsto [D]$, the converse is immediate.
+\end{proof}
+
+\section{Proofs for Section \ref{\xrprefix{sec:repr_theorems:conv_deep_sets}}}
+\label{sec:proofs_repr_theorems:conv_deep_sets}
+
+Call a space $\F$ of functions on $\X$ \emph{interpolating} if, for every $N \in \N$, $\vx \in \X^N$, and $\vy \in \R^N$, there exists an $f \in \F$ such that $f(x_n) = y_n$ for all $n = 1, \ldots, N$.
+Note that every reproducing kernel Hilbert space associated to a strictly-positive-definite kernel is interpolating.
+Throughout, we assume that $\Y$ is compact.
+
+\begin{lemma} \label{lem:compact_injection}
+    Let $[\D'_{N}] \sub [\D_N]$ have multiplicity $K$.
+    Set
+    \begin{equation}
+        \phi\colon \mathcal{Y} \to \R^{K+1}, \quad
+        \phi(y) = (y^0, y^1, \cdots, y^K).
+    \end{equation}
+    Let $k\colon \X \times \X \to \R$ be a continuous strictly-positive-definite kernel.
+    Denote the reproducing kernel Hilbert space of $k$ by $\Hb$.
+    Endow $\Hb^{K+1}$ with the inner product $\lra{f, g}_{\Hb^{K+1}} = \sum_{i=1}^{K+1} \lra{f_i, g_i}_{\Hb}$.
+    Define
+    \begin{equation}
+        \Hb_{N} = \set*{
+            \sum_{n=1}^N \phi(y_n) k(\vardot, x_n) :
+            [(x_n, y_n)_{n=1}^N] \sub [\D'_N]
+        }
+        \subseteq \Hb^{K+1},
+    \end{equation}
+    Then the embedding
+    \begin{equation}
+        \enc_N \colon [\D'_{N}] \to \Hb_{N}, \quad
+        \enc_N([(x_1, y_1), \ldots, (x_N, y_N)])
+        = \sum_{n=1}^N \phi(y_n) k(\vardot, x_n)
+    \end{equation}
+    is injective, hence invertible, and continuous. 
+\end{lemma}
+\begin{proof}
+    First, we show that $\enc_N$ is injective.
+    Suppose that
+    \begin{equation}
+        \sum_{n=1}^N \phi(y_n) k(\vardot, x_n)
+        = \sum_{n=1}^{N} \phi(y'_n) k(\vardot, x'_n).
+    \end{equation}
+    Denote $\vx = (x_1, \ldots, x_N)$ and $\vy = (y_1, \ldots, y_N)$, and denote $\vx'$ and $\vy'$ similarly.
+    Taking the inner product with any $f \in \Hb$ on both sides and using the reproducing property of $k$ implies that
+    \begin{equation}
+        \sum_{n=1}^N \phi(y_n) f(x_n) = \sum_{n=1}^{N} \phi(y'_n) f(x'_n)
+        \quad
+        \text{for all $f \in \Hb$}.
+    \end{equation}
+    In particular, by construction $\phi_1(\vardot) = 1$, so
+    \begin{equation}
+        \sum_{n=1}^N f(x_n) = \sum_{n=1}^{N} f(x'_n)
+    \end{equation}
+    for all $f \in \Hb$.
+    Using that $\Hb$ is interpolating, choose an element $\hat x$ of $\vx$ or $\vx'$, and let $f \in \Hb$ be such that $f(\hat x) = 1$ and $f(\vardot) = 0$ at all other elements of $\vx$ and $\vx'$.
+    Then
+    \begin{equation}
+        \sum_{n\,:\,x_n = \hat x} 1
+        = \sum_{n\,:\,x'_n = \hat x} 1,
+    \end{equation}
+    so the number of $\hat x$ in $\vx$ and the number of $\hat x$ in $\vx'$ are the same.
+    Since this holds for every $\hat x$, $\vx$ is a permutation of $\vx'$: $\vx = \sigma \vx'$ for some permutation $\sigma \in \Sb^N$.
+    Plugging in the permutation, we can write 
+    \begin{align}
+        \sum_{n=1}^N \phi(y_n) f(x_n)
+        &= \sum_{n=1}^{N} \phi(y'_n) f(x'_n) \\
+        &= \sum_{n=1}^{N} \phi(y'_n) f(x_{\pi^{-1}(n)}) && \text{$(\vx' = \sigma^{-1}\vx)$} \\
+        &= \sum_{n=1}^{N} \phi(y'_{\pi(n)}) f(x_{n}). && \text{$(n \gets \sigma^{-1}(n))$}
+    \end{align}
+    Then, by a similar argument, for any particular $\hat x$, 
+    \begin{equation} \label{eq:injectivity_phi}
+        \sum_{n\,:\,x_n = \hat x} \phi(y_n)
+        = \sum_{n\,:\,x_n = \hat x} \phi(y'_{\sigma(n)}).
+    \end{equation}
+    Let the number of terms in each sum equal $S$.
+    Since $[\D_{N}']$ has multiplicity $K$, $S \leq K$.
+    Consider the first $S$ dimensions of $\phi$ in \eqref{eq:injectivity_phi}.
+    Then, using the definition of $\phi$, Lemma 4 by \textcite{Zaheer:2017:Deep_Sets} shows that
+    \begin{equation} \label{eq:permutation}
+        (y_n)_{n\,:\,x_n = \hat x}
+        \quad\text{is a permutation of}\quad
+        (y'_{\sigma(n)})_{n\,:\,x_n = \hat x}.
+    \end{equation}
+    %Note that $x_n = \hat x$ for all $n$ such that $x_n = \hat x$.
+    By $\sigma \vx = \vx'$, note that $x'_{\sigma(n)} = x_n = \hat x$ for all these $n$.
+    Therefore, all these $x_n$ and $x'_{\sigma(n)}$ are equal.
+    Using \eqref{eq:permutation},
+    adjust the permutation $\sigma$ to obtain $y_n = y'_{\sigma(n)}$ for all these $n$.
+    Since all these $x_n$ and $x'_{\sigma(n)}$ are equal,
+    still $\vx = \sigma \vx'$ after the adjustment.
+    Performing this adjustment for all $\hat x$, we find that $\vy = \sigma \vy'$ and $\vx = \sigma \vx'$.
+    
+    Second, we show that $E_N$ is continuous.
+    % Recall that for a product of Hilbert spaces $\Hb^{k}$ we can specify, without loss of generality,
+    % $
+    % \| f \|_{\Hb^k}^2 = \sum_{i=1}^k \| f \|_{\Hb}^2.
+    % $\wpbnote{I wouldn't say that we ``have that'' but rather ``choose that''.}
+    Compute 
+    \begin{align}
+        &\left\|
+            \sum_{n=1}^N \phi(y_n) k(\vardot, x_n)
+            - \sum_{n=1}^{N} \phi(y'_n) k(\vardot, x'_n)
+        \right\|^2_{\Hb^{K+1}}
+        \\ & \qquad =
+            \sum_{i=1}^{K+1} \parens{
+                \phi^\T(\vy) k(\vx, \vx) \phi_i(\vy)
+                - 2 \phi^\T(\vy) k(\vx, \vx') \phi_i(\vy')
+                + \phi^\T(\vy') k(\vx', \vx') \phi_i(\vy')
+            }, \nonumber
+    \end{align}
+    which, by continuity of $k$, goes to zero if $[(\vx', \vy')] \to [(\vx, \vy)]$.
+\end{proof}
+
+%Having established the injection, we now show that this mapping is a homeomorphism, i.e.~that the inverse is continuous. This is formalized in the following lemma.
+
+\begin{lemma} \label{lem:closed_injection}
+    Consider \cref{lem:compact_injection}.
+    Suppose that $[\D'_N]$ is also closed and that $k$ also satisfies
+    (1) $k(x, x) = \sigma^2 > 0$,
+    (2) $k \ge 0$, and
+    (3) $k(x, x') \to 0$ as $\abs{x} \to \infty$.
+    Then $\Hb_N$ is closed in $\Hb^{K+1}$.
+    Moreover, $\enc_N$ is a homeomorphism.
+\end{lemma}
+\begin{proof}
+    Define 
+    \begin{equation}
+        [\D_J]
+        =
+        [([-J, J] \times \mathcal{Y})^N]
+        \cap [\D'_N],
+    \end{equation}
+    which is compact in $[\D_N]$ as a closed subset of the compact set $[([-J, J] \times \mathcal{Y})^N]$.
+    We aim to show that $\Hb_N$ is closed in $\Hb^{K+1}$ and that $\enc_N^{-1}$ is continuous.
+    To this end, consider a convergent sequence 
+    \begin{equation}
+        f^{(m)} = {\sum_{n=1}^N} \phi(y^{(m)}_n) k(\vardot, x^{(m)}_n)
+        \to f \in \Hb^{K+1}.
+    \end{equation}
+    Denote $\vx^{(m)} = (x^{(m)}_1, \ldots, x^{(m)}_N)$ and $\vy^{(m)} = (y^{(m)}_1, \ldots, y^{(m)}_N)$.
+    Claim: $(\vx^{(m)})_{m\ge1}$ is a bounded sequence, so $(\vx^{(m)})_{m\ge1} \sub [-J, J]^{N}$ for $J$ large enough, which means that $[(\vx^{(m)}, \vy^{(m)})_{m\ge1}] \sub [\D_J]$.
+    
+    First, assuming the claim, we show that $\Hb_N$ is closed.
+    By boundedness of $(\vx^{(m)}, \vy^{(m)})_{m\ge1}$, $(f^{(m)})_{m\ge1}$ is in the image of $\enc_N|_{[\D_J]} \colon [\D_J] \to \Hb_N$.
+    By continuity of $\enc_N|_{[\D_J]}$ and compactness of $[\D_J]$, the image of $\enc_N|_{[\D_J]}$ is compact and hence closed.
+    Therefore, the image of $\enc_N|_{[\D_J]}$ contains the limit $f$.
+    Since the image of $\enc_N|_{[\D_J]}$ is included in $\Hb_N$, we have that $f \in \Hb_N$, which shows that $\Hb_N$ is closed.
+
+    Second, assuming the claim, we prove that $\enc_N^{-1}$ is continuous.
+    Consider $\enc_N|_{[\D_J]} \colon [\D_J] \to \enc_N([\D_J])$ restricted to its image.
+    Then $(\enc_N|_{[\D_J]})^{-1}$ is continuous, because every continuous bijection from a compact space to a Hausdorff space is a homeomorphism \parencite[Theorem 26.6;][]{Munkres:2000:Topology}.
+    Therefore,%
+    \begin{equation}
+        \enc_N^{-1}(f^{(m)})
+        = [(\vx^{(m)}, \vy^{(m)})]
+        = (\enc_N|_{[\D_J]})^{-1}(f^{(m)})
+        \to (\enc_N|_{[\D_J]})^{-1}(f).
+    \end{equation}
+    Denote $(\enc_N|_{[\D_J]})^{-1}(f) = [(\vx, \vy)]$.
+    By continuity and invertibility of $\enc_N$, then $f^{(m)} \to \enc_N([(\vx, \vy)])$, which means that $[(\vx, \vy)] = \enc_N^{-1}(f)$  by uniqueness of limits.
+    We conclude that $\enc_N^{-1}(f^{(m)}) \to \enc_N^{-1}(f)$, so $\enc_N^{-1}$ is continuous.
+    
+    It remains to show the claim. Let $f_1$ denote the first element of $f$, \ie~the \emph{density channel}.
+    Using the reproducing property of $k$,
+    \begin{align}
+        |f^{(m)}_1(x) - f_1(x)|
+        &= |\langle k(x, \vardot), f^{(m)}_1 - f_1\rangle_\Hb| \\
+        &\le \|k(x, \vardot)\|_{\Hb} \|f_1^{(m)} - f_1\|_{\Hb} \\
+        &= \sigma \|f_1^{(m)} - f_1\|_{\Hb},
+    \end{align}
+    so $f_1^{(n)} \to f_1$ in $\Hb$ means that it does so uniformly.
+    Hence, we can let $M \in \N$ be such that $m \ge M$ implies that $|f^{(m)}_1(x) - f_1(x)| < \tfrac13 \sigma^2$ for all $x \in \X$.
+    Let $R$ be such that $\displaystyle|k(x, x^{(M)}_n)| < \tfrac13 \sigma^2 / N$ for $\abs{x} \ge R$ and all $n \in \set{1, \ldots, N}$. 
+    Then, for $\abs{x} \ge R$,
+    \begin{equation}
+        |f_1^{(M)}(x)|
+        \le {\sum_{n=1}^N} |k(x, x^{(M)}_n)|
+        < \tfrac13 \sigma^2,
+    \end{equation}
+    which implies that, for all $\abs{x} \ge R$,
+    \begin{equation}
+        |f_1(x)| \le |f^{(M)}_1(x)| + |f^{(M)}_1(x) - f_1(x)| < \tfrac23 \sigma^2.
+    \end{equation}
+    At the same time, by pointwise nonnegativity of $k$, we have that
+    \begin{equation}
+        f_1^{(m)}(x^{(m)}_{n})
+        = {\sum_{n'=1}^N} k(x^{(n)}_{n}, x^{(n)}_{n'})
+        \ge k(x^{(m)}_n, x^{(m)}_n)
+        = \sigma^2.
+    \end{equation}
+    Towards contradiction, suppose that $(\vx^{(m)})_{m\ge1}$ is unbounded. 
+    Then $\displaystyle(x^{(m)}_n)_{m\ge1}$ is unbounded for some $n \in \set{1, \ldots, N}$.
+    Therefore, $\displaystyle|x_n^{(m)}| \ge R$ for some $m \ge M$, so
+    \begin{equation}
+        \tfrac23 \sigma^2
+        > |f_1(x_n^{(m)})|
+        \ge |f^{(m)}_1(x_n^{(m)})| - |f^{(m)}_1(x_n^{(m)}) - f_1(x_n^{(m)})|
+        \ge \sigma^2 - \tfrac13 \sigma^2
+        = \tfrac23 \sigma^2,
+    \end{equation}
+    which is a contradiction.
+\end{proof}
+
+\begin{lemma}
+    \label{lem:encoding_varying_size}
+    Suppose that $[\D'] \sub [\D]$ is closed, has multiplicity $K$, and has maximum data set size $N\ss{max} < \infty$.
+    Set
+    \begin{equation}
+        \phi\colon \mathcal{Y} \to \R^{K+1}, \quad
+        \phi(y) = (y^0, y^1, \cdots, y^K).
+    \end{equation}
+    Let $k\colon \X \times \X \to \R$ be a continuous strictly-positive-definite kernel such that
+    (1) $k(x, x) = \sigma^2 > 0$,
+    (2) $k \ge 0$, and
+    (3) $k(x, x') \to 0$ as $\abs{x} \to \infty$.
+    Denote the reproducing kernel Hilbert space of $k$ by $\Hb$.
+    Endow $\Hb^{K+1}$ with the inner product $\lra{f, g}_{\Hb^{K+1}} = \sum_{i=1}^{K+1} \lra{f_i, g_i}_{\Hb}$.
+    For $N \in \set{0, \ldots, N\ss{max}}$, denote $[\D'_N] = [\D'] \cap [\D_N]$ and define
+    \begin{equation}
+        \Hb_{N} = \set*{
+            \sum_{n=1}^{N} \phi(y_n) k(\vardot, x_n) :
+            [(x_n, y_n)_{n=1}^N] \sub [\D'_N]
+        }
+        \subseteq \Hb^{K+1}.
+    \end{equation}
+    % For every $m \in [N]$, consider a collection $\D'_m \subseteq \D_{m}$ that
+    % \begin{itemize}
+    %     \item has multiplicity $K$,
+    %     \item is topologically closed, and
+    %     \item is closed under permutations.
+    % \end{itemize}
+    % \begin{equation}
+    %     [\D'_{\le N}] = \bigcup_{n=1}^N [\D'_n]
+    %     \quad\text{and}\quad
+    % \end{equation}
+    Then $(\Hb_{N})_{N=0}^{N\ss{max}}$ are pairwise disjoint.
+    Denote $\Hb' = \bigcup_{N=0}^{N\ss{max}} \Hb_{N}$.
+    Then
+    \begin{equation}
+        \enc\colon
+            [\D']
+            \to
+            \Hb',
+        \quad
+        \enc([D]) = \enc_{N}([D]) \quad \text{if} \quad [D] \in [\D_N]
+        %E([(\vx_1, y_1), \ldots, (\vx_m, y_m)])
+        %= \sum_{i=1}^m \phi(y_i) k(\vardot, x_i)
+    \end{equation}
+    is a homeomorphism.
+    %Denote this inverse by $\enc^{-1}$, where $\enc^{-1}(f) = \enc_n^{-1}(f)$ if $f \in \Hb_n$.
+    %Then the restrictions $E|_{[\D'_m]}\colon [\D'_m] \to \Hb_m$ and $E^{-1}|_{\Hb_m}\colon\Hb_m \to [\D'_m]$ are continuous for all $m \in [N]$. 
+\end{lemma}
+\begin{proof}
+    To begin with, we show that
+    $(\Hb_{N})_{N=0}^{N\ss{max}}$ are pairwise disjoint.
+    % From repeated application of \cref{lem:compact_injection,lem:closed_injection}, we find that every restriction
+    % \begin{equation}
+    %     E|_{[\D'_m]} \colon [\D'_m] \to \Hb_m
+    % \end{equation}
+    % is invertible, continuous, and has a continuous inverse.
+    % The result then follows by showing that $(\Hb_m)_{m=1}^N$ are closed and pairwise disjoint.
+    %$[\D'_m]$ is closed and $(E|_{[\D'_m]})^{-1}$ is continuous, so
+    %\begin{equation}
+    %    \Hb_m = ((E|_{[\D'_m]})^{-1})^{-1}([\D'_m])
+    %\end{equation}
+    %is closed, since it is the preimage of a closed set under a continuous function. \aykfnote{This argument is a bit subtle. Does this prove that $\Hb_m$ is closed under the subset topology (which of course it is) or are we proving that it is closed as a subset of $\Hb^{K+1}$ (which is what we actually want to show)?}
+    % Recall that $\enc_n$ is injective for every $n \in [N]$.
+    % Hence, to demonstrate that $\enc$ is injective it remains to show that $(\Hb_n)_{n=1}^N$ are pairwise disjoint.
+    To this end, suppose that
+    \begin{equation}
+        \sum_{n=1}^{N} \phi(y_n) k(\vardot, x_n)
+        = \sum_{n=1}^{N'} \phi(y'_n) k(\vardot, x'_n)
+    \end{equation}
+    for $N \neq N'$.
+    Then, by arguments like in the proof of \cref{lem:compact_injection},
+    \begin{equation}
+        \sum_{n=1}^N \phi(y_n)
+        = \sum_{n=1}^{N'} \phi(y'_n).
+    \end{equation}
+    Since $\phi_1(\vardot)=1$, this gives $N = N'$, which is a contradiction.
+
+    Second, we show that $\enc$ is a homeomorphism.
+    Note that
+    $(\Hb_{N})_{N=0}^{N\ss{max}}$ are closed and pairwise disjoint,
+    and that $([\D'_N])_{N=0}^{N\ss{max}}$ are also closed and pairwise disjoint.
+    By \cref{lem:closed_injection}, every
+    \begin{equation}
+        \enc|_{[\D'_N]} \colon [\D'_N] \to \Hb_N
+    \end{equation}
+    is a homeomorphism.
+    Therefore,
+    \begin{equation}
+        \enc \colon \union_{N=0}^{N\ss{max}} [\D'_N] \to  \union_{N=0}^{N\ss{max}} \Hb_{N}
+    \end{equation}
+    is also a homeomorphism:
+    invertibility follows from disjointness,
+    continuity of $\enc$ follows from the pasting lemma \parencite[Theorem 18.3;][]{Munkres:2000:Topology},
+    and continuity of $\enc^{-1}$ similarly follows from the pasting lemma.
+\end{proof}
+
+% \begin{lemma} \label{lemma:total_continuity}
+%     Let $\Phi\colon [\D'_{\le N}] \to C_b(\mathcal{X}, \mathcal{Y})$ be a map from $[\D'_{\le N}]$ to $C_b(\mathcal{X}, \mathcal{Y})$, the space of continuous bounded functions from $\mathcal{X}$ to $\mathcal{Y}$, such that every restriction $\Phi|_{[\D'_m]}$ is continuous, and 
+%     let $E$ be from \cref{lemma:encoding_varying_size}.
+%     Then
+%     \begin{equation}
+%         \Phi \comp E^{-1}\colon \Hb_{\le N} \to C_b(\mathcal{X}, \mathcal{Y})
+%     \end{equation}
+%     is continuous.
+% \end{lemma}
+% \begin{proof}
+%     Recall that, due to \cref{lem:compact_injection}, for every $m \in [N]$, $E^{-1}_{m}$ is continuous and has image $[\D'_m]$.
+%     By the continuity of $\Phi|_{[\D'_m]}$, then $\Phi|_{[\D'_m]} \comp E^{-1}_{m}$ is continuous for every $m \in [N]$.
+%     Since $\Phi \comp E^{-1}|_{\Hb_m} = \Phi|_{[\D'_m]} \comp E^{-1}_{m}$ for all $m \in [N]$, we have that $\Phi \comp E^{-1}|_{\Hb_m}$ is continuous for all $m \in [N]$.
+%     Therefore, as $\Hb_m$ is closed in $\Hb_{\le N}$ for every $m \in [N]$, the pasting lemma \parencite{munkres1974topology} yields that $\Phi \comp E^{-1}$ is continuous.
+%     % By continuity of $\Phi$ and $E^{-1}$, every restriction $\Phi \comp E^{-1}|_{\Hb_m}$ is continuous.
+%     % We show that $\Phi \comp E^{-1}$ is continuous by showing that every convergent sequence in $\Hb_{\le N}$ is eventually contained in some $\Hb_m$ and appealing to continuity of $\Phi \comp E^{-1}|_{\Hb_m}$.
+%     % For suppose that $(f^{(n)})_{n=1}^\infty \sub \Hb_{\le N}$ converging to some $f \in \Hb_{\le N}$ visits $\Hb_m$ and $\Hb_{m'}$ with $m \neq m'$ infinitely often.
+%     % Then we can extract subsequences $(f^{(n_k)})_{k=1}^\infty \sub \Hb_{m}$ and $(f^{(n_{k'})})_{k'=1}^\infty \sub \Hb_{m'}$, which must both be convergent to $f$.
+%     % Since $\Hb_m$ and $\Hb_{m'}$ are closed and disjoint, this is a contradiction.
+% \end{proof}
+%
+
+\restatement{../../chapters/reprtheorems/statements/conv_deep_set.tex}
+\begin{proof}
+    Our proof follows the strategy used by \textcite{Zaheer:2017:Deep_Sets}.
+    If $\pi$ is of the stated form, then it is continuous and translation equivariant as a composition of two continuous and translation-equivariant functions.
+    Note that continuity of $\enc$ follows from \cref{lem:encoding_varying_size},
+    and that translation equivariance of $\enc$ is easily verified.
+    Conversely, suppose that $\pi \colon [\D'] \to Z$ is continuous and translation equivariant.
+    Let $\enc$ be of the stated form.
+    By \cref{lem:encoding_varying_size}, $\enc$ is a homeomorphism.
+    Set $\dec = \pi \comp \enc^{-1}$.
+    Then $\enc$ is continuous,
+    and $\dec$ is continuous as a composition of two continuous functions.
+    Moreover, $\enc$ is translation equivariant by construction, and $\dec$ is translation equivariant as a composition of two translation equivariant functions.
+\end{proof}
+
+\section{Proofs for Section \ref{\xrprefix{sec:repr_theorems:conv_deep_sets_dte}}}
+\label{sec:proofs_repr_theorems:conv_deep_sets_dte}
+
+\begingroup
+    \newcommand{\maybeprefix}[1]{\xrprefix{#1}}
+    \restatement{../../chapters/reprtheorems/statements/conv_deep_set_dte.tex}
+\endgroup
+\begin{proof}[Addendum to proof.]
+    The proof in \cref{\xrprefix{sec:repr_theorems:conv_deep_sets_dte}} is nearly complete.
+    The only thing which remains is to show that the extension
+    $
+        \overline{\pi} \colon A \times \set{\T_{\vtau} c : \vtau \in \X \times \X} \to Z
+    $
+    is continuous.
+    To this end, consider a sequence $(a_i, \T_{\vtau_i} c)_{i \ge 1}$ convergent to $(a, \T_{\vtau} c)$.
+    Let $\ve_\parallel = (1, 1) / \sqrt{2}$ and $\ve_\perp = (1, -1) / \sqrt{2}$.
+    Denote $\vtau_{i,\parallel} = \lra{\vtau_i, \ve_{\parallel}} \ve_{\parallel}$
+    and $\vtau_{i,\perp} = \lra{\vtau_i, \ve_{\perp}} \ve_{\perp}$.
+    Then
+    \begin{equation} \label{eq:overline_pi_to_pi}
+        \overline{\pi}(a_i, \T_{\vtau_i} c)
+        \overset{\smash{\text{(i)}}}{=} \overline{\pi}(a_i, \T_{\vtau_{i, \perp}} c)
+        \overset{\smash{\text{(ii)}}}{=} \T_{\vtau_{i, \perp}} \overline{\pi}(\T_{-\vtau_{i,\perp}}a_i, c)
+        \overset{\smash{\text{(iii)}}}{=} \T_{\vtau_{i, \perp}} \pi(\T_{-\vtau_{i,\perp}}a_i, c)
+        \hspace{-5pt}
+    \end{equation}
+    using in (i) that $c$ is diagonally translation invariant, in (ii) that $\pi$ is TE, and in (iii) the definition of $\overline{\pi}$.
+    Because $c$ is anti-diagonal discriminating, $(\vtau_{i,\perp})_{i \ge 1}$ is convergent.
+    Note that $(\vtau, a) \mapsto \T_{-\vtau} a$
+    and $(\vtau, z) \mapsto \T_{\vtau} z$ are continuous because $A$ and $Z$ are topological $(\X\times\X)$-translation spaces.
+    Therefore, using continuity of $\pi$,
+    \begin{align}
+        \lim_{i \to \infty} \overline{\pi}(a_i, \T_{\vtau_i} c)
+        = \T_{\vtau_{\perp}} \pi(\T_{-\vtau_{\perp}}a_i, c)
+        = \overline{\pi}(a, \T_{\vtau} c)
+    \end{align}
+    where the latter equality reverses the steps in \eqref{eq:overline_pi_to_pi}.
+    % \begin{align}
+    %     \to \T_{\vtau_{\perp}} \pi(\T_{-\vtau_{\perp}}a, c) \\
+    %     &= \T_{\vtau_{\perp}} \overline{\pi}(\T_{-\vtau_{\perp}}a, c) \\
+    %     &= \overline{\pi}(a, \T_{\vtau_{\perp}} c) \\
+    %     &= \overline{\pi}(a, \T_{\vtau} c) \\
+    % \end{align}
+\end{proof}
+
+
+\end{document}
