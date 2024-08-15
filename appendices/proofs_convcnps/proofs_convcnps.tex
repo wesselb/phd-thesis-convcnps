@@ -102,7 +102,6 @@ because we assume the form of $\pi'$ in \cref{\xrprefix{def:posterior_prediction
     Write $C_i = \union_{j=1}^{i - 1} B_i$.
     Let $D_i$ be the subset of $D$ with inputs in $[\min(\vx_{B_{i-2}}), \max(\vx_{B_{i+1}})]$.
     
-    % If $f \sim \pi_1(D)$, then denote the distribution of $f(\vx) \cond f(\vy)$ by $\pi_1(f(\vx) \cond f(\vy), D)$.
     If $\vy_1 \oplus \vy_2 \sim P^\sigma_{\vx_1 \oplus \vx_2} \pi(D)$, then denote the distribution of $\vy_1 \cond \vy_2$ by $P^{\sigma}_{\vx_1 \cond \vx_2} \pi(D)$.
     Use the chain rule for the KL divergence to decompose
     \begin{align}
@@ -126,15 +125,6 @@ because we assume the form of $\pi'$ in \cref{\xrprefix{def:posterior_prediction
             P_{\vx_{B_i} \cond \vx_{B_{i-1}}}^{\sigma_1} \pi_1(D),
             P_{\vx_{B_i} \cond \vx_{B_{i-1}}}^{\sigma_2} \pi_2(D)
         )
-        % &\KL[
-        %     \pi_1(f(\vx_{B_i}) \cond f(\vx_{C_i}), D),
-        %     \pi_2(f(\vx_{B_i}) \cond f(\vx_{C_i}), D)
-        % ] \nonumber \\
-        % &\qquad=
-        % \KL[
-        %     \pi_1(f(\vx_{B_i}) \cond f(\vx_{B_{i-1}}), D),
-        %     \pi_2(f(\vx_{B_i}) \cond f(\vx_{B_{i-1}}), D)
-        % ]
     \end{align}
     Therefore,
     \begin{align}
@@ -150,20 +140,6 @@ because we assume the form of $\pi'$ in \cref{\xrprefix{def:posterior_prediction
             P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_1} \pi_1(D),
             P_{\vx_{B_i \cup B_{i-1}}}^{\sigma_2} \pi_2(D)
             ).
-        % &\KL[
-        %     \pi_1(f(\vx_{B_i}) \cond f(\vx_{B_{C_i}}), D),
-        %     \pi_2(f(\vx_{B_i}) \cond f(\vx_{B_{C_i}}), D)
-        % ] \\
-        % &\qquad
-        % \KL[
-        %     \pi_1(f(\vx_{B_i} - \tau) \cond f(\vx_{B_{i-1}} - \tau_i),
-        %         D_i - \tau_i
-        %     )), \nonumber \\
-        % &\qquad\hphantom{=\KL[}\;
-        %     \pi_2(f(\vx_{B_i} - \tau) \cond f(\vx_{B_{i-1}} - \tau_i), 
-        %         D_i - \tau_i
-        %     ))
-        % ], \nonumber
     \end{align}
     Next, we use that $\pi_1$ and $\pi_2$ also have receptive field $R$, allowing us to replace $D$ with $D_i$:
     \begin{align}
@@ -207,7 +183,6 @@ because we assume the form of $\pi'$ in \cref{\xrprefix{def:posterior_prediction
 
 \restatement{../../chapters/convcnps/statements/te_gnp.tex}
 \begin{proof}
-
     ``$\Rightarrow$'': Follows from ``$\Rightarrow$'' of \cref{\xrprefix{prop:TE_iff_m_TE_v_TE}}, noting that TE of $v_\pi$ implies DTE of $k_\pi$.
     ``$\Leftarrow$'': Exactly like the proof for ``$\Leftarrow$'' of \cref{\xrprefix{prop:TE_iff_m_TE_v_TE}}, now using DTE of $k_\pi$ rather than TE of $v_\pi$.
 \end{proof}
@@ -249,7 +224,6 @@ because we assume the form of $\pi'$ in \cref{\xrprefix{def:posterior_prediction
     Since $P_{x_n \cond \vx_{1:(n-1)}}^{\sigma\ss{G}} \pi\ss{G}(D) \in \Pc\ss{$\lambda$,G}^1$, the inequality follows.
 \end{proof}
 
-
 \restatement{../../chapters/convcnps/statements/recovery_of_smooth_samples.tex}
 \begin{proof}
     Consider the increasing filtration $\mathcal{F}_n = \sigma(y_1, \ldots, y_n)$ with limit $\mathcal{F}_\infty = \sigma(\smash{\union_{n=1}^\infty} \mathcal{F}_n)$.
@@ -264,11 +238,6 @@ because we assume the form of $\pi'$ in \cref{\xrprefix{def:posterior_prediction
     By sure continuity of $f$, the first term converges to $f(x^*)$ surely.
     By the strong law of large numbers \parencite[Example 5.6.1;][]{Durrett:2010:Probability_Theory_and_Examples}, % and the conditions on $(\e_n)_{n \ge 1}$,
     the second term converges to zero on a tail event $A \in \Tc$ of probability one.
-    % More precisely, we set
-    % \begin{equation}
-    %     A = \set*{\limsup_{n \ge 1} \frac1n\abs*{\sum_{i=1}^n \e_i} = 0}.
-    % \end{equation}
-    % Since both $A \in \F_\infty$ and $A \in \Tc$, we have $\P(A) \in \set{0, 1}$ \parencite[Kolmogorov's 0--1 law; Theorem 2.5.1;][]{Durrett:2010:Probability_Theory_and_Examples}, so $\P(A) = 1$ by the SLNN.
     We conclude that $\ind_{A} f(x^*)$ is $\sigma(\F_\infty, \Tc)$--measurable.
     Therefore, by almost sure convergence of $L^2$--bounded martingales \parencite[Theorem 5.4.5;][]{Durrett:2010:Probability_Theory_and_Examples}, 
     \begin{align}
@@ -283,6 +252,5 @@ because we assume the form of $\pi'$ in \cref{\xrprefix{def:posterior_prediction
     \end{align}
     where all equalities hold almost surely.  
 \end{proof}
-
 
 \end{document}

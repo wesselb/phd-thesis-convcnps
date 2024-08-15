@@ -82,7 +82,6 @@ performs some matrix multiplications $(\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-
 If we replace the Gaussian kernel in step \ballnumber{4} of \cref{\xrprefix{proc:discretisation}} with $k$,
 then multiplication by $\mK_{\vt\vz}$ exactly performs step \ballnumber{4}.
 Therefore, if we can implement the intermediate matrix multiplications with a convolutional neural network (CNN),
-%then \eqref{eq:connection_1} reveals that
 the sparse approximation of the posterior mean can be implemented with a convolutional deep set discretised according to \cref{\xrprefix{proc:discretisation}}.
 
 To begin with, since $k$ is stationary and the elements of $\vz$ are equally spaced, $\mK_{\vz}$ is a Toeplitz matrix, and matrix multiplication with a Toeplitz matrix can be implemented with a convolutional filter.
@@ -92,7 +91,6 @@ It remains to argue that multiplication by $(\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\v
 Let $\vv = (\mK_{\vz} + \mK_{\vz\vx} \mK_{\vx\vz})^{-1} \vu$ and split $\mK_\vz = \mD + \mO$ into a diagonal part $\mD$ and off-diagonal part $\mO$.
 Rearrange
 \begin{equation}
-    % (\mD + \mO + \mK_{\vz\vx} \mK_{\vx\vz})\vv &= \vu, \\
     \vv = \mD^{-1} (\vu - \mO\vv - \mK_{\vz\vx} \mK_{\vx\vz}\vv).
 \end{equation}
 This suggests the iterative scheme

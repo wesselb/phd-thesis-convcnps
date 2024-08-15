@@ -59,14 +59,11 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
     which concludes.  
 \end{proof}
 
-
-
 \begin{proposition}
     \begin{equation}
         \P(\omega_f(h) \ge \e) \le \frac{c_{\beta, p}}{\e} h^{\beta - \frac{1}{p}}.
     \end{equation}
 \end{proposition}
-
 
 \begin{proposition} \label{prop:Lipschitzness_Z}
     Let $D_1, D_2 \in \D_N$ and denote $D_1 = (\vx_1, \vy_1)$ and $D_2 = (\vx_2, \vy_2)$.
@@ -81,13 +78,6 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
     Consider the event $A = \set{f : 
         \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e
     }$.
-    % \begin{equation}
-    %     A = \set{f : 
-    %         \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e,\,
-    %         \norm{f(\vx_1)}_\infty < M,\,
-    %         \norm{f(\vx_2)}_\infty < M
-    %     }.
-    % \end{equation}
     We have
     \begin{equation}
         \abs{Z(\vx_1, \vy_1) - Z(\vx_2, \vy_2)}
@@ -105,11 +95,8 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
         \P(A^\c)
         =
             \P(\omega_f(\norm{\vx_1 - \vx_2}_\infty) \ge \e)
-            % + \P(\norm{f(\vx_1)}_\infty \ge M)
-            % + \P(\norm{f(\vx_2)}_\infty \ge M) \nonumber \\
         \le 
         \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}.
-        % + \frac{2N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
     \end{equation}
     For the first term, simply take a supremum and use \cref{prop:local_Lipschitzness_r}:
     \begin{align}
@@ -146,7 +133,6 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
         \le 
             \frac{1}{\underline{\sigma}^2}(\sqrt{N}\e + \norm{\vy_1 - \vy_2}_2)
             + \frac{2 c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}.
-            %+ \frac{4N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
     \end{equation}
     This holds for any choice of $\e > 0$, so we may also take an infimum over $\e > 0$.
     Taking the infimum gives a function right-hand side which only depends on the universal parameters
@@ -199,7 +185,6 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
     which concludes the lower bounds.
 \end{proof}
 
-
 \begin{proposition} \label{prop:Lipschitzness_functional}
     Let $D_1, D_2 \in \D_N \cap \G$ and denote $D_1 = (\vx_1, \vy_1)$ and $D_2 = (\vx_2, \vy_2)$.
     Let $F\colon C(\X, \Y) \to \R$ be a continuous functional such that, for some $\gamma' > 0$, $B_F = \norm{F(f)}_{L^{1+\gamma'}} < \infty$.
@@ -214,13 +199,6 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
     Consider the event $A = \set{f : 
         \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e
     }$.
-    % \begin{equation}
-    %     A = \set{f : 
-    %         \omega_f(\norm{\vx_1 - \vx_2}_\infty) < \e,\,
-    %         \norm{f(\vx_1)}_\infty < M,\,
-    %         \norm{f(\vx_2)}_\infty < M
-    %     }.
-    % \end{equation}
     Denote $g(\vx, \vy) = r(\vy - f(\vx)) / Z(\vx, \vy)$ and
     note that $g(\vx_1, \vy_1) \le 1 /c_\ell$ and $g(\vx_2, \vy_2) \le 1/c_\ell$, where $c_\ell$ is defined in \cref{prop:bounds_Z}.
     Then
@@ -253,13 +231,6 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
             }^{\smash{\frac{\gamma'}{1 + \gamma'}}}
             \norm{F(f)}_{L^{1 + \gamma'}}.
     \end{equation}
-    % where, just like in the proof of \cref{prop:local-Lipschitzness-r},
-    % \begin{equation}
-    %     \P(A^\c)
-    %     \le
-    %     \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
-    %     + \frac{2N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
-    % \end{equation}
     For the first term, observe that, for any two functions $f$ and $g$ such that $g \ge c_\ell > 0$ and $f, g \le c_u < \infty$,
     \begin{equation}
         \abs*{
@@ -343,11 +314,6 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
                 \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
             }^{\frac{\gamma'}{1 + \gamma'}}
             \norm{F(f)}_{L^{1 + \gamma'}}
-            % \frac{2}{c_\ell}\sbrac*{
-            %     \frac{c_{\beta, p}}{c_\ell} \frac1{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta -\frac{1}{p}}
-            %     + \frac {2N}M \sup_{x \in \X} \, \norm{f(x)}_{L^1}
-            % }^{\frac{\gamma'}{1 + \gamma'}}
-            % \times\norm{F(f)}_{L^{1 + \gamma'}}
             \nonumber \\
         &\qquad\phantom{\le}\;
             + \frac{c_u}{c_\ell^2}\,\norm{F(f)}_{L^1}
@@ -363,7 +329,6 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
     so we may also take an infimum over $\e > 0$.
     Taking the infimum gives a function on the right-hand side which only depends on the universal parameters, $\gamma'$, and $B_F$, and which goes to zero as $\norm{\vx_1 - \vx_2}_2$ and $\norm{\vy_1 - \vy_2}_2$ go to zero.
 \end{proof}
-
 
 \begin{proof}[Proof of \ref{\xrprefix{prop:posterior_prediction_map_regularity}}]
     \listnum{1}:
@@ -452,6 +417,5 @@ Note that $Z(\vx, \vy) > 0$, for otherwise $\abs{f(x)} = \infty$ almost surely f
     \end{align}
     which concludes.
 \end{proof}
-
 
 \end{document}

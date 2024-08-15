@@ -34,25 +34,6 @@ For multidimensional outputs where outputs can have context points at different 
 These encoders may or may not share parameters.
 In our experiments, for two-dimensional outputs, parametrise separate $\enc_\theta$;
 for higher-dimensional outputs, apply the same $\enc_\theta$.
-% \emph{Deterministic encoder:}
-% For every output dimension, concatenate the $x$-values and $y$-value of the context points; pass this through a $(D\ss{i} + 1, 256, 3, 256)$-MLP; and sum over all data points.
-% Concatenate this result for all output dimensions (the \emph{deterministic encoding}).
-% \emph{Decoder:}
-% For a target point, concatenate the target input to the deterministic encoding; pass through a $(D\ss{i} + 256 \cdot D\ss{o}, 256 \cdot \min(D\ss{o}, 2), 6, 2 \cdot D\ss{o})$-MLP; and produce marginal means and marginal variances.
-% \begin{align}
-%     \phi_1 &\colon \R^{D\ss{i} + 1} \to \R^{256} & \text{(MLP, $W=256$, $H=3$)} \\
-%            &\vdots \nonumber \\
-%     \phi_{D\ss{o}} &\colon \R^{D\ss{i} + 1} \to \R^{256} & \text{(MLP, $W=256$, $H=3$)} \\
-%     \dec &\colon \R^{D\ss{i} + 256 \cdot D\ss{o}} \to \R^{D\ss{o}} \times [0, \infty)^{D\ss{o}} & \text{(MLP, $W=256 \cdot \min(2, D\ss{o})$, $H=6$)} \\
-% \end{align}
-% For every context set $D\us{(c)}$ and $d = 1, \dots, D\ss{o}$, let $D\us{(c, $d$)}$ be the observations for output $d$.
-% \begin{equation}
-%     (\vmu,) = \dec\parens*{
-%         \vx\us{(t)}_n, 
-%         \sum_{(\vx, y) \in D\us{(c,$1$)}} \phi_1(\vx, y)
-%     }
-% \end{equation}
-
 
 \paragraph{Gaussian Neural Process (GNP; \cref{\xrprefix{mod:gnp}})}\index{GNP}
 The architecture follows \cref{\xrprefix{mod:cnp}}.
@@ -61,12 +42,6 @@ Set the rank of the kernel map to $R = 64$.
 As mentioned in the introduction, let $\dec_\theta$ produce one extra dimension which forms heterogeneous observation noise;
 the total covariance over the target points is then the sum of $k_\theta(D)$ and a diagonal matrix formed from these observation noises.
 For multidimensional outputs, the same caveats as for the CNP apply.
-
-% The architecture of the GNP follows the description in \cref{\xrprefix{sec:convcnps:gnp}}.
-% The GNP builds off the CNP.
-% The decoder MLP now additionally outputs a vector of $64 \cdot D\ss{o}$ elements (the \emph{covariance embedding}).
-% The covariance between any two target outputs is the inner product between the covariance embeddings.
-% The total covariance is the sum of this covariance and the marginal variances produced by the decoder. 
 
 \paragraph{Neural Process \parencite[NP;][]{Garnelo:2018:Neural_Processes}}\index{NP}
 The NP builds off the CNP.
@@ -133,20 +108,6 @@ The layers after the U-turn additionally take in the outputs of the layers befor
 this is the U-net structure \parencite[Figure 1;][]{Ronneberger:2015:U-Net_Convolutional_Networks_for_Biomedical}.
 For multidimensional outputs where outputs can have context points at different inputs, produce a separate data and density channel for every output and concatenate these into one big encoding;
 use separate length scales for every application of $\enc_\theta$.
-% \emph{Encoder:}
-% For every output dimension, use the context points to produce a \emph{data channel} (see \eqref{\xrprefix{eq:data_channel}} in \cref{\xrprefix{sec:convcnps:convcnps}}) and \emph{density channel} (see \eqref{\xrprefix{eq:density_channel}} in \cref{\xrprefix{sec:convcnps:convcnps}}).
-% Evaluate these channels at the discretisation, producing a vector for one-dimensional inputs and an image for two-dimensional inputs.
-% The Gaussian kernels in \eqref{\xrprefix{eq:data_channel}} and \eqref{\xrprefix{eq:density_channel}} have a separate length scale for every output dimension.
-% These length scale are initialised to twice the interpoint spacing of the discretisation.
-% Concatenate the data and density channel for all output dimensions (the \emph{encoding}).
-% \emph{Decoder:}
-% The CNN architecture is a U-Net \parencite{Ronneberger:2015:U-Net_Convolutional_Networks_for_Biomedical}.
-% The U-Net takes in the encoding of $2 \cdot D\ss{o}$ channels;
-% applies six convolutional layers with kernel size five, stride two, and 64 output channels;
-% applies another six convolutional layers, similar, but transposed and additionally taking in the output of the former six layers in reversed order \parencite[the U-Net structure;][]{Ronneberger:2015:U-Net_Convolutional_Networks_for_Biomedical};
-% and applies a final linear layer producing $2 \cdot D\ss{o}$ channels.
-% The output is interpolated to the target inputs using \eqref{\xrprefix{eq:discretisation}} and produces marginal means and variances.
-% The length scale of the Gaussian kernel is again initialised to twice the interpoint spacing of the discretisation.
 
 \paragraph{Convolutional Gaussian Neural Process (ConvGNP; \cref{\xrprefix{mod:convgnp}})}\index{ConvGNP}
 The architecture follows \cref{\xrprefix{mod:convgnp}}.
@@ -157,18 +118,6 @@ the total covariance over the target points is then the sum of $k_\theta(D)$ and
 For multidimensional outputs, the same caveat as for the ConvCNP applies.
 
 \paragraph{Fully Convolutional Gaussian Neural Process (FullConvGNP; \cref{\xrprefix{mod:fullconvgnp}})}\index{FullConvGNP}
-% The architecture follows the description in \cref{\xrprefix{mod:fullconvgnp}}.
-% The FullConvGNP builds off the ConvCNP.
-% It adds a separate architecture that produces the covariance matrix for the target outputs.
-% \emph{Kernel architecture:}
-% Duplicate the inputs of the context points, doubling the input dimensionality.
-% The architecture is then the double-dimensional generalisation of the architecture for the ConvCNP.
-% In addition to a data and density channel for every output, it adds an identity matrix as one more channel (the \emph{source channel}), bringing the number of input channels of the U-Net to $2 \cdot D\ss{o} + 1$.
-% The U-Net then outputs $D\ss{o} \cdot D\ss{o}$ channels, which are interpreted as the covariance and cross-covariance matrices between all outputs.
-% Before interpolating to the target outputs, $\mZ \mapsto \mZ \mZ^\T$ is used to ensure that the concatenation of all covariance and cross-covariances matrices is positive definite.
-% The output is interpolated to the target inputs using \eqref{\xrprefix{eq:discretisation}} and produces a covariance matrix over the target outputs.
-% \note{FINISH THIS}
-%
 For the mean architecture and the kernel architecture, use the same choices for the discretisation, length scales, and CNN architecture as for the ConvCNP.
 Do implement the source channel with the identity matrix, as described in \cref{\xrprefix{sec:convcnps:gnp}};
 and do apply the matrix transform $\mZ \mapsto \mZ \mZ^\T$ to ensure positive definiteness, as also described in \cref{\xrprefix{sec:convcnps:gnp}}.
@@ -269,7 +218,6 @@ the ConvCNP and ConvGNP use 128 channels, the ConvNP uses 96 channels, and the F
 The length scales of the Gaussian kernels of the convolutional model is initialised to $0.77 / 256$.
 To scale to seven outputs, the deep set--based and attentive models reuse the same encoder for every output dimension.
 
-
 \section{Climate Downscaling}
 \label{sec:experimental_details:climate}
 \index{downscaling}
@@ -285,7 +233,6 @@ Parametrise $\mathsf{fuse}_\theta$ with a three-hidden-layer MLP of width 128.
 
 The MLP ConvCNP and MLP ConvGNP are trained with learning rate $2.5 \cdot 10^{-5}$ for 500 epochs.
 For the MLP ConvGNP, to encourage the covariance to fit, we fix the variance of the decoder to $10^{-4} \mI$ for the first ten epochs.
-
 
 \paragraph{AR ConvCNP (\cref{\xrprefix{sec:experiments:climate}})}\index{multiscale architecture}
 The architecture of the AR ConvCNP follows the descriptions in \cref{\xrprefix{sec:experiments:climate},\xrprefix{fig:multires_arch}}, with the following additional details.
@@ -312,8 +259,5 @@ The size of the cross-validation set is increased ten fold.
 The number of context points $n$ is sampled from $p(n) \propto e^{-0.01n}$.
 A data set is split into a context and target set by randomly selecting $n$ points as context points and letting the remainder be target points.
 For the AR ConvCNP, this splitting is done after subsampling the $3^\circ\times3^\circ$ square.
-
-
-
 
 \end{document}

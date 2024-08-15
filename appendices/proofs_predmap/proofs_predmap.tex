@@ -15,8 +15,6 @@
 \section{Proofs for Section \ref{\xrprefix{sec:predmap:motivation}}}
 \label{sec:proofs_predmap:motivation}
 
-%Before proving \cref{\xrprefix{prop:posterior_prediction_map_regularity:part_one}}, we require a lemma about the normalising constant $Z$, which was defined in \eqref{\xrprefix{def:posterior_prediction_map}}.
-
 Recall the definition of the posterior prediction map in \cref{\xrprefix{def:posterior_prediction_map_formal}}.
 Henceforth, for all $D \in \D$, denote the Radon--Nikodym derivative of $\pi_f(D)$ with respect to $\mu_f$ by $\pi'(D)$:
 \begin{equation}
@@ -95,10 +93,8 @@ and $Z(\vx, \vy) = \E_f[r(\vy - f(\vx))]$.
     Since $L$ was arbitrary, we conclude that $\pi_f(D_i) \weakto \pi_f(D)$.
 \end{proof}
 
-
 \section{Proofs for Section \ref{\xrprefix{sec:predmap:neural_process_objective}}}
 \label{sec:proofs_predmap:neural_process_objective}
-
 
 \restatement{../../chapters/predmap/statements/neural_process_objective_well-defined.tex}
 \begin{proof}
@@ -230,11 +226,8 @@ and $Z(\vx, \vy) = \E_f[r(\vy - f(\vx))]$.
     $\inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(\mu, \nu\ss{G}) < \infty$.
     Define
     \begin{equation}
-        \text{G}(\mu, \nu) =% \begin{cases}
+        \text{G}(\mu, \nu) =
             \KL(\mu, \nu) - \inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(\mu, \nu\ss{G})
-        %     &\text{if } \inf_{\nu\ss{G} \in \Pc\ss{$\lambda$,G}^N} \KL(\mu, \nu\ss{G}) < \infty, \\
-        %     \infty &\text{otherwise}.
-        % \end{cases}
     \end{equation}
     Note that $\text{G}(\mu, \nu) \ge 0$, because $\nu \in \Pc\ss{$\lambda$,G}^N$.
     Moreover, a computation shows that $\text{G}(\mu, \nu) = \KL(\Normal(\mu), \nu)$
@@ -286,20 +279,16 @@ and $Z(\vx, \vy) = \E_f[r(\vy - f(\vx))]$.
         \text{G}(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma}_\vx \pi(D)) = 0
         \quad \text{for all $\vx \in B$}.
     \end{equation}
-    Hence, %by our earlier observation about $\text{G}$, % this is equivalent to
+    Hence,
     $
         P^{\sigma}_\vx \pi(D)
         = \Normal(P^{\sigma_f}_\vx \pi_f(D))
-        % \quad \text{for all $\vx \in B$}.
     $ for all $\vx \in B$, which means that
-    %This condition, in turn, is equivalent to
     \begin{align}
         \label{eq:gaussian_np_approximation:mean_condition}
         m_\pi(D)(x') &= m_f(D)(x') \\
-               % &\text{for all $x \in \set{x_1, \ldots, x_{\abs{\vx}}}$,} \\
         \label{eq:gaussian_np_approximation:kernel_condition}
         k_\pi(D)(x', y') + \sigma^2 \ind(x' = y') &= k_f(D)(x', y') + \sigma^2_f \ind(x' = y')
-               % &\text{for all $x, y \in \set{x_1, \ldots, x_{\abs{\vx}}}$}.
     \end{align}
     for all $\vx \in B$ and $x', y' \in \set{x_1, \ldots, x_{\abs{\vx}}}$.
     But $B$ is dense in $\tI$, because $p(\vx)$ assigns positive probability to every open set (\cref{\xrprefix{assum:full_support_and_complete}}). 
@@ -327,7 +316,7 @@ and $Z(\vx, \vy) = \E_f[r(\vy - f(\vx))]$.
         \sigma = \sigma_f,
     \end{equation}
     which is the desired condition.
-%
+    %
     Conversely, suppose that \eqref{eq:gnpa_characterisation:desired_condition} is satisfied.
     Then \eqref{eq:gaussian_np_approximation:mean_condition} and \eqref{eq:gaussian_np_approximation:kernel_condition} are satisfied for all $x', y' \in \X$ and $D \in \tD$, so (i) is zero.
 \end{proof}
@@ -455,11 +444,8 @@ For $f \in C(\X, \Y)$, define the \emph{modulus of continuity} by
         \P(A^\c)
         =
             \P(\omega_f(\norm{\vx_1 - \vx_2}_\infty) \ge \e)
-            % + \P(\norm{f(\vx_1)}_\infty \ge M)
-            % + \P(\norm{f(\vx_2)}_\infty \ge M) \nonumber \\
         \le 
         \frac{c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}.
-        % + \frac{2N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
     \end{equation}
     For the first term, simply take a supremum and use \cref{lem:local_Lipschitzness_r}:
     \begin{align}
@@ -496,7 +482,6 @@ For $f \in C(\X, \Y)$, define the \emph{modulus of continuity} by
         \le 
             \frac{2 c_{\beta, p}}{\e} \norm{\vx_1 - \vx_2}_\infty^{\beta - \frac{1}{p}}
             + \frac{1}{\underline{\sigma}}(\sqrt{N}\e + \norm{\vy_1 - \vy_2}_2).
-            %+ \frac{4N}{M} \sup_{x \in \X} \, \norm{f(x)}_{L^1}.
     \end{equation}
     This holds for any choice of $\e > 0$, so we may also take an infimum over $\e > 0$.
     For $a,b \ge 0$, note that the infimum of $a/\e + b$ over $\e > 0$ is given by $2 \sqrt{a b}$.
@@ -693,7 +678,6 @@ For $f \in C(\X, \Y)$, define the \emph{modulus of continuity} by
     noting that $\frac{\rho}{1+ \rho}=\frac{\gamma'}{1+2\gamma'}$.
 \end{proof}
 
-
 \restatement{../../chapters/predmap/statements/regularity_part_two.tex}   
 \begin{proof}
     \listnum{1}:
@@ -828,11 +812,9 @@ For $f \in C(\X, \Y)$, define the \emph{modulus of continuity} by
     Hence,
     \begin{equation}
         \E_{\mu_i}\sbrac{\omega_f(2^{-k})}
-        % \le 2\sum_{n=k+1}^\infty \E_{\mu_i}[K_n]
         \le 2\sum_{n=k+1}^\infty \E_{\mu_i}[K_n^p]^{\frac1p}
         \le 2c\sum_{n=k+1}^\infty 2^{-(\beta - \frac1p)n}
         = c\frac{2^{1-(\beta - \frac1p)(k + 1)}}{1 - 2^{-(\beta - \frac1p)}},
-        %= c_{p,q} 2^{-(\beta - \frac1p)k},
     \end{equation}
     using that $\beta - \frac1p > 0$,
     where
@@ -841,14 +823,10 @@ For $f \in C(\X, \Y)$, define the \emph{modulus of continuity} by
     \begin{equation}
         \sup_{i \ge 1}\, \mu_i(\omega_f(h) \ge \e)
         \le \sup_{i \ge 1}\, \mu_i(\omega_f(2^{-k}) \ge \e)
-        % \le \frac{c_{p,q}}{\e} 2^{-(\beta - \frac1p)k}
         \le \frac{2c}{\e} \frac{2^{-(\beta - \frac1p)k}}{2^{\beta - \frac1p} - 1}
         \le \frac{2c}{\e} \frac{(2h)^{\beta - \frac1p}}{2^{\beta - \frac1p} - 1}
-        %\le \frac{c_{p,q}}{\e} (2h)^{\beta - \frac1p},
     \end{equation}
     which proves the result.
 \end{proof}
-
-
 
 \end{document}

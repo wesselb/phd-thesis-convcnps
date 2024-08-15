@@ -22,12 +22,8 @@ To conclude this thesis, we recapitulate the tools put forward in this thesis an
 
 The primary tool that this thesis puts forward are convolutional deep sets (\cref{\xrprefix{thm:conv_deep_set},\xrprefix{thm:conv_deep_set_dte}}).
 We used convolutional deep sets to construct convolutional neural processes (ConvNPs; \cref{\xrprefix{sec:convcnps:convcnps}}).
-% Convolutional Conditional Neural Process (ConvCNP; \cref{\xrprefix{mod:convcnp}}), the Convolutional Gaussian Neural Process (ConvGNP; \cref{\xrprefix{mod:convgnp}}),
-% and the Fully Convolutional Gaussian Neural Processes (FullConvGNP; \cref{\xrprefix{mod:fullconvgnp}}).
 In problems where the data is roughly stationary, convolutional neural processes offer strong alternatives to existing neural processes.
 The models constructed in \cref{\xrprefix{sec:convcnps:convcnps}}, however, are just a few of many.
-% The more powerful idea and the transferable tool is that convolutional deep sets
-% can be used to generally approach spatial, temporal or spatio--temporal data problems in a simple and effective way.
 The more powerful idea is that convolutional deep sets are a flexible neural network building block
 that can be generally used in spatial, temporal or spatio--temporal data problems.
 A great illustration of this idea is \cref{\xrprefix{sec:experiments:climate}},
@@ -38,7 +34,6 @@ In the setup of the ConvCNP and ConvGNP, convolutional deep sets in combination 
 and in the multiscale architecture of the AR ConvCNP, a cascade of convolutional deep sets seamlessly stitched together convolutional neural networks operating at different resolutions.
 Although convolutional deep sets are flexible and can work well, we emphasise that the technique is not a panacea.
 The main limitation of convolutional deep sets are demanding computational requirements deriving from the discretisation (\cref{\xrprefix{proc:discretisation}}).
-%To effectively deploy convolutional deep sets, the data must have one, two, or---at a stretch---three-dimesional inputs, and one must carefully tune the discretisation to the problem at hand.
 %
 Since we first published the Convolutional Conditional Neural Process \parencite[ConvCNP;][]{Gordon:2020:Convolutional_Conditional_Neural_Processes}, the ConvCNP has been extended to symmetries other than translation equivariance \parencite{Kawano:2021:Group_Equivariant_Conditional_Neural_processes,Holderrieth:2021:Equivariant_Learning_of_Stochastic_Fields} and formed the basis for various models in a variety of applications
 \parencite{
@@ -51,28 +46,21 @@ Pondaven:2022:Convolutional_Neural_Processes_for_Inpainting,
 Vaughan:2022:Convolutional_Conditional_Neural_Processes_for}.
 
 The second tool that this thesis proposes is the idea of directly parametrising the covariance between target outputs.
-%In particular, we proposed 
 This gave rise to Gaussian neural processes (GNPs; \cref{\xrprefix{sec:convcnps:gnp}}).
 GNP are a contender to latent-variable neural processes \parencite[LNPs;][]{Garnelo:2018:Neural_Processes}
 by also modelling dependencies between target outputs.
-%By retaining a tractable objective, GNPs can be simpler and computationally cheaper than LNPs.
 In problems where the data is roughly Gaussian, GNPs are a promising new model class to explore.
-%For example, in the Gaussian synthetic experiments (\cref{\xrprefix{sec:experiments:synthetic}}), predator--prey experiments (\cref{\xrprefix{sec:experiments:predprey}}) and electroencephalography experiments (\cref{\xrprefix{sec:experiments:eeg}}), a GNP topped the leaderboard.
-%However, when the data exhibits non-Gaussian aspects, such as in the non-Gaussian synthetic experiments (\cref{\xrprefix{sec:experiments:synthetic}}), LNPs offer clear advantages.
 Like with convolutional deep sets, the idea of directly parametrising the covariance between target outputs is useful beyond the models presented in \cref{\xrprefix{chap:convcnps}}.
 For example, we used the technique to enable correlated samples in the climate downscaling experiment (\cref{\xrprefix{sec:experiments:climate}}), 
 and we illustrated that a GNP can even be the encoder and/or decoder in a LNP (\cref{\xrprefix{sec:software:examples}}), potentially combining the benefits of both classes.
 Besides the GNPs explored in this thesis,
 many more approaches to parametrising the covariance are possible. 
-%$A worthwhile mention are GNPs with the so-called \texttt{kvv}-covariance , which were introduced by the colleagues of the author and the author \parencite{Markou:2022:Practical_Conditional_Neural_Processes_for_Tractable}, but not discussed in this thesis.
 Since we first published the Fully Convolutional Gaussian Neural Process \parencite[FullConvGNP;][]{Bruinsma:2021:The_Gaussian_Neural_Process,Markou:2022:Practical_Conditional_Neural_Processes_for_Tractable}, we used the FullConvGNP to meta-learn posterior distributions in PAC-Bayes bounds \parencite{Foong:2021:How_Tight_Can_PAC-Bayes_Be}.
 
 The third and final tool presented by this thesis are autoregressive conditional neural processes (AR CNPs; \cref{\xrprefix{sec:convcnps:ar}}).
 Although CNPs are the simplest of neural processes,
 by deploying CNPs in an autoregressive fashion, CNPs have the capacity to compete with much more sophisticated approaches.
 Most notably, across all experiments, Gaussian or non-Gaussian, the AR ConvCNP has consistently been amongst the best performing models.
-% The simplicity and flexibility of AR CNPs comes at the cost of increased computational expense at test time and the lack of consistency.
-% Future research will reveal whether or where this trade-off is appropriate.
 AR CNPs equip the neural process framework with a new knob where modelling complexity and computational expense at training time can be traded for computational expense at test time.
 AR CNPs have not yet been published.
 
@@ -97,7 +85,6 @@ For example, rather than making the choice between convolutional deep sets and a
 one may perfectly well combine the two.
 In fact,
 mixing and matching the building blocks of neural processes
-%to arrive at a solution suited for a particular application
 is the best way to utilise the neural process framework!
 
 To incorporate context data into a neural process architecture,
@@ -114,8 +101,6 @@ If the data is stationary or can be rendered approximately stationary by includi
 convolutional deep sets can be used.
 Convolutional deep sets are only suitable for one, two, or three-dimensional inputs, and the computational cost is determined by the discretisation (\cref{\xrprefix{proc:discretisation}}).
 When convolutional deep sets are appropriate, they often yield superior performance.
-%All approaches can deal with arbitrary missing data.
-%However, when the outputs are multidimensional and arbitrary dimensions can be missing, convolutional deep sets offer the best scalability.
 
 To successfully deploy convolutional deep sets,
 we have a few words of more specific advice.
@@ -135,8 +120,6 @@ It should be set according to how far observations should influence predictions.
 For a typical CNN, the receptive field of a CNN is determined by the number of layers and kernel sizes of the convolutional filters. 
 Finally, for a given receptive field, the capacity of the CNN should to be tuned appropriately, and here one can use all tricks in the book.
 A honourable mention is the U-Net architecture \parencite{Ronneberger:2015:U-Net_Convolutional_Networks_for_Biomedical}, which effectively achieves the large receptive fields at reasonable parameter counts.
-
-
 
 \end{document}
 

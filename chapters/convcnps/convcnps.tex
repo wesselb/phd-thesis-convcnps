@@ -20,10 +20,8 @@ Neural processes approach meta-learning problems by parametrising a prediction m
 In the previous chapter, we discussed \emph{representation theorems}, which are theorems that generally characterise functions on data sets $\D$.
 The goal of representation theorems is to find practical implementations of such functions.
 In this chapter, we apply representation theorems to the prediction map.
-%This forms a general recipe to construct neural process models.
 
 \paragraph{Outline}
-%\Cref{sec:convcnps:introduction} introduces the chapter.
 In \cref{sec:convcnps:cnps},
 we parametrise the prediction map using deep sets, recovering the original Conditional Neural Process \parencite[CNP;][]{Garnelo:2018:Conditional_Neural_Processes}.
 In the remaining sections, we propose three methodological advancements.
@@ -69,16 +67,6 @@ but are limited to Gaussian predictions.
 AR CNPs, on the other hand, propose to deploy CNPs in an autoregressive fashion, but are no longer consistent meta-learning algorithms.
 Whereas we will focus on GNPs and AR CNPs that are ConvNPs, the classes of GNPs and AR CNPs are more general.
 The families of ConvNPs, GNPs, and AR CNPs are the three contributions of this chapter.
-% The ConvNPs proposed in this chapter span 
-% the families of conditional neural processes C(NPO
-% The models proposed in this chapter can alternatively be categorised in three other categories:
-% conditional neural processes 
-
-%Namely, AR CNPs train a neural process without any modifications to the model or training procedure and, at test time, roll out the model in an autoregressive fashion. % to produce improved predictions.
-%
-%
-%In this chapter, we will construct three new families of neural process models: \emph{convolutional neural processes}, \emph{Gaussian neural processes}, and \emph{autoregressive conditional neural processes}.
-%Each of these classes improve an aspect of the original class of conditional neural processes \parencite[CNPs;][]{Garnelo:2018:Conditional_Neural_Processes} whilst giving up something else.
 
 All models will be derived by applying an appropriate \emph{representation theorem} from \cref{\xrprefix{chap:repr_theorems}} to the prediction map $\pi_\theta \colon \D \to \Qc$.
 Recall that $\Qc$ is a collection of stochastic processes called the \emph{variational family}.
@@ -97,7 +85,6 @@ Please see our word of caution on naming conventions in \cref{\xrprefix{sec:nps:
 Before constructing any new models, we first derive the original Conditional Neural Process \parencite[CNP;][]{Garnelo:2018:Conditional_Neural_Processes}.
 We will analyse the strengths and shortcomings of the CNP, propose an improvement that alleviates one shortcoming,
 and repeat this once more.
-
 
 \section{Conditional Neural Processes}
 \label{sec:convcnps:cnps}
@@ -160,54 +147,31 @@ The decoder is the more heavyweight component of the CNP and responsible for the
 In \cref{\xrprefix{fig:translation_equivariance}} in \cref{\xrprefix{sec:nps:translation_equivariance}},
 we saw that the Conditional Neural Process breaks down when it is presented data outside of the \emph{training range}, the part of the input space where the model has seen data during training.
 In a sense, that the CNP malfunctions outside of the training range is reasonable,
-%because it has not seen anything about the behaviour of the data outside the training range.
 because it has not seen any indicators of the behaviour of the data outside the training range.
 For all the model knows, the data might suddenly start exhibiting wildly erratic behaviour when it crosses the edge of the training range.
 We have not baked any assumptions into the CNP that exclude such a possibility, however unlikely it may sound.
 
 Our goal is to improve this behaviour of the CNP, to tell the model that the data outside of the training range behaves just like inside the training range.
-%To bake this assumption into the model, we will impose assumptions on the ground-truth stochastic process $f$ and observe what that does to the posterior prediction map $\pi_f$.
 To this end, we will specify that the ground-truth stochastic process $f$ behaves similarly on all parts of the input space.
 In particular, the appropriate and natural assumption is that $f$ be a \emph{stationary} process.\index{stationarity}
 Recall that a process is stationary if its distribution is unaffected by shifts: $f \disteq \T_\tau f$ for all shifts $\tau \in \X$.
 It turns out that stationarity of the prior has a simple characterisation in terms of the posterior prediction map.
 
-% \begin{proposition}
-%     \label{prop:stationary_iff_te}
-%     The ground-truth stochastic process $f$ is stationary if and only if the posterior prediction map $\pi_f$ is translation equivariant (\cref{\xrprefix{def:translation_equivariance}}).
-% \end{proposition}
 \index{translation equivariance}
 \statement{statements/stationary_iff_te.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_convcnps:convcnps}}.
 \end{proof}
 
-
 To build in the assumption that the data behaves similarly on all parts of the input space, \cref{prop:stationary_iff_te} reveals that the appropriate assumption is that the prediction map $\pi_\theta \colon \D \to \Qc$ be \emph{translation equivariant} (\cref{\xrprefix{def:translation_equivariance}}).
 Our proposed improvement of the CNP is therefore a translation-equivariant parametrisation of $\pi_\theta$.
 Translation equivariance carries over to the mean map $m$ and variance map $v$, as the following proposition says.
 
-% \begin{proposition}
-%     If a prediction map $\pi$ is translation equivariant, then the mean map $m_\pi$ and variance map $v_\pi$ are also translation equivariant.
-%     Conversely, suppose that $\pi$ a conditional neural process in the sense of \cref{\xrprefix{def:cnp}}.
-%     If $m_\pi$ is TE and $v_\pi$ is TE, then $\pi$ is translation equivariant.
-%     \begin{equation}
-%         \text{\normalshape $\pi$ is TE}
-%         \qquad
-%         \begin{gathered}
-%             \implies  \\
-%             \overset{\text{\normalshape $\pi$ is a CNP}}{\impliedby}
-%         \end{gathered}
-%         \qquad
-%         \text{\normalshape $m_\pi$ is TE and $v_\pi$ is TE}.
-%     \end{equation}
-% \end{proposition}
 \index{translation equivariance}
 \statement{statements/te_cnp.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_convcnps:convcnps}}.   
 \end{proof}
-
 
 \index{convolutional deep set}
 The CNP used deep sets (\cref{\xrprefix{thm:deep_set}}), a general characterisation of functions on data sets $\D$, to parametrise the mean map $m$ and variance map $v$.
@@ -290,7 +254,6 @@ We propose an approximation by discretisation:
     like the decoder of the ConvCNP.
     Consider an input $\vz\colon \X \to \R^{N_1}$ for $\mathsf{map}$. 
     Then approximate the output $\mathsf{map}(\vz) \colon \X \to \R^{N_2}$ with the following four steps:
-    %\vspace{0.5em}
     \begin{equation*}
         \vz(\vardot)
         \overset{\raisebox{5pt}{\ballnumber{2}}}{\mapsto}
@@ -306,17 +269,14 @@ We propose an approximation by discretisation:
             \vz\us{(out)}(u_K) 
         \end{bmatrix}
         \overset{\raisebox{5pt}{\ballnumber{4}}}{\mapsto}
-        %\smash{\underbracket[1pt]{
-            \vphantom{
-                \begin{bmatrix}
-                    \vz \\ \vdots \\ \vz
-                \end{bmatrix}
-            }
-            \sum_{k=1}^K \vz\us{(out)}(u_k) e^{-\frac{1}{2\ell^2}(\vardot - u_k)^2}
-        %}_{\displaystyle\strut\approx \dec_\theta(\vz)}}
+        \vphantom{
+            \begin{bmatrix}
+                \vz \\ \vdots \\ \vz
+            \end{bmatrix}
+        }
+        \sum_{k=1}^K \vz\us{(out)}(u_k) e^{-\frac{1}{2\ell^2}(\vardot - u_k)^2}
         \approx
         \mathsf{map}(\vz)(\vardot)
-        %\vspace{1.25em}
     \end{equation*}
     \begin{enumerate}
         \item[\ballnumber{1}]
@@ -389,7 +349,6 @@ A key difference between the ConvCNP and PointConv is that signals in the ConvCN
 In this sense, PointConv is similar to SchNet
 \parencite{Schutt:2017:SchNet_A_Continuous-Filter_Convolutional_Neural}, which uses continuous-filter convolutional layers, or more generally
 equivariant message passing \parencite{Satorras:2021:En_Equivariant_Graph_Neural_Networks}. 
-
 
 \section{Translation Equivariance and Generalisation}
 \label{sec:convcnps:generalisation}
@@ -500,12 +459,10 @@ Rather than specifying a region, the receptive field $R$ is sometimes just a sca
     \label{fig:generalisation}
 \end{figure}
 
-
 \looseness=-1
 We now define the receptive field more carefully.
 For $\vx, \vy \in I$, let $\vy|_{\vx,R}$ be the subvector of $\vy$ with elements at most distance $R$ from $\vx$.
 Similarly, for $D \in \D$ and $\vx \in \X^N$, let $D|_{\vx,R}$ denote the subcollection of input--output pairs with inputs at most distance $R$ from $\vx$ .
-% For $(x_1, x_2) \in \X$, measure the distance between $(x_1, x_2)$ and $y \in \X$ by $\norm{(x_1, x_2) - (y, y)}_1$ and similarly denote $D|_{(x_1,x_2),R}$.
 
 \index{receptive field}
 \begin{definition}[Receptive field]
@@ -518,28 +475,12 @@ Similarly, for $D \in \D$ and $\vx \in \X^N$, let $D|_{\vx,R}$ denote the subcol
             \begin{equation}
                 f(\vx) \cond f(\vy) \disteq f(\vx) \cond f(\vy|_{\vx,\frac 12R}).
             \end{equation}
-            %then $f$ has \emph{receptive field size $R$}.
-        % \item 
-        %     For a function $f\colon \D \to Z$ where $Z$ is a space of functions on $\X$,
-        %     if, for all $D \in \D$ and $x \in \X$,
-        %     \begin{equation}
-        %         f(D)(x) = f(D|_{x,\frac12 R})(x),
-        %     \end{equation}
-        %     then $f$ has \emph{receptive field size $R$}.
-        % \item 
-        %     For a function $f\colon \D \to Z$ where $Z$ is a space of functions on $\X \times \X$,
-        %     if, for all $D \in \D$ and $x_1, x_2 \in \X$,
-        %     \begin{equation}
-        %         f(D)(x_1, x_2) = f(D|_{(x_1, x_2),\frac12 R})(x_1, x_2),
-        %     \end{equation}
-        %     then $f$ has \emph{receptive field size $R$}.
         \item 
             A prediction map $\pi \colon \D \to \Pc$ has \emph{receptive field size $R$}
             if, for all $D \in \D$ and $\vx \in I$,
             \begin{equation}
                 P_\vx \pi(D) = P_\vx \pi(D|_{\vx, \frac12 R}).
             \end{equation}
-            %then $\pi$ has \emph{receptive field size $R$}.
     \end{itemize}
 \end{definition}
 
@@ -553,25 +494,11 @@ More precisely, if $k(\tau) = 0$ for $\abs{\tau} \ge \tfrac12 R$, then $f$ has r
 The main insight of this section is that a limited receptive field in combination with translation equivariance can help generalisation performance.
 This insight is illustrated and explained in \cref{fig:generalisation} and formalised in the following theorem.
 
-% \begin{theorem} \label{thm:generalisation_of_gnp}
-%     Let $\pi_1, \pi_2 \colon \D \to \Pc$ be translation-equivariant prediction maps with receptive field $R > 0$.
-%     Assume that, for all $D \in \D$, $\pi_1(D)$ and $\pi_2(D)$ also have receptive field $R > 0$.
-%     Let $\e > 0$ and fix $N \in \N$.
-%     Assume that, for all $\vx \in \union_{n=1}^N [0, R]^n$ and $D \in \D \cap \union_{n=0}^\infty ([0, R]\times \R)^n$,
-%     \begin{equation}
-%         \KL(P_\vx \pi_1(D), P_\vx \pi_2(D)) \le \e.
-%     \end{equation}
-%     Then, for all $M > 0$, $\vx \in \union_{n=1}^N [0, M]^n$, and $D \in \D \cap \union_{n=0}^\infty ([0, M]\times \R)^n$,
-%     \begin{equation}
-%         \KL(P_\vx \pi_1(D), P_\vx \pi_2(D)) \le \ceil{M / R} \e.
-%     \end{equation}
-% \end{theorem}
 \index{generalisation}
 \statement{statements/generalisation.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_convcnps:generalisation}}.
 \end{proof}
-
 
 If a prediction map is well approximated on an interval of at least twice the receptive field size, then \cref{thm:generalisation_of_gnp} says that it is well approximated on any bigger interval, where the approximation error is proportional to the size of the bigger interval.
 Since we can compute the receptive field of a CNN architecture, \cref{thm:generalisation_of_gnp} offers practical guidance: 
@@ -602,7 +529,6 @@ We leave an investigation of this for future work.
     }
     \label{fig:noisy_samples}
 \end{figure}
-
 
 The ConvCNP (\cref{mod:convcnp}) builds translation equivariance into the CNP, improving generalisation performance whenever the ground-truth stochastic process $f$ is stationary.
 In this section, we address another shortcoming:
@@ -707,31 +633,12 @@ For GNPs, translation equivariance of the prediction map carries over to the ker
     \end{equation}
 \end{definition}
 
-% \begin{proposition}
-%     \label{prop:TE_iff_m_TE_k_DTE}
-%     If a prediction map $\pi$ is translation equivariant,
-%     then the mean map $m_\pi$ is translation equivariant and the kernel map $k_\pi$ is diagonally translation equivariant.
-%     Conversely, suppose that $\pi$ is a Gaussian neural process in the sense of \cref{\xrprefix{def:gnp}}.
-%     If $m_\pi$ is TE and $k_\pi$ is DTE, then $\pi$ is translation equivariant.
-%     In formulas,
-%     \begin{equation}
-%         \text{\normalshape $\pi$ is TE}
-%         \qquad
-%         \begin{gathered}
-%             \implies  \\
-%             \overset{\text{\normalshape $\pi$ is a GNP}}{\impliedby}
-%         \end{gathered}
-%         \qquad
-%         \text{\normalshape $m_\pi$ is TE and $k_\pi$ is DTE}.
-%     \end{equation}
-% \end{proposition}
 \index{translation equivariance}
 \index{translation equivariance!diagonal}
 \statement{statements/te_gnp.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_convcnps:gnp}}.
 \end{proof}
-
 
 \index{convolutional deep set}
 Like for the GNP, assume that the kernel map $k$ has an eigenmap $\psi$ on some $R$-dimensional Euclidean space $\R^R$.
@@ -782,7 +689,6 @@ Since conditioning on no data ($D = \es$) recovers the prior, this means that th
 This substantial flaw of the ConvGNP underlines the importance
 fully basing neural process architectures on representation theorems, which guarantee that such representational capacity issues cannot occur.
 For the ConvGNP, we momentarily deviated from this recipe by assuming a TE model for the eigenmap, and we immediately ran into problems.
-
 
 \index{convolutional deep set}
 The GNP and ConvGNP parametrise the kernel map $k$ by parametrising the eigenmap $\psi$.
@@ -1075,24 +981,12 @@ and Gaussian neural process approximation (GNPA; \cref{\xrprefix{def:cnpa}}).
 Recall that the CNPA and GNPA are what CNPs and GNPs approximate in the limit of infinite data;
 see \cref{\xrprefix{sec:predmap:consistency}} for a discussion of convergence in the limit of infinite data.
 
-% \begin{proposition}[Advantage of AR CNPs]
-%     \label{prop:advantage_of_ar_cnps}
-%     Let $(\pi\ss{C}, \sigma\ss{C})$ be a CNPA
-%     and let $(\pi\ss{G}, \sigma\ss{G})$ be the GNPA.
-%     %Let $\operatorname{AR}_\vx^\sigma(\pi, D)$ be the distribution defined by the autoregressive sampling procedure \eqref{eq:ar-1} through \eqref{eq:ar-N}.
-%     Then, for all $\vx \in I$ and $D \in \tD$ (see \cref{\xrprefix{sec:predmap:prelims}}),
-%     \begin{equation}
-%         \KL(P^{\sigma_f}_\vx \pi_f(D), \operatorname{AR}^{\sigma\ss{C}}_\vx(\pi\ss{C}, D))
-%             \le \KL(P^{\sigma_f}_\vx \pi_f(D), P^{\sigma\ss{G}}_\vx \pi\ss{G}(D)).
-%     \end{equation}
-% \end{proposition}
 \index{neural process approximation!conditional}
 \index{neural process approximation!Gaussian}
 \statement{statements/advantage_ar.tex}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_convcnps:ar}}.
 \end{proof}
-
 
 \index{consistency!probabilistic}
 \paragraph{Weaknesses} Despite the many strengths of AR CNPs, 
@@ -1130,18 +1024,6 @@ The following proposition provides a partial remedy.
 
 \index{uncertainty!separation}
 \statement{statements/recovery_of_smooth_samples.tex}
-% \begin{proposition}[Recovery of smooth samples]
-%     \label{prop:recovery_of_smooth_samples}
-%     Let $f$ be a stochastic process with surely continuous sample paths and $\sup_{x \in \X} \norm{f(x)}_{L^2} < \infty$.
-%     Let $(\e_n)_{n \ge 0}$ independent random variables such that $\E[\e_n] = 0$ and $\sup_{n \ge 0} \Var[\e_n] < \infty$.
-%     Consider $(x_n)_{n\ge1} \sub \X$, and let $x^* \in \X$ be a limit point of $(x_n)_{n\ge 1}$.
-%     If $y(x^*) = f(x^*) + \e_0$ and $y_n = f(x_n) + \e_n$ are noisy observations of $f$, then
-%     \begin{equation}
-%         \lim_{n \to \infty}
-%         \E[y(x^*) \cond y_1, \ldots, y_n] = f(x^*)
-%         \quad\text{almost surely}.
-%     \end{equation}
-% \end{proposition}
 \begin{proof}
     See \cref{\xrprefix{sec:proofs_convcnps:ar}}.
 \end{proof}
@@ -1220,7 +1102,6 @@ This minimises the overall impact of the distortions on the samples and statisti
 \section{Conclusion}
 \label{sec:convcnps:conclusion}
 
-%Neural processes have thus far relied on multi-layer perceptrons (MLPs). % hurting the models' parameter efficiency and ability to generalise.
 In this chapter, we proposed a family of neural process models based on convolutional neural networks:
 the ConvCNP (\cref{mod:convcnp}), the ConvGNP (\cref{mod:convgnp}), and the FullConvGNP (\cref{mod:fullconvgnp}).
 We call these models \emph{convolutional neural processes} (ConvNPs).
@@ -1230,7 +1111,6 @@ The CNP is constructed by generally parametrising the prediction map using deep 
 In particular, the CNP makes no assumptions about the underlying ground-truth stochastic process $f$.
 %
 The family of convolutional neural processes assumes that the ground-truth stochastic process $f$ is stationary.
-% In contrast, non-convolutional neural processes make no assumptions about $f$.
 By assuming that $f$ is stationary, ConvNPs may parametrise a prediction map which is \emph{translation equivariant} (\cref{prop:stationary_iff_te}).
 To parametrise a translation-equivariant prediction map, we used convolutional deep sets (\cref{\xrprefix{thm:conv_deep_set},\xrprefix{thm:conv_deep_set_dte}}) instead of deep sets (\cref{\xrprefix{thm:deep_set}}), resulting in architectures based on convolutional neural networks (CNNs) rather than on multi-layer perceptrons (MLPs).
 By building translation equivariance in a neural process, we enable the model to better generalise in scenarios where stationarity of the prior $f$ is appropriate (\cref{thm:generalisation_of_gnp}).
@@ -1277,15 +1157,6 @@ For example, we could construct GNPs by parametrising the kernel map not through
 Moreover, we could consider mixtures of CNPs and GNPs, or CNPs and GNPs could be turned into non-Gaussian models by transforming the marginals using an invertible transform.
 We could even consider using GNPs---or AR CNPs, if one is courageous enough---as encoders and/or decoders inside LNPs,
 attempting to combine the benefits of different classes of neural processes.
-% In addition, the FullConvGNP is a version of the ConvGNP which directly parametrises the kernel map;
-% one might wonder what the analogue would be for the GNP.
-% Lastly, currently our notion of translation equivariance (\cref{\xrprefix{def:translation_equivariance}}) involves translations along the $x$-axis.
-% We could even consider generalising this to also include translations along the $y$-axis:
-% if we add a constant $c$ to all $y$-values of the observations, then the same constant $c$ should be added to the predictions.
-% In terms of the ground-truth stochastic process $f$, the equivalent assumption is that $f = c + g$ where $g$ is another stochastic process and the distribution over $c$ is the uniform distribution over the real line, an improper prior.
-
-
-% consistency also w.r.t. context set?
 
 \end{document}
 
