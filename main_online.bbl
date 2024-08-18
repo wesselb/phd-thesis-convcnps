@@ -70,15 +70,6 @@
       \field{booktitle}{Advances in Neural Information Processing Systems 30}
       \field{year}{2017}
     \endentry
-    \entry{ICLR:2018}{proceedings}{}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{crossrefsource}
-      \field{booktitle}{Proceedings of the 6th International Conference on Learning Representations}
-      \field{year}{2018}
-    \endentry
     \entry{NIPS:2018}{proceedings}{}
       \list{publisher}{1}{%
         {Curran Associates, Inc.}%
@@ -89,6 +80,15 @@
       \field{labeldatesource}{}
       \true{crossrefsource}
       \field{booktitle}{Advances in Neural Information Processing Systems 31}
+      \field{year}{2018}
+    \endentry
+    \entry{ICLR:2018}{proceedings}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{crossrefsource}
+      \field{booktitle}{Proceedings of the 6th International Conference on Learning Representations}
       \field{year}{2018}
     \endentry
     \entry{ICML:2018}{proceedings}{}
@@ -105,15 +105,6 @@
       \field{volume}{80}
       \field{year}{2018}
     \endentry
-    \entry{ICLR:2019}{proceedings}{}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{crossrefsource}
-      \field{booktitle}{Proceedings of the 7th International Conference on Learning Representations}
-      \field{year}{2019}
-    \endentry
     \entry{NIPS:2019}{proceedings}{}
       \list{publisher}{1}{%
         {Curran Associates, Inc.}%
@@ -124,6 +115,15 @@
       \field{labeldatesource}{}
       \true{crossrefsource}
       \field{booktitle}{Advances in Neural Information Processing Systems 32}
+      \field{year}{2019}
+    \endentry
+    \entry{ICLR:2019}{proceedings}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{crossrefsource}
+      \field{booktitle}{Proceedings of the 7th International Conference on Learning Representations}
       \field{year}{2019}
     \endentry
     \entry{AISTATS:2019}{proceedings}{}
@@ -154,15 +154,6 @@
       \field{volume}{97}
       \field{year}{2019}
     \endentry
-    \entry{ICLR:2020}{proceedings}{}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{crossrefsource}
-      \field{booktitle}{Proceedings of the 8th International Conference on Learning Representations}
-      \field{year}{2020}
-    \endentry
     \entry{NIPS:2020}{proceedings}{}
       \list{publisher}{1}{%
         {Curran Associates, Inc.}%
@@ -175,14 +166,14 @@
       \field{booktitle}{Advances in Neural Information Processing Systems 33}
       \field{year}{2020}
     \endentry
-    \entry{AABI:2020}{proceedings}{}
+    \entry{ICLR:2020}{proceedings}{}
       \field{sortinit}{2}
       \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{}
       \true{crossrefsource}
-      \field{booktitle}{Proceedings of the 3rd Symposium on Advances in Approximate {Bayesian} Inference}
-      \field{year}{2021}
+      \field{booktitle}{Proceedings of the 8th International Conference on Learning Representations}
+      \field{year}{2020}
     \endentry
     \entry{NIPS:2021}{proceedings}{}
       \list{publisher}{1}{%
@@ -194,6 +185,15 @@
       \field{labeldatesource}{}
       \true{crossrefsource}
       \field{booktitle}{Advances in Neural Information Processing Systems 34}
+      \field{year}{2021}
+    \endentry
+    \entry{AABI:2020}{proceedings}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{crossrefsource}
+      \field{booktitle}{Proceedings of the 3rd Symposium on Advances in Approximate {Bayesian} Inference}
       \field{year}{2021}
     \endentry
     \entry{ICML:2021}{proceedings}{}

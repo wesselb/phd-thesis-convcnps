@@ -1,0 +1,90 @@
+% Style enumerate and lists. Do not use `label=(\arabic*)` because equation
+% numbering already uses the same style.
+\setenumerate{topsep=.25\baselineskip, itemsep=0pt}
+\setlist{topsep=.25\baselineskip, itemsep=0pt}
+% \setlist[enumerate]{
+%     label=(\arabic*),
+%     itemsep=-0.25\baselineskip,
+%     topsep=0.25\baselineskip,
+%     after={\vspace*{0.25\baselineskip}}
+% }
+% \setlist[enumerate,2]{
+%     topsep=-0.25\baselineskip,
+%     itemsep=0pt,
+%     label=(\alph*)
+% }
+% \setlist[enumerate,3]{
+%     topsep=-0.25\baselineskip,
+%     itemsep=0pt,
+%     label=(\roman*)
+% }
+% \setlist[itemize]{
+%     label=\textbullet,
+%     itemsep=-0.25\baselineskip,
+%     topsep=0.25\baselineskip
+% }
+% \setlist[itemize,2]{
+%     topsep=-0.25\baselineskip,
+%     itemsep=0pt
+% }
+% \setlist[itemize,3]{
+%     topsep=-0.25\baselineskip,
+%     itemsep=0pt
+% }
+
+% Set the default float placement correctly.
+\floatplacement{figure}{tbp}
+\floatplacement{table}{tbp}
+
+% Set spacing between figures and text.
+\setlength{\textfloatsep}{30pt plus 1.0pt minus 2.0pt}
+\setlength{\floatsep}{30pt plus 1.0pt minus 2.0pt}
+\setlength{\intextsep}{30pt plus 1.0pt minus 2.0pt}
+
+% Adjust line spacing in captions.
+\captionsetup{font={stretch=1.25}}
+
+% Newline for in a title.
+\newcommand{\tnl}{\texorpdfstring{\\}{}}
+
+% Define outline tools.
+\newcommand{\outline}[1]{
+    \parbox{\linewidth}{
+        \setstretch{1.0}
+        \color{darkgreen}
+        #1
+    }\vspace{\parskip}
+}
+\newlist{outlinelist}{enumerate}{1}
+\setlist[outlinelist]{
+    label=\arabic*.,
+    noitemsep,
+    topsep=0pt,
+    parsep=0pt,
+    partopsep=0pt
+}
+\newcommand{\note}[1]{{\color{darkred}#1}}
+
+% Left-justified text in tabularx environment:
+\newcolumntype{L}{>{\RaggedRight\arraybackslash}X}
+
+% Hyperlink setup.
+\hypersetup{
+    colorlinks,
+    citecolor = black,
+    filecolor = black,
+    linkcolor = black,
+    urlcolor  = black
+}
+
+% Landscape figures:
+\newcommand{\landscapefloat}[1]{
+    \afterpage{
+        \begin{landscape}
+            #1
+        \end{landscape}
+    }
+}
+
+% Hanging full citation:
+\newcommand{\hangcite}[1]{\hangpara{\bibhang}{1}\AtNextCite{\defcounter{maxnames}{99}}\fullcite{#1}}

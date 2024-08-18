@@ -1,0 +1,381 @@
+% Define \charfusion. From https://tex.stackexchange.com/a/52673.
+\makeatletter
+\def\moverlay{\mathpalette\mov@rlay}
+\def\mov@rlay#1#2{\leavevmode\vtop{%
+   \baselineskip\z@skip \lineskiplimit-\maxdimen
+   \ialign{\hfil$\m@th#1##$\hfil\cr#2\crcr}}}
+    \newcommand{\charfusion}[3][\mathord]{
+        #1{\ifx#1\mathop\vphantom{#2}\fi
+        \mathpalette\mov@rlay{#2\cr#3}}
+        \ifx#1\mathop\expandafter\displaylimits\fi
+    }
+\makeatother
+
+% Sha symbol.
+%   Source: https://tex.stackexchange.com/questions/124738/i-just-want-to-write-sha-without-ruining-everything
+\DeclareFontFamily{U}{wncy}{}
+\DeclareFontShape{U}{wncy}{m}{n}{<->wncyr10}{}
+\DeclareSymbolFont{mcy}{U}{wncy}{m}{n}
+\DeclareMathSymbol{\Sha}{\mathord}{mcy}{"58}
+
+% Define a bigger \cdot.
+%   Source: https://tex.stackexchange.com/questions/235118/making-a-thicker-cdot-for-dot-product-that-is-thinner-than-bullet
+\makeatletter
+\newcommand*\bigcdot{\mathpalette\bigcdot@{.5}}
+\newcommand*\bigcdot@[2]{\mathbin{\vcenter{\hbox{\scalebox{#2}{$\m@th#1\bullet$}}}}}
+\makeatother
+
+% Bold math symbols from text greeks:
+\newcommand{\mathbfup}[1]{\mathord{\textnormal{\textbf{#1}}}}
+
+% Bold characters:
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\vecu}[1]{\hat{\vec{#1}}}
+\newcommand{\mat}[1]{\vec{#1}}
+
+% Predefined matrices and vectors:
+\newcommand{\vnull}{\mathbf{0}}
+
+\newcommand{\va}{\mathbf{a}}
+\newcommand{\vb}{\mathbf{b}}
+\newcommand{\vc}{\mathbf{c}}
+\newcommand{\vd}{\mathbf{d}}
+\newcommand{\ve}{\mathbf{e}}
+\newcommand{\vf}{\mathbf{f}}
+\newcommand{\vg}{\mathbf{g}}
+\newcommand{\vh}{\mathbf{h}}
+\newcommand{\vi}{\mathbf{i}}
+\newcommand{\vj}{\mathbf{j}}
+\newcommand{\vk}{\mathbf{k}}
+\newcommand{\vl}{\mathbf{l}}
+\newcommand{\vm}{\mathbf{m}}
+\newcommand{\vn}{\mathbf{n}}
+\newcommand{\vo}{\mathbf{o}}
+\newcommand{\vp}{\mathbf{p}}
+\newcommand{\vq}{\mathbf{q}}
+\newcommand{\vr}{\mathbf{r}}
+\newcommand{\vs}{\mathbf{s}}
+\newcommand{\vt}{\mathbf{t}}
+\newcommand{\vu}{\mathbf{u}}
+\newcommand{\vv}{\mathbf{v}}
+\newcommand{\vw}{\mathbf{w}}
+\newcommand{\vx}{\mathbf{x}}
+\newcommand{\vy}{\mathbf{y}}
+\newcommand{\vz}{\mathbf{z}}
+
+% Must be enclosed in another group.
+\newcommand{\vmu}{{\mathbfup{\textmu}}}
+\newcommand{\vtheta}{{\bm{\uptheta}}}
+\newcommand{\vphi}{{\mathbfup{\textphi}}}
+\newcommand{\vtau}{{\mathbfup{\texttau}}}
+\newcommand{\vep}{{\mathbfup{\textepsilon}}}
+\newcommand{\vth}{{\mathbfup{\texttheta}}}
+
+\newcommand{\mA}{\mathbf{A}}
+\newcommand{\mB}{\mathbf{B}}
+\newcommand{\mC}{\mathbf{C}}
+\newcommand{\mD}{\mathbf{D}}
+\newcommand{\mE}{\mathbf{E}}
+\newcommand{\mF}{\mathbf{F}}
+\newcommand{\mG}{\mathbf{G}}
+\newcommand{\mH}{\mathbf{H}}
+\newcommand{\mI}{\mathbf{I}}
+\newcommand{\mJ}{\mathbf{J}}
+\newcommand{\mK}{\mathbf{K}}
+\newcommand{\mL}{\mathbf{L}}
+\newcommand{\mM}{\mathbf{M}}
+\newcommand{\mN}{\mathbf{N}}
+\newcommand{\mO}{\mathbf{O}}
+\newcommand{\mP}{\mathbf{P}}
+\newcommand{\mQ}{\mathbf{Q}}
+\newcommand{\mR}{\mathbf{R}}
+\newcommand{\mS}{\mathbf{S}}
+\newcommand{\mT}{\mathbf{T}}
+\newcommand{\mU}{\mathbf{U}}
+\newcommand{\mV}{\mathbf{V}}
+\newcommand{\mW}{\mathbf{W}}
+\newcommand{\mX}{\mathbf{X}}
+\newcommand{\mY}{\mathbf{Y}}
+\newcommand{\mZ}{\mathbf{Z}}
+
+\newcommand{\mSigma}{\mathbfup{\textSigma}}
+
+% Letters commonly used in blackboard bold font:
+\newcommand{\Ab}{\mathbb{A}}
+\newcommand{\Bb}{\mathbb{B}}
+\newcommand{\Db}{\mathbb{D}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Hb}{\mathbb{H}}
+\newcommand{\Jb}{\mathbb{J}}
+\newcommand{\K}{\mathbb{K}}
+\newcommand{\Lb}{\mathbb{L}}
+\newcommand{\Mb}{\mathbb{M}}
+\newcommand{\N}{\mathbb{N}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eR}{\overline{\mathbb{R}}}
+\newcommand{\Sb}{\mathbb{S}}
+\newcommand{\Tb}{\mathbb{T}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\Z}{\mathbb{Z}}
+
+% Letters commonly used in calligraphic font:
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\Ec}{\mathcal{E}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\let\Haccent\H
+\renewcommand{\H}{\mathcal{H}}
+\newcommand{\J}{\mathcal{J}}
+\newcommand{\Jrat}{\mathcal{J}_{\text{rat}}}
+\newcommand{\Kc}{\mathcal{K}}
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\Li}{\mathcal{L}{}^1}
+\newcommand{\eLi}{\overline{\mathcal{L}}{}^1}
+\newcommand{\m}{\text{m}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\eM}{\overline{\mathcal{M}}}
+\newcommand{\Nc}{\mathcal{N}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\Qc}{\mathcal{Q}}
+\newcommand{\Rc}{\mathcal{R}}
+\renewcommand{\S}{\mathcal{S}}
+\newcommand{\Tc}{\mathcal{T}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Vc}{\mathcal{V}}
+\newcommand{\W}{\mathcal{W}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\Zc}{\mathcal{Z}}
+
+% Letters sometimes used with a wide tilde:
+\newcommand{\tpi}{\widetilde{\pi}}
+\newcommand{\ttau}{\widetilde{\tau}}
+\newcommand{\tvtau}{\widetilde{\vtau}}
+\newcommand{\tD}{\widetilde{\D}}
+\newcommand{\tX}{\widetilde{\X}}
+\newcommand{\tI}{\widetilde{I}}
+\newcommand{\tQc}{\widetilde{\Qc}}
+
+% Letters commonly used in sans serif font:
+\newcommand{\T}{\text{\normalshape\textsf{T}}}
+\newcommand{\Ht}{\text{\normalshape\textsf{H}}}
+\renewcommand{\c}{\text{\normalshape\textsf{c}}}
+
+% Symbols:
+\newcommand{\es}{\varnothing}
+\newcommand{\e}{\varepsilon}
+\newcommand{\sub}{\subseteq}
+\renewcommand{\d}{\partial}
+\renewcommand{\th}{\theta}
+\newcommand{\Th}{\Theta}
+
+% Substitute l for \ell throughout.
+%   Source: https://tex.stackexchange.com/questions/1975/substituting-character-l-with-ell-throughout-math-mode
+\mathcode`l="8000
+\begingroup
+\makeatletter
+\lccode`\~=`\l
+\DeclareMathSymbol{\lsb@l}{\mathalpha}{letters}{`l}
+\lowercase{\gdef~{\ifnum\the\mathgroup=\m@ne \ell \else \lsb@l \fi}}%
+\endgroup
+
+% Convergence symbols:
+\newcommand{\oto}[1]{\overset{#1}{\to}}
+\newcommand{\uto}[1]{\underset{#1}{\to}}
+\newcommand{\outo}[2]{\overset{#1}{\underset{#2}{\to}}}
+\newcommand{\Lto}[1]{\oto{\L^{#1}}}
+\newcommand{\weakto}{\rightharpoonup}
+\newcommand{\distto}{\oto{\text{d}}}
+\newcommand{\weakstarto}{\overset{\ast}{\rightharpoonup}}
+% Big-O notation:
+\renewcommand{\O}{O}
+
+% Equality symbols:
+\newcommand{\disteq}{\overset{\text{\normalshape d}}{=}}
+
+% Operators:
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\let\max\relax\DeclareMathOperator*{\max}{max}
+\let\min\relax\DeclareMathOperator*{\min}{min}
+\let\sup\relax\DeclareMathOperator*{\sup}{sup}
+\let\inf\relax\DeclareMathOperator*{\inf}{inf\vphantom{p}}
+\let\limsup\relax\DeclareMathOperator*{\limsup}{lim\,sup}
+\let\liminf\relax\DeclareMathOperator*{\liminf}{lim\,inf\vphantom{p}}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+\DeclareMathOperator*{\essinf}{ess\,inf}
+\newcommand{\AC}{\operatorname{AC}}
+\newcommand{\atan}{\operatorname{atan}}
+\newcommand{\Breg}{\operatorname{D}}
+\newcommand{\BV}{\operatorname{BV}}
+\newcommand{\card}{\#}
+\newcommand{\cconv}{\circledast}
+\newcommand{\chol}{\operatorname{chol}}
+\newcommand{\ch}{\operatorname{ch}}
+\newcommand{\cliques}{\operatorname{cliques}}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\col}{\operatorname{col}}
+\newcommand{\comp}{\circ}
+\newcommand{\contains}{\supseteq}
+\newcommand{\conv}{\ast}
+\newcommand{\cov}{\operatorname{cov}}
+\newcommand{\var}{\operatorname{var}}
+\renewcommand{\deg}{\operatorname{deg}}
+\renewcommand{\det}{\operatorname{det}}
+\newcommand{\diag}{\operatorname{diag}}
+\renewcommand{\dim}{\operatorname{dim}}
+\newcommand{\diam}{\operatorname{diam}}
+\renewcommand{\div}{\operatorname{div}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\dotcup}{\charfusion[\mathbin]{\cup}{\cdot}}
+\newcommand{\dotunion}{\charfusion[\mathop]{\bigcup}{\cdot}}
+\newcommand{\dsum}{\oplus}
+\newcommand{\Dsum}{\bigoplus}
+\newcommand{\erf}{\operatorname{erf}}
+\newcommand{\epi}{\operatorname{epi}}
+\newcommand{\had}{\odot}
+\newcommand{\Hell}{\operatorname{D}_{\text{Hell}}}
+\newcommand{\hypo}{\operatorname{hypo}}
+\newcommand{\im}{\operatorname{im}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\ind}{\mathbbm{1}}
+\newcommand{\intersection}{\bigcap}
+\newcommand{\join}{\lor}
+\newcommand{\KL}{\operatorname{KL}}
+\newcommand{\KOT}{\operatorname{KOT}}
+\newcommand{\kron}{\otimes}
+\newcommand{\len}{\operatorname{len}}
+\newcommand{\Lip}{\operatorname{Lip}}
+\newcommand{\meet}{\land}
+\newcommand{\MOT}{\operatorname{MOT}}
+\newcommand{\nullspace}{\operatorname{null}}
+\newcommand{\Per}{\operatorname{Per}}
+\newcommand{\push}{_\#}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\rank}{\operatorname{rank}}
+\renewcommand{\Re}{\operatorname{Re}}
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\schur}{\operatorname{Schur}}
+\newcommand{\sign}{\operatorname{sign}}
+\newcommand{\sinth}{\operatorname{\sin\!\text{-}\Theta}}
+\newcommand{\Sinth}{\operatorname{\text{Sin-}\Theta}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\symdiff}{\bigtriangleup}
+\newcommand{\Tan}{\operatorname{Tan}}
+\newcommand{\tensor}{\otimes}
+\newcommand{\TV}{\operatorname{TV}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\union}{\bigcup}
+\newcommand{\vecspan}{\operatorname{span}}
+\newcommand{\vect}{\operatorname{vec}}
+\newcommand{\vol}{\operatorname{vol}}
+
+% Probability distributions:
+\newcommand{\Ber}{\operatorname{Ber}}
+\newcommand{\Beta}{\operatorname{Beta}}
+\newcommand{\Bin}{\operatorname{Bin}}
+\newcommand{\BM}{\operatorname{BM}}
+\newcommand{\Cat}{\operatorname{Cat}}
+\newcommand{\Cauchy}{\operatorname{Cauchy}}
+\newcommand{\Dir}{\operatorname{Dir}}
+\newcommand{\Exp}{\operatorname{Exp}}
+\newcommand{\Gam}{\operatorname{Gamma}}
+\newcommand{\Geom}{\operatorname{Geom}}
+\newcommand{\GP}{\mathcal{GP}}
+\newcommand{\InvWishart}{\mathcal{W}^{-1}}
+\newcommand{\Laplace}{\operatorname{Laplace}}
+\newcommand{\LogNormal}{\log\mathcal{N}}
+\newcommand{\Mult}{\operatorname{Mult}}
+\newcommand{\NegBin}{\operatorname{NegBin}}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\Poisson}{\operatorname{Poisson}}
+\newcommand{\Rad}{\operatorname{Rad}}
+\newcommand{\Unif}{\operatorname{Unif}}
+\newcommand{\Wishart}{\mathcal{W}}
+\newcommand{\WN}{\operatorname{WN}}
+
+\newcommand{\simiid}{\overset{\text{i.i.d.}}{\sim}}
+
+% Probability commands:
+\newcommand{\Var}{\V}
+\newcommand{\Lik}{\L}
+\newcommand{\iidsim}{\overset{\text{\tiny{i.i.d.}}}{\sim}}
+
+% Special math commands:
+\newcommand{\cond}{\,|\,}                  % Conditioning
+\newcommand{\middlecond}{\,\middle|\,}     % Conditioning between a \left and \right
+\newcommand{\divsep}{\,\|\,}               % Separator in divergences
+\newcommand{\middledivsep}{\,\middle\|\,}  % Separator in divergences ebtween a \left and a \right
+
+\newcommand{\sd}[1]{\mathrm{d} #1}         % Straight 'd'
+\newcommand{\isd}[1]{\, \mathrm{d} #1}     % Straight 'd' in integral (with spacing)
+% Straight 'd' in integral with spacing and absolute value around it
+\newcommand{\asd}[1]{\, |\mathrm{d} #1|}
+
+\newcommand{\idf}{\text{\textsf{id}}}            % Identity function
+\newcommand{\sce}{\text{\sc{e}}}                 % Scientific notation
+\newcommand{\vardot}{\,\bigcdot\,}               % Variable dot
+\let\ssorig\ss
+\renewcommand{\ss}[1]{_{\text{\normalshape #1}}} % Text subscripts
+\newcommand{\us}[1]{^{\text{\normalshape #1}}}   % Text superscripts
+
+% Hard to type words:
+\newcommand{\cadlag}{c\`adl\`ag}
+\newcommand{\Cadlag}{C\`adl\`ag}
+\newcommand{\ito}{It\^o}
+\newcommand{\Ito}{\ito}
+\newcommand{\levy}{L\`evy}
+\newcommand{\Levy}{\levy}
+
+% Subscripts
+\newcommand{\loc}{_{\text{loc}}}
+\newcommand{\lip}{_{\text{Lip}}}
+
+% Half rectangle:
+\newcommand{\halfrect}[2]{[\![#1,#2)\hspace{-1pt}\!)}
+\newcommand{\Rint}{\text{(R)}\int}
+
+% Paired delimiters:
+\DeclarePairedDelimiter\parens{(}{)}             % Parentheses
+\DeclarePairedDelimiter\sbrac{[}{]}              % Square brackets
+\DeclarePairedDelimiter\cbrac{\{}{\}}            % Curly braces
+\DeclarePairedDelimiter\set{\{}{\}}              % Set
+\DeclarePairedDelimiter\lra{\langle}{\rangle}    % Angle brackets
+\DeclarePairedDelimiter\dlra
+    {\langle\!\langle}{\rangle\!\rangle}         % Double angle brackets
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}  % Floor
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}     % Ceil
+\DeclarePairedDelimiter\norm{\|}{\|}             % Norm
+\DeclarePairedDelimiter\abs{|}{|}                % Absolute value
+
+% Shortcuts for angle brackets:
+\newcommand{\la}{\langle}
+\newcommand{\ra}{\rangle}
+\newcommand{\lla}{\left\langle}
+\newcommand{\rra}{\right\rangle}
+
+% Other commands:
+\newcommand{\resp}[1]{[#1]}                  % Respective statement
+\newcommand{\bs}{\textbackslash}             % Blackslash in text
+% Use \cref in a title.
+\newcommand{\creftitle}[2]{\texorpdfstring{\cref{#2}}{#1 \ref{#2}}}
+\newcommand{\mcheckthis}{{}^{[\checkmark]}}  % Checkmark in math
+\newcommand{\checkthis}{$\mcheckthis$}       % Checkmark in text
+
+% Compatibility with old commands:
+\newcommand{\id}[1]{\sd{#1}}
+\newcommand{\sargmax}[1]{\argmin_{#1}}
+\newcommand{\sargmin}[1]{\argmax_{#1}}
+\newcommand{\lrset}[1]{\set*{#1}}
+\newcommand{\middleCond}{\middlecond}
+\newcommand{\rel}[2]{($(#1) + (#2)$)}
+\newcommand{\blackLinks}{}
+\newcommand{\Ac}{\A}

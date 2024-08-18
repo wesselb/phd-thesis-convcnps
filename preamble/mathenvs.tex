@@ -1,0 +1,181 @@
+% Patch \listoftheorems.
+%   Source: https://tex.stackexchange.com/questions/249963/remove-repeated-theorem-in-the-list-of-theorems
+\makeatletter
+\patchcmd\thmt@mklistcmd
+    {\thmt@thmname}
+    {\check@optarg{\thmt@thmname}}
+    {}{}
+\patchcmd\thmt@mklistcmd
+    {\thmt@thmname\ifx}
+    {\check@optarg{\thmt@thmname}\ifx}
+    {}{}
+\protected\def\check@optarg#1{%
+    \@ifnextchar\thmtformatoptarg\@secondoftwo{#1}%
+}
+\makeatother
+
+% Define lists of things commands.
+\let\oldlistoftheorems\listoftheorems
+\newcommand{\listofmodels}{
+    \renewcommand{\listtheoremname}{List of Models}
+    \oldlistoftheorems[ignoreall, show={model}]
+}
+\newcommand{\listofstatements}{
+    \renewcommand{\listtheoremname}{List of Mathematical Statements}
+    \oldlistoftheorems[ignoreall, show={theorem,corollary,proposition,lemma,fact}]
+}
+\renewcommand{\listoftheorems}{
+    \renewcommand{\listtheoremname}{List of Theorems}
+    \oldlistoftheorems[ignoreall, show={theorem}]
+}
+
+% Define environments.
+\newlength{\thmtopsep}\setlength{\thmtopsep}{\topsep}
+\newlength{\thmbotsep}\setlength{\thmbotsep}{\topsep}
+\newtheoremstyle{theoremstyle}
+    {\thmtopsep}{\thmbotsep}
+    {}           % Body font
+    {}           % Indent amount
+    {\bfseries}  % Theorem head font
+    {.}          % Punctuation after theorem head
+    {.5em}       % Space after theorem head
+    {}           % Theorem head spec
+\theoremstyle{theoremstyle}
+
+\ifcsname notheorems\endcsname
+\else
+    \newtheorem{theorem}{Theorem}[section]
+    \newtheorem{proposition}{Proposition}[section]
+    \newtheorem{corollary}{Corollary}[section]
+    \newtheorem{fact}{Fact}[section]
+    \newtheorem{lemma}{Lemma}[section]
+
+    \newtheorem{assumption}{Assumption}[section]
+    \newtheorem{definition}{Definition}[section]
+    \newtheorem{question}{Question}[section]
+    \newtheorem{example}{Example}[section]
+    \newtheorem{model}{Model}[section]
+    \newtheorem{remark}{Remark}[section]
+\fi
+
+% Set referencing formats.
+\crefname{assumption}{Assumption}{Assumptions}
+\Crefname{assumption}{Assumption}{Assumptions}
+\crefname{corollary}{Corollary}{Corollaries}
+\Crefname{corollary}{Corollary}{Corollaries}
+\crefname{definition}{Definition}{Definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{example}{Example}{Examples}
+\Crefname{example}{Example}{Examples}
+\crefname{fact}{Fact}{Facts}
+\Crefname{fact}{Fact}{Facts}
+\crefname{lemma}{Lemma}{Lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{model}{Model}{Models}
+\Crefname{model}{Model}{Models}
+\crefname{proposition}{Proposition}{Propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{question}{Question}{Questions}
+\Crefname{question}{Question}{Questions}
+\crefname{remark}{Remark}{Remarks}
+\Crefname{remark}{Remark}{Remarks}
+\crefname{theorem}{Theorem}{Theorems}
+\Crefname{theorem}{Theorem}{Theorems}
+
+% Referentiable list items in environments
+\newlist{asslist}{enumerate}{1}
+\setlist[asslist]{
+    ref=\theassumption.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{asslisti}{Assumption}{Assumptions}
+\Crefname{asslisti}{Assumption}{Assumptions}
+\newlist{corlist}{enumerate}{1}
+\setlist[corlist]{
+    ref=\thecorollary.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{corlisti}{Corollary}{Corollaries}
+\Crefname{corlisti}{Corollary}{Corollaries}
+\newlist{deflist}{enumerate}{1}
+\setlist[deflist]{
+    ref=\thedefinition.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{deflisti}{Definition}{Definitions}
+\Crefname{deflisti}{Definition}{Definitions}
+\newlist{exlist}{enumerate}{1}
+\setlist[exlist]{
+    ref=\theexample.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{exlisti}{Example}{Examples}
+\Crefname{exlisti}{Example}{Examples}
+\newlist{factlist}{enumerate}{1}
+\setlist[factlist]{
+    ref=\thefact.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{factlisti}{Fact}{Facts}
+\Crefname{factlisti}{Fact}{Facts}
+\newlist{lemlist}{enumerate}{1}
+\setlist[lemlist]{
+    ref=\thelemma.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{lemlisti}{Lemma}{Lemmas}
+\Crefname{lemlisti}{Lemma}{Lemmas}
+\newlist{modlist}{enumerate}{1}
+\setlist[modlist]{
+    ref=\themodel.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{modlisti}{Model}{Models}
+\Crefname{modlisti}{Model}{Models}
+\newlist{proplist}{enumerate}{1}
+\setlist[proplist]{
+    ref=\theproposition.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{proplisti}{Proposition}{Propositions}
+\Crefname{proplisti}{Proposition}{Propositions}
+\newlist{qlist}{enumerate}{1}
+\setlist[qlist]{
+    ref=\theremark.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{qlisti}{Question}{Questions}
+\Crefname{qlisti}{Question}{Questions}
+\newlist{remlist}{enumerate}{1}
+\setlist[remlist]{
+    ref=\theremark.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{remlisti}{Remark}{Remarks}
+\Crefname{remlisti}{Remark}{Remarks}
+\newlist{thmlist}{enumerate}{1}
+\setlist[thmlist]{
+    ref=\thetheorem.(\arabic*),
+    label=(\arabic*),
+    % topsep=0pt,
+}
+\crefname{thmlisti}{Theorem}{Theorems}
+\Crefname{thmlisti}{Theorem}{Theorems}
+
+% Reference numbers in the list.
+\newcommand{\listnum}[1]{(#1)}
+\newcommand{\listimp}[2]{\listnum{#1} $\Rightarrow$ \listnum{#2}}
+\newcommand{\listeq}[2]{\listnum{#1} $\Leftrightarrow$ \listnum{#2}}
+
+% Backward compatibility:
+\newcommand{\listimpl}[2]{\listnum{#1} $\Rightarrow$ \listnum{#2}:}
