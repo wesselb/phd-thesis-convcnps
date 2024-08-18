@@ -5,6 +5,10 @@ This is the LaTeX source for my PhD thesis _Convolutional Conditional Neural Pro
 Notable features are that all chapter are individually compilable with fully working cross-references,
 and that mathematical statements are restatable with a simple custom solution. 
 
+The version in this repository is not exactly
+[the officially accepted version](https://www.repository.cam.ac.uk/handle/1810/354383),
+but includes minor edits such as fixed typos and minor clarifications.
+
 Please cite the thesis as follows:
 
 ```
