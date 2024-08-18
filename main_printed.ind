@@ -1,0 +1,184 @@
+\begin{theindex}
+
+  \item ACNP, \hyperpage{206}
+  \item AGNP, \hyperpage{206}
+  \item ANP, \hyperpage{206}
+  \item anti-diagonal discriminating, \hyperpage{66}
+  \item Arzel\`a--Ascoli theorem, \hyperpage{46}
+
+  \indexspace
+
+  \item CNP, \hyperpage{71}, \hyperpage{205}
+    \subitem implementation, \hyperpage{144}
+  \item coder, \hyperpage{143}
+    \subitem composition, \hyperpage{143}
+  \item compactness, \hyperpage{44}
+  \item consistency
+    \subitem convergence, \hyperpage{44}
+    \subitem probabilistic, \hyperpage{16}, \hyperpage{84}, 
+		\hyperpage{87}
+  \item context set, \hyperpage{16}
+  \item ConvCNP, \hyperpage{72}, \hyperpage{206}
+    \subitem implementation, \hyperpage{146}
+    \subitem MLP, \hyperpage{130}, \hyperpage{210}
+  \item ConvGNP, \hyperpage{80}, \hyperpage{207}
+    \subitem MLP, \hyperpage{130}, \hyperpage{210}
+  \item ConvNP, \hyperpage{207}
+  \item convolutional deep set, \hyperpage{60}, \hyperpage{63}, 
+		\hyperpage{72}, \hyperpage{80, 81}
+    \subitem comparison, \hyperpage{66}
+
+  \indexspace
+
+  \item data channel, \hyperpage{73}
+  \item data sets of interest, \hyperpage{34}, \hyperpage{46}
+  \item decoder, \hyperpage{23}, \hyperpage{53}, \hyperpage{71}, 
+		\hyperpage{140}
+  \item deep set, \hyperpage{56, 57}, \hyperpage{71}, \hyperpage{78}
+    \subitem comparison, \hyperpage{66}
+  \item density channel, \hyperpage{73}
+  \item discretisation, \hyperpage{74}, \hyperpage{82}
+  \item downscaling, \hyperpage{127}, \hyperpage{210}
+
+  \indexspace
+
+  \item eigenmap, \hyperpage{78}
+  \item empirical neural process objective, \hyperpage{33}
+  \item encoder, \hyperpage{23}, \hyperpage{53}, \hyperpage{71}, 
+		\hyperpage{140}
+  \item encoder--decoder architecture, \hyperpage{23}, \hyperpage{53}, 
+		\hyperpage{71}, \hyperpage{140}, \hyperpage{144}
+  \item encoding, \hyperpage{23}, \hyperpage{53}, \hyperpage{71}
+    \subitem functional, \hyperpage{59}
+
+  \indexspace
+
+  \item few-shot classification, \hyperpage{16}
+  \item FullConvGNP, \hyperpage{81}, \hyperpage{207}
+  \item functional encoding, \hyperpage{73}, \hyperpage{141}
+
+  \indexspace
+
+  \item generalisation, \hyperpage{75}, \hyperpage{77}
+  \item GNP, \hyperpage{79}, \hyperpage{205}
+  \item ground truth, \hyperpage{30}
+    \subitem regularity, \hyperpage{35}
+
+  \indexspace
+
+  \item kernel, \hyperpage{61}, \hyperpage{63}
+    \subitem compact, \hyperpage{77}
+  \item kernel map, \hyperpage{40}, \hyperpage{78}, \hyperpage{81}
+  \item Kolmogorov's extension theorem, \hyperpage{17}, \hyperpage{35}
+
+  \indexspace
+
+  \item learning to learn, \hyperpage{2}, \hyperpage{4}, \hyperpage{6}
+  \item Lotka--Volterra equations, \hyperpage{120}
+
+  \indexspace
+
+  \item mean map, \hyperpage{40}, \hyperpage{70}, \hyperpage{78}, 
+		\hyperpage{81}
+  \item Mercer's theorem, \hyperpage{79}
+  \item meta-learning, \hyperpage{2}, \hyperpage{4}, \hyperpage{16}
+  \item meta-learning algorithm, \hyperpage{16}
+  \item metric
+    \subitem CNPs, \hyperpage{45}
+    \subitem data sets, \hyperpage{34}, \hyperpage{55}
+    \subitem GNPs, \hyperpage{46}
+    \subitem inputs, \hyperpage{34}
+  \item moment matching, \hyperpage{43}
+  \item multiplicity, \hyperpage{60}
+  \item multiscale architecture, \hyperpage{132}, \hyperpage{210}
+
+  \indexspace
+
+  \item Nadaraya--Watson estimator, \hyperpage{74}
+  \item neural process, \hyperpage{6}, \hyperpage{18}, \hyperpage{39}
+    \subitem autoregressive, \hyperpage{84}, \hyperpage{86}
+    \subitem comparison, \hyperpage{84}, \hyperpage{90}
+    \subitem conditional, \hyperpage{19}, \hyperpage{41}
+    \subitem convolutional, \hyperpage{26}
+    \subitem Gaussian, \hyperpage{20}, \hyperpage{42}, \hyperpage{78}, 
+		\hyperpage{84}
+    \subitem latent variable, \hyperpage{20}, \hyperpage{84}
+  \item neural process approximation, \hyperpage{39}
+    \subitem characterisation, \hyperpage{42, 43}
+    \subitem conditional, \hyperpage{42}, \hyperpage{87}, 
+		\hyperpage{99}
+    \subitem consistency, \hyperpage{49}
+    \subitem Gaussian, \hyperpage{42}, \hyperpage{87}, \hyperpage{112}
+  \item neural process objective, \hyperpage{32, 33}, \hyperpage{38}
+    \subitem empirical, \hyperpage{19}, \hyperpage{44}
+  \item Noether's theorem, \hyperpage{7}
+  \item NP, \hyperpage{205}
+
+  \indexspace
+
+  \item overfitting, \hyperpage{44}
+
+  \indexspace
+
+  \item parameter efficiency, \hyperpage{24}
+  \item permutation invariance, \hyperpage{23}, \hyperpage{56}
+  \item pointwise MLP, \hyperpage{130}
+  \item posterior prediction map, \hyperpage{31}
+    \subitem formal, \hyperpage{36}
+    \subitem regularity, \hyperpage{37}, \hyperpage{48}
+  \item prediction map, \hyperpage{17}
+    \subitem continuity, \hyperpage{36}
+    \subitem Gaussian, \hyperpage{40}
+    \subitem noisy, \hyperpage{38}
+
+  \indexspace
+
+  \item receptive field, \hyperpage{75, 76}
+    \subitem effective, \hyperpage{77}
+  \item representation theorem, \hyperpage{54}
+  \item representational capacity, \hyperpage{80}, \hyperpage{82}, 
+		\hyperpage{113}
+
+  \indexspace
+
+  \item sim-to-real transfer, \hyperpage{119}, \hyperpage{209}
+  \item source channel, \hyperpage{82}
+  \item stationarity, \hyperpage{72}, \hyperpage{79}
+  \item stochastic process, \hyperpage{17}
+    \subitem regularity, \hyperpage{35}
+  \item supervised learning, \hyperpage{1}, \hyperpage{3}
+
+  \indexspace
+
+  \item target inputs of interest, \hyperpage{34}
+  \item target set, \hyperpage{16}
+  \item task, \hyperpage{4}
+  \item transfer learning, \hyperpage{2}
+  \item translation, \hyperpage{25}
+  \item translation equivariance, \hyperpage{7}, \hyperpage{25}, 
+		\hyperpage{58}, \hyperpage{72}, \hyperpage{80}
+    \subitem diagonal, \hyperpage{65}, \hyperpage{79, 80}
+    \subitem kernel map, \hyperpage{63}
+    \subitem mean map, \hyperpage{63}
+  \item translation invariance
+    \subitem diagonal, \hyperpage{66}
+  \item translation space, \hyperpage{60}
+    \subitem topological, \hyperpage{60}
+
+  \indexspace
+
+  \item uncertainty
+    \subitem aleatoric, \hyperpage{38}
+    \subitem epistemic, \hyperpage{38}
+    \subitem separation, \hyperpage{44}, \hyperpage{83}, 
+		\hyperpage{88, 89}
+  \item universal approximation theorem, \hyperpage{54}
+  \item universal parameters, \hyperpage{47}
+  \item universal representation theorem, \hyperpage{58}
+
+  \indexspace
+
+  \item variance map, \hyperpage{41}, \hyperpage{71}
+  \item variational family, \hyperpage{18}, \hyperpage{39}
+
+\end{theindex}
