@@ -1,11 +1,14 @@
-\documentclass[12pt]{report}
-%\documentclass[12pt, twoside, openright]{report}
+%!TEX root = main_online.tex
+
 \usepackage{import}
+
 \input{preamble/preamble}
 \addbibresource{bibliography.bib}
 
-% For printing, print everything in black.
-% \hypersetup{hidelinks}
+\ifprintedversion
+    % For printing, print everything in black.
+    \hypersetup{hidelinks}
+\fi
 
 \title{Convolutional Conditional \texorpdfstring{\\[0.5em]}{} Neural Processes}
 \author{Wessel Pieter Bruinsma}
@@ -41,8 +44,11 @@
 
 \null
 \thispagestyle{empty}
-% Only insert white page here for printing to get the alignment right.
-%\newpage
+
+\ifprintedversion
+    % Only insert white page here for printing to get the alignment right.
+    \newpage
+\fi
 
 \pagenumbering{roman}
 \import{essential/}{declaration}
@@ -64,8 +70,11 @@
 
 % For some inexplicable reason, there is an alignment issue, which we
 % solve with a negative `\vspace`. This only happens for the printed version.
-%\chapter*{\texorpdfstring{\vspace*{-2.5pt}}{}List of Mathematical Statements}
-\chapter*{List of Mathematical Statements}
+\ifprintedversion
+    \chapter*{\texorpdfstring{\vspace*{-2.5pt}}{}List of Mathematical Statements}
+\else
+    \chapter*{List of Mathematical Statements}
+\fi
 \addcontentsline{toc}{chapter}{List of Mathematical Statements}
 \renewcommand{\listtheoremname}{}
 \oldlistoftheorems[ignoreall, show={%
